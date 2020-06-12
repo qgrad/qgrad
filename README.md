@@ -4,6 +4,5 @@ A Python library to integrate automatic differentiation tools such as Jax with Q
 
 This package is a work in progress. Feel free to take part in the discussions by opening new issues.
 
-# Contributing
+## Contributing
 We are in the early stages of desining the tool and welcome any discussion in the form of issues or Pull requests. 
-
