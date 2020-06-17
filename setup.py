@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 
-from distutils.core import setup
-
-
-REQUIRES = ["jaxlib", "numpy"]
+from setuptools import setup, find_packages
 
 
 setup(
@@ -13,7 +10,7 @@ setup(
     author="Shahnawaz Ahmed, Asad Raza, Nathan Shammah",
     author_email="shahnawaz.ahmed95@gmail.com",
     url="https://github.com/qgrad/qgrad",
-    packages=["qgrad"],
-    install_requires=REQUIRES,
+    packages=find_packages(),
+    install_requires=["jaxlib", "numpy"],
     python_requires=">=3.6",
 )
