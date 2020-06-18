@@ -1,8 +1,7 @@
 """
-QuTiP functions that work with Jax
+Implementation of some common quantum mechanics functions that work with Jax
 """
-
-from jax import numpy as jnp
+import jax.numpy as jnp
 
 
 def fidelity(a, b):
@@ -16,7 +15,7 @@ def fidelity(a, b):
     Returns:
         float: fidelity between the two state vectors
     """
-    return jnp.abs(jnp.dot(jnp.transpose(jnp.conjugate(a)), b))
+    return jnp.abs(jnp.dot(jnp.transpose(jnp.conjugate(a)), b)) ** 2
 
 
 def rot(params):

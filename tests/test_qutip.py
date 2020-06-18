@@ -1,10 +1,8 @@
 """Tests for qgrad implementation of qutip functions"""
-
-from qgrad.qutip import rot, fidelity
-
-
 from jax import grad
 import jax.numpy as jnp
+
+from qgrad.qutip import rot, fidelity
 
 
 def test_fidelity():
