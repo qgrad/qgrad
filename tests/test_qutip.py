@@ -27,9 +27,9 @@ def test_fidelity():
     assert_almost_equal(fidelity(ket0, ket_minus), 1.0 / 2.0)
     assert_almost_equal(fidelity(ket1, ket_minus), 1.0 / 2.0)
 
-
 def test_rot():
     """
     Tests the rot function and computation of its gradient
     """
     assert jnp.all(rot([0, 0, 0]) == jnp.identity(2, dtype="complex64"))
+
