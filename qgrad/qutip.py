@@ -42,3 +42,42 @@ def rot(params):
             [jnp.exp(-0.5j * (phi - omega)) * sin, jnp.exp(0.5j * (phi + omega)) * cos],
         ]
     )
+
+def sigmax():
+    r"""Returns a Pauli-X operator
+    .. math:: \sigma_{x} = \begin{bmatrix} 0 & 1 \\ 1 & 0 \end{bmatrix}. 
+    
+    Examples
+    -------
+    >>>sigmax()
+    [[0. 1.]
+     [1. 0.]]
+
+    """
+    return jnp.asarray([[0., 1.], [1., 0.]])
+
+def sigmay():
+    r"""Returns a Pauli-Y operator
+    .. math:: \sigma_{y} = \begin{bmatrix} 0 & -i \\ i & 0 \end{bmatrix}. 
+    
+    Examples
+    -------
+    >>>sigmay()
+    [[0.+0.j 0.-1.j]
+     [0.+1.j 0.+0.j]]
+
+    """
+    return jnp.asarray([[0.+0.j, 0.-1.j], [0.+1.j, 0.+0.j]])
+
+def sigmaz():
+    r"""Returns a Pauli-Y operator
+    .. math:: \sigma_{z} = \begin{bmatrix} 1 & 0 \\ 0 & -1 \end{bmatrix}. 
+    
+    Examples
+    -------
+    >>>sigmaz()
+    [[1. 0.]
+     [0. -1.]]
+
+    """
+    return jnp.asarray([[1., 0.], [0., -1.]])
