@@ -33,5 +33,9 @@ def test_rot():
     """
     Tests the rot function and computation of its gradient
     """
-    assert jnp.all(rot([0, 0, 0]) == jnp.identity(2, dtype="complex64"))
+    ket0 = jnp.asarray([1, 0], dtype='complex64')
+    evo = jnp.dot(rot[0.5, 0.7. 0.8], ket0)
+    back_evo = jnp.dot(rot[0.5, 0.7, 0.8], evo)
 
+    assert jnp.all(rot([0, 0, 0]) == jnp.identity(2, dtype="complex64"))
+    assert not jnp.all(jnp.equal(evo, back_evo))
