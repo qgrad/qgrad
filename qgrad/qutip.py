@@ -4,7 +4,7 @@ Implementation of some common quantum mechanics functions that work with Jax
 from scipy.sparse import csr_matrix
 from jax.ops import index, index_update
 import jax.numpy as jnp
-
+from scipy.linalg import sqrtm 
 
 def fidelity(a, b):
     """
@@ -19,6 +19,22 @@ def fidelity(a, b):
     """
     return jnp.abs(jnp.dot(jnp.transpose(jnp.conjugate(a)), b)) ** 2
 
+def _fidelity_ket(a, b): 
+    """
+    Private function that computes fidelity between two kets.
+    
+    Args:
+        a (`:obj:numpy.array`): State vector (ket)
+        b (`:obj:numpy.array`): State vector (ket)
+        
+    Returns:
+        float: fidelity between the two state vectors
+    """
+    return jnp.abs(jnp.dot(jnp.transpose(jnp.conjugate(a)), b)) ** 2
+def _fidelity_dm(a, b):
+    dm1, dm2 = jnp.asarray(a), jnp.asarray(b)
+    return jnp.trace(sqrtm(jnp.dot(jnp.dot(sqrtm(dm1), dm2), sqrtm(dm1)))) ** 2 
+     
 
 def rot(params):
     """
