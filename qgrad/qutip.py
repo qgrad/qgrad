@@ -136,3 +136,19 @@ def create(N, full=False):
         else csr_matrix((data, ind, ptr), shape=(N, N)).toarray()
     )
 
+def expect(oper, state):
+    if jnp.asarray(state).shape[1] >= 2:
+        return _expect_dm(oper, state)
+
+    else:
+        return _expect_ket(oper, state)
+
+def _expect_dm(oper, state):
+    # convert to jax.numpy arrays in case user gives raw numpy 
+    oper, rho = jnp.asarray(oper), jnp.asarray(state)
+    # Tr(rho*op)
+    return jnp.trace(jnp.dot(rho, oper))   
+
+def _expect_ket(oper, state):
+    oper, ket = jnp.asarray(oper), jnp.asarray(state)
+    return jnp.vdot(jnp.transpose(ket), jnp.dot(oper, ket)) 
