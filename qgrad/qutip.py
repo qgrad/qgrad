@@ -137,6 +137,19 @@ def create(N, full=False):
     )
 
 def expect(oper, state):
+    """Calculates the expectation value of an operator 
+    with respect to a given (pure or mixed) state.
+
+    Args:
+        oper (`:obj:numpy.ndarray`): Numpy array representing
+                an operator
+        state (`:obj:numpy.ndarray`): Numpy array representing 
+                a density matrix. Standard Python list can also be                 passed in case of a pure state (ket).
+
+    Returns:
+        expt (float): Expectation value. ``real`` if the `oper` is
+                Hermitian and ``complex`` otherwise 
+    """
     if jnp.asarray(state).shape[1] >= 2:
         return _expect_dm(oper, state)
 
@@ -144,11 +157,17 @@ def expect(oper, state):
         return _expect_ket(oper, state)
 
 def _expect_dm(oper, state):
+    """Private function to calculate the expectaion value of 
+    and operator with respect to a density matrix
+    """
     # convert to jax.numpy arrays in case user gives raw numpy 
     oper, rho = jnp.asarray(oper), jnp.asarray(state)
     # Tr(rho*op)
     return jnp.trace(jnp.dot(rho, oper))   
 
 def _expect_ket(oper, state):
+    """Private function to calculate the expectaion value of 
+    and operator with respect to a ket
+    """
     oper, ket = jnp.asarray(oper), jnp.asarray(state)
     return jnp.vdot(jnp.transpose(ket), jnp.dot(oper, ket)) 
