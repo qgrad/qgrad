@@ -8,16 +8,22 @@ from scipy.linalg import sqrtm
 
 def fidelity(a, b):
     """
-    Computes fidelity between two kets.
+    Computes fidelity between two states (pure or mixed).
     
     Args:
-        a (`:obj:numpy.array`): State vector (ket)
-        b (`:obj:numpy.array`): State vector (ket)
+        a (`:obj:numpy.ndarray`): State vector (ket) or a density
+             matrix. Pure Python list can also be passed for a ket.
+        b (`:obj:numpy.ndarray`): State vector (ket) or a density
+             matrix. Pure Python list can also be passed for a ket.
         
     Returns:
-        float: fidelity between the two state vectors
+        float: fidelity between the two states
     """
-    return jnp.abs(jnp.dot(jnp.transpose(jnp.conjugate(a)), b)) ** 2
+    if jnp.asarray(a).shape[1] >= 2 or jnp.asarray(b).shape[1] >= 2:
+        return _fidelity_dm(a, b)
+
+    else: 
+        return _fidelity_ket(a, b) 
 
 def _fidelity_ket(a, b): 
     """
@@ -33,7 +39,7 @@ def _fidelity_ket(a, b):
     return jnp.abs(jnp.dot(jnp.transpose(jnp.conjugate(a)), b)) ** 2
 def _fidelity_dm(a, b):
     """
-    Private function that computes fidelity between two mixed states.
+    Private function that computes fidelity among two mixed states.
     
     Args:
         a (`:obj:numpy.ndarray`): density matrix (density matrix)
