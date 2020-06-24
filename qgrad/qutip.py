@@ -32,6 +32,16 @@ def _fidelity_ket(a, b):
     """
     return jnp.abs(jnp.dot(jnp.transpose(jnp.conjugate(a)), b)) ** 2
 def _fidelity_dm(a, b):
+    """
+    Private function that computes fidelity between two mixed states.
+    
+    Args:
+        a (`:obj:numpy.ndarray`): density matrix (density matrix)
+        b (`:obj:numpy.ndarray`): density matrix (density matrix)
+        
+    Returns:
+        float: fidelity between the two density matrices 
+    """
     dm1, dm2 = jnp.asarray(a), jnp.asarray(b)
     return jnp.trace(sqrtm(jnp.dot(jnp.dot(sqrtm(dm1), dm2), sqrtm(dm1)))) ** 2 
      
