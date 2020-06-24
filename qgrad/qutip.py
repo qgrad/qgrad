@@ -4,7 +4,8 @@ Implementation of some common quantum mechanics functions that work with Jax
 from scipy.sparse import csr_matrix
 from jax.ops import index, index_update
 import jax.numpy as jnp
-from scipy.linalg import sqrtm 
+from scipy.linalg import sqrtm
+
 
 def fidelity(a, b):
     """
@@ -22,21 +23,26 @@ def fidelity(a, b):
     if jnp.asarray(a).shape[1] >= 2 or jnp.asarray(b).shape[1] >= 2:
         return _fidelity_dm(a, b)
 
-    else: 
-        return _fidelity_ket(a, b) 
+    else:
+        return _fidelity_ket(a, b)
 
-def _fidelity_ket(a, b): 
+
+# TODO: Add tests with python list inputs for fidel and expect
+def _fidelity_ket(a, b):
     """
     Private function that computes fidelity between two kets.
     
     Args:
-        a (`:obj:numpy.array`): State vector (ket)
-        b (`:obj:numpy.array`): State vector (ket)
+        a (`:obj:numpy.ndarray`): State vector (ket) or a Python list
+        b (`:obj:numpy.ndarray`): State vector (ket) or a Python list
         
     Returns:
         float: fidelity between the two state vectors
     """
+    a, b = jnp.asarray(a), jnp.asarray(b)
     return jnp.abs(jnp.dot(jnp.transpose(jnp.conjugate(a)), b)) ** 2
+
+
 def _fidelity_dm(a, b):
     """
     Private function that computes fidelity among two mixed states.
@@ -49,8 +55,8 @@ def _fidelity_dm(a, b):
         float: fidelity between the two density matrices 
     """
     dm1, dm2 = jnp.asarray(a), jnp.asarray(b)
-    return jnp.trace(sqrtm(jnp.dot(jnp.dot(sqrtm(dm1), dm2), sqrtm(dm1)))) ** 2 
-     
+    return jnp.trace(sqrtm(jnp.dot(jnp.dot(sqrtm(dm1), dm2), sqrtm(dm1)))) ** 2
+
 
 def rot(params):
     """
@@ -136,14 +142,17 @@ def destroy(N, full=False):
     data = jnp.sqrt(jnp.arange(1, N, dtype=jnp.float32))
     ind = jnp.arange(1, N, dtype=jnp.float32)
     ptr = jnp.arange(N + 1, dtype=jnp.float32)
-    index_update(ptr, index[-1], N-1) #index_update mutates the jnp array in-place like numpy
+    index_update(
+        ptr, index[-1], N - 1
+    )  # index_update mutates the jnp array in-place like numpy
     return (
         csr_matrix((data, ind, ptr), shape=(N, N))
         if full is True
         else csr_matrix((data, ind, ptr), shape=(N, N)).toarray()
     )
 
-#TODO: Add test destroy(N).dag() == create(N)
+
+# TODO: Add test destroy(N).dag() == create(N)
 def create(N, full=False):
     """Creation (raising) operator.
 
@@ -155,18 +164,21 @@ def create(N, full=False):
          `obj:numpy.array`[complex]: Matrix representation for an N-dimensional creation operator
 
     """
-    
+
     if not isinstance(N, (int, jnp.integer)):  # raise error if N not integer
         raise ValueError("Hilbert space dimension must be an integer value")
     data = jnp.sqrt(jnp.arange(1, N, dtype=jnp.float32))
-    ind = jnp.arange(0, N-1, dtype=jnp.float32)
+    ind = jnp.arange(0, N - 1, dtype=jnp.float32)
     ptr = jnp.arange(N + 1, dtype=jnp.float32)
-    index_update(ptr, index[0], 0) #index_update mutates the jnp array in-place like numpy
+    index_update(
+        ptr, index[0], 0
+    )  # index_update mutates the jnp array in-place like numpy
     return (
         csr_matrix((data, ind, ptr), shape=(N, N))
         if full is True
         else csr_matrix((data, ind, ptr), shape=(N, N)).toarray()
     )
+
 
 def expect(oper, state):
     """Calculates the expectation value of an operator 
@@ -188,18 +200,20 @@ def expect(oper, state):
     else:
         return _expect_ket(oper, state)
 
+
 def _expect_dm(oper, state):
     """Private function to calculate the expectaion value of 
     and operator with respect to a density matrix
     """
-    # convert to jax.numpy arrays in case user gives raw numpy 
+    # convert to jax.numpy arrays in case user gives raw numpy
     oper, rho = jnp.asarray(oper), jnp.asarray(state)
     # Tr(rho*op)
-    return jnp.trace(jnp.dot(rho, oper))   
+    return jnp.trace(jnp.dot(rho, oper))
+
 
 def _expect_ket(oper, state):
     """Private function to calculate the expectaion value of 
     and operator with respect to a ket
     """
     oper, ket = jnp.asarray(oper), jnp.asarray(state)
-    return jnp.vdot(jnp.transpose(ket), jnp.dot(oper, ket)) 
+    return jnp.vdot(jnp.transpose(ket), jnp.dot(oper, ket))
