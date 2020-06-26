@@ -27,15 +27,10 @@ class SGD:
  
     def train(self, inputs, outputs, batch_size=30, max_iter=100, epochs=100, tol=1e-7, diff=1):
         for epochs in range(epochs):
-        _iter = max_iter
-        _diff = diff
             for xbatch, ybatch in self._mini_batchify(inputs, outputs, batch_size):
-                self.step(params, xbatch, ybatch) 
+                for x, y in zip(xbatch, ybatch):
+                    self.step(params, x, y) 
  
-        while jnp.all(_diff > tol) and _iter < max_iters:
-            _diff = jnp.absolute(self.params - self.step(self.params))
-            _iter += 1
-       
         return self.params
         
     def step(self, params, inputs, outputs):
