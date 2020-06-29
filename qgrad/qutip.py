@@ -217,3 +217,29 @@ def _expect_ket(oper, state):
     """
     oper, ket = jnp.asarray(oper), jnp.asarray(state)
     return jnp.vdot(jnp.transpose(ket), jnp.dot(oper, ket))
+
+class Displacer:
+    r"""Displacement operator for optical phase space
+    
+    .. math: D(\alpha) = \exp(\alpha a^\dagger -\alpha^* a)
+
+    Args:
+    ----
+    n (int): dimension of the displace operator
+    """
+    def __init__(self, n):
+        # The off-diagonal of the real-symmetric similar matrix T.
+        sym = (2*(np.arange(1, n)%2) - 1) * np.sqrt(np.arange(1, n))
+        # Solve the eigensystem.
+        self.evals, self.evecs = scipy.linalg.eigh_tridiagonal(np.zeros(n), sym)
+        self.range = np.arange(n)
+        self.t_scale = 1j**(self.range % 2)
+
+    def __call__(self, alpha):
+        # Diagonal of the transformation matrix P, and apply to eigenvectors.
+        transform = self.t_scale * (alpha / np.abs(alpha))**-self.range
+        evecs = transform[:, None] * self.evecs
+        # Get the exponentiated diagonal.
+        diag = np.exp(1j * np.abs(alpha) * self.evals)
+        return np.conj(evecs) @ (diag[:, None] * evecs.T)
+
