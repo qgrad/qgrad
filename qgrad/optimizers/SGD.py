@@ -4,7 +4,7 @@ from jax import grad
 import jax.numpy as jnp
 
 class SGD:
-    """Implements Stochastic Gradient Descent.
+    r"""Implements Stochastic Gradient Descent.
 
     Training can be fully accomplished in one function call to `train`. 
     Model can be tested with optimized paramters via `test`
@@ -34,7 +34,7 @@ class SGD:
 
 
     def _gradient(self, params, inputs, outputs):
-        """Autodifferentiates the objective function using JAX's `grad`
+        r"""Autodifferentiates the objective function using JAX's `grad`
         Args:
         ----
         params (1-D :obj:`numpy.array`): Array of weights to be optimized
@@ -54,7 +54,7 @@ class SGD:
 
  
     def train(self, init_params, inputs, outputs , batch_size=30, epochs=100):
-        """Trains the gradient descent optimizer according to the following rule
+        r"""Trains the gradient descent optimizer according to the following rule
 
         .. math:: \theta^{t+1} = \theta^{t} - \alpha \nabla J(\theta^{t})
 
