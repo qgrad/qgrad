@@ -236,6 +236,7 @@ class Displacer:
         self.t_scale = 1j**(self.range % 2)
 
     def __call__(self, alpha):
+        """Callable with alpha as the displacement parameter"""
         # Diagonal of the transformation matrix P, and apply to eigenvectors.
         transform = self.t_scale * (alpha / np.abs(alpha))**-self.range
         evecs = transform[:, None] * self.evecs
