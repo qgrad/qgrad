@@ -4,8 +4,8 @@ Implementation of some common quantum mechanics functions that work with Jax
 from scipy.sparse import csr_matrix
 from jax.ops import index, index_update
 import jax.numpy as jnp
-from scipy.linalg import sqrtm
-
+from scipy.linalg import expm, sqrtm
+from numpy.linalg import matrix_power
 
 def fidelity(a, b):
     """
@@ -243,4 +243,22 @@ class Displacer:
         # Get the exponentiated diagonal.
         diag = np.exp(1j * np.abs(alpha) * self.evals)
         return np.conj(evecs) @ (diag[:, None] * evecs.T)
+
+def squeeze(N, z):
+    """Single-mode squeezing operator
+
+    Args:
+    ----
+    N (int): Dimension of Hilbert space
+
+    z (float/complex): Squeezing parameter
+
+    Returns:
+    ------- 
+    `obj:numpy.array`[complex]: Squeezing operator
+    
+    """
+    op = (1.0 / 2.0) * ((jnp.conj(z) * matrix_power(destroy(N), 2)) - (z * matrix_power(create(N), 2)))
+    return expm(op)
+
 
