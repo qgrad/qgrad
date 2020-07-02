@@ -145,7 +145,7 @@ def destroy(N, full=False):
 #TODO: apply data type to everything all at once
     ind = jnp.arange(1, N, dtype=jnp.float32)
     ptr = jnp.arange(N + 1, dtype=jnp.float32)
-    index_update(
+    ptr = index_update(
         ptr, index[-1], N - 1
     )  # index_update mutates the jnp array in-place like numpy
     return (
@@ -167,14 +167,12 @@ def create(N, full=False):
          `obj:numpy.array`[complex]: Matrix representation for an N-dimensional creation operator
 
     """
-
     if not isinstance(N, (int, jnp.integer)):  # raise error if N not integer
         raise ValueError("Hilbert space dimension must be an integer value")
     data = jnp.sqrt(jnp.arange(1, N, dtype=jnp.float32))
     ind = jnp.arange(0, N - 1, dtype=jnp.float32)
     ptr = jnp.arange(N + 1, dtype=jnp.float32)
-#TODO:index_update does not change ptr as desired
-    index_update(
+    ptr = index_update(
         ptr, index[0], 0
     )  # index_update mutates the jnp array in-place like numpy
     return (
