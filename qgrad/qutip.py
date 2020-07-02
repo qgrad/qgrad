@@ -304,7 +304,8 @@ def coherent(N, alpha):
     return jnp.dot(displace(alpha), x)
 
 def dag(state):
-    """Returns conjugate transpose of a given state
+    """Returns conjugate transpose of a given state, represented by :math:`A^{\dagger}`, where :math:`A` may 
+    be a density matrix representation of a state. For kets, bras are returned and vice-versa.
 
     Args:
     ----
@@ -316,4 +317,35 @@ def dag(state):
  
     """
     return jnp.vdot(jnp.transpose(state))
-   
+
+def isket(state):
+    """Checks whether a state is a ket based on its shape
+    
+    Args:
+    ----
+        state (`obj:numpy.array`[complex]): input state
+
+    Returns:
+    -------
+        bool: `True` if state is a ket and `False` otherwise
+    """
+    return state.shape[1] == 1
+
+def isbra(state):
+    """Checks whether a state is a bra based on its shape
+    
+    Args:
+    ----
+        state (`obj:numpy.array`[complex]): input state
+
+    Returns:
+    -------
+        bool: `True` if state is a bra and `False` otherwise
+    """
+    return state.shape[0] == 1
+
+def ket2dm(ket):
+    """Converts a ket or a bra into its density matrix representation using
+
+    .. math:`x`
+    """
