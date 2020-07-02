@@ -344,8 +344,25 @@ def isbra(state):
     """
     return state.shape[0] == 1
 
-def ket2dm(ket):
-    """Converts a ket or a bra into its density matrix representation using
+def to_dm(state):
+    """Converts a ket or a bra into its density matrix representation using outer product :math:`|x><x|`
+    
+    Args:
+    ----
+    state (`obj:numpy.array`[complex]): input ket or a bra
 
-    .. math:`x`
+    Returns:
+    -------
+    dm (`obj:numpy.array`[complex]): density matrix representation of a ket or a bra
     """
+    if isket(state):
+        out = jnp.dot(state, dag(state))
+
+    elif isbra(state):
+        out = jnp.dot(dag(state), state)
+
+    else:
+        raise TypeError("Input is neither a ket, nor a bra. First dimension of a bra should be 1. Eg: (1, 4).\
+                           Second dimension of a ket should be 1. Eg: (4, 1)")
+
+    return out
