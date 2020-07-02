@@ -272,7 +272,7 @@ def basis(N, n=0):
     Args:
     ----
         N (int): Number of Fock states in the Hilbert space
-        n (int): Number state
+        n (int): Number state (defaults to vacuum state, n = 0)
 
     Returns:
     -------
@@ -299,4 +299,21 @@ def coherent(N, alpha):
         state (`obj:numpy.array`[complex]): Coherent state (eigenstate of the lowering operator)
 
     """
+    x = basis(N, 0) # Vacuum state
+    displace = Displace(N)
+    return jnp.dot(displace(alpha), x)
+
+def dag(state):
+    """Returns conjugate transpose of a given state
+
+    Args:
+    ----
+        state (`obj:numpy.array`[complex]): State to perform the dagger operation on
      
+    Returns:
+    -------
+        state (`obj:numpy.array`[complex]): Conjugate transposed numpy representation of input state
+ 
+    """
+    return jnp.vdot(jnp.transpose(state))
+   
