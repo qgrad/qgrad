@@ -1,6 +1,7 @@
 """
 Implementation of some common quantum mechanics functions that work with Jax
 """
+#TODO: Import Jax scipy
 from scipy.sparse import csr_matrix
 from jax.ops import index, index_update
 import jax.numpy as jnp
@@ -100,11 +101,12 @@ def sigmax():
 
 def sigmay():
     r"""Returns a Pauli-Y operator
+
     .. math:: \sigma_{y} = \begin{bmatrix} 0 & -i \\ i & 0 \end{bmatrix}. 
     
     Examples
     -------
-    >>>sigmay()
+    >>> sigmay()
     [[0.+0.j 0.-1.j]
      [0.+1.j 0.+0.j]]
 
@@ -118,14 +120,14 @@ def sigmaz():
     
     Examples
     -------
-    >>>sigmaz()
+    >>> sigmaz()
     [[1. 0.]
      [0. -1.]]
 
     """
     return jnp.asarray([[1.0, 0.0], [0.0, -1.0]])
 
-
+#TODO:Remove False and return jnp matrix
 def destroy(N, full=False):
     """Destruction (lowering or annihilation) operator.
     
@@ -140,6 +142,7 @@ def destroy(N, full=False):
     if not isinstance(N, (int, jnp.integer)):  # raise error if N not integer
         raise ValueError("Hilbert space dimension must be an integer value")
     data = jnp.sqrt(jnp.arange(1, N, dtype=jnp.float32))
+#TODO: apply data type to everything all at once
     ind = jnp.arange(1, N, dtype=jnp.float32)
     ptr = jnp.arange(N + 1, dtype=jnp.float32)
     index_update(
@@ -170,6 +173,7 @@ def create(N, full=False):
     data = jnp.sqrt(jnp.arange(1, N, dtype=jnp.float32))
     ind = jnp.arange(0, N - 1, dtype=jnp.float32)
     ptr = jnp.arange(N + 1, dtype=jnp.float32)
+#TODO:index_update does not change ptr as desired
     index_update(
         ptr, index[0], 0
     )  # index_update mutates the jnp array in-place like numpy
@@ -188,7 +192,7 @@ def expect(oper, state):
         oper (`:obj:numpy.ndarray`): Numpy array representing
                 an operator
         state (`:obj:numpy.ndarray`): Numpy array representing 
-                a density matrix. Standard Python list can also be                 passed in case of a pure state (ket).
+                a density matrix. Standard Python list can also be passed in case of a pure state (ket).
 
     Returns:
         expt (float): Expectation value. ``real`` if the `oper` is
@@ -218,7 +222,7 @@ def _expect_ket(oper, state):
     oper, ket = jnp.asarray(oper), jnp.asarray(state)
     return jnp.vdot(jnp.transpose(ket), jnp.dot(oper, ket))
 
-class Displacer:
+class Displace:
     r"""Displacement operator for optical phase space
     
     .. math: D(\alpha) = \exp(\alpha a^\dagger -\alpha^* a)
@@ -227,6 +231,7 @@ class Displacer:
     ----
     n (int): dimension of the displace operator
     """
+#TODO: Use jax.scipy's eigh
     def __init__(self, n):
         # The off-diagonal of the real-symmetric similar matrix T.
         sym = (2*(np.arange(1, n)%2) - 1) * np.sqrt(np.arange(1, n))
@@ -249,16 +254,49 @@ def squeeze(N, z):
 
     Args:
     ----
-    N (int): Dimension of Hilbert space
-
-    z (float/complex): Squeezing parameter
+        N (int): Dimension of Hilbert space
+        z (float/complex): Squeezing parameter
 
     Returns:
     ------- 
-    `obj:numpy.array`[complex]: Squeezing operator
+        `obj:numpy.array`[complex]: Squeezing operator
     
     """
     op = (1.0 / 2.0) * ((jnp.conj(z) * matrix_power(destroy(N), 2)) - (z * matrix_power(create(N), 2)))
     return expm(op)
+#TODO:gradients of squeezing
+
+def basis(N, n=0):
+    """Generates the vector representation of a Fock state.
+    
+    Args:
+    ----
+        N (int): Number of Fock states in the Hilbert space
+        n (int): Number state
+
+    Returns:
+    -------
+        state (`obj:numpy.array`[complex]): number state :math:`|n>`
+    """
+if (not isinstance(N, (int, np.integer))) or N < 0:
+    raise ValueError("N must be integer N >= 0")
+
+zeros = jnp.zeros((N, 1), dtype=jnp.complex64) #column of zeros
+return index_update(zeros, index[n, 0], 1.)
 
 
+def coherent(N, alpha):
+    """Generates coherent state with eigenvalue alpha by displacing the vacuum state
+    by a displacement parameter alpha.
+
+    Args:
+    ----
+        N (int): Dimension of Hilbert space
+        alpha (float/complex): Eigenvalue of the coherent state
+
+    Returns:
+    -------
+        state (`obj:numpy.array`[complex]): Coherent state (eigenstate of the lowering operator)
+
+    """
+     
