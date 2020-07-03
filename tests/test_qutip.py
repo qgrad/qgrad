@@ -5,7 +5,7 @@ import jax.numpy as jnp
 from qutip import rand_ket, rand_dm
 import numpy as np
 
-from qgrad.qutip import basis, destroy, fidelity, rot
+from qgrad.qutip import basis, create, destroy, fidelity, rot
 
 
 def test_fidelity():
@@ -87,7 +87,7 @@ def test_basis():
 def test_destroy():
     """Tests the annihilation/destroy/lowering operator"""
     # Destruction operator annihilates the bosonic number state
-    b6	 = basis(10, 6) # Fock/number state with 1 at 6th index
+    b6 = basis(10, 6) # Fock/number state with 1 at 6th index
     d10 = destroy(10) # 10-dimensional destory operator
     lowered = jnp.dot(d10, b6)
     assert_equal(np.allclose(lowered, basis(10, 5)), True)
@@ -97,3 +97,16 @@ def test_destroy():
          [0.00000000 + 0.j, 0.00000000 + 0.j, 1.41421356 + 0.j],
          [0.00000000 + 0.j, 0.00000000 + 0.j, 0.00000000 + 0.j]])
     assert_equal(np.allclose(matrix3, d3), True)
+
+def test_create():
+    """Tests for the creation operator"""
+    b5 = basis(8, 5)
+    c8 = create(8)
+    raised = jnp.dot(c8, b5)
+    assert_equal(np.allclose(raised, basis(8, 6)), True)
+    c3 = create(3)
+    matrix3 = jnp.asarray(
+        [[0.00000000 + 0.j, 0.00000000 + 0.j, 0.00000000 + 0.j],
+         [1.00000000 + 0.j, 0.00000000 + 0.j, 0.00000000 + 0.j],
+         [0.00000000 + 0.j, 1.41421356 + 0.j, 0.00000000 + 0.j]])
+    assert_equal(np.allclose(matrix3, c3), True)
