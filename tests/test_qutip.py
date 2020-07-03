@@ -1,11 +1,11 @@
 """Tests for qgrad implementation of qutip functions"""
-from numpy.testing import assert_almost_equal
+from numpy.testing import assert_almost_equal, assert_equal
 from jax import grad
 import jax.numpy as jnp
 from qutip import rand_ket, rand_dm
 import numpy as np
 
-from qgrad.qutip import basis, fidelity, rot
+from qgrad.qutip import basis, destroy, fidelity, rot
 
 
 def test_fidelity():
@@ -84,3 +84,16 @@ def test_basis():
     np_arr[2, 0] = 1.
     assert np.array_equal(basis(4,2), jnp.asarray(np_arr))
 
+def test_destroy():
+    """Tests the annihilation/destroy/lowering operator"""
+    # Destruction operator annihilates the bosonic number state
+    b6	 = basis(10, 6) # Fock/number state with 1 at 6th index
+    d10 = destroy(10) # 10-dimensional destory operator
+    lowered = jnp.dot(d10, b6)
+    assert_equal(np.allclose(lowered, basis(10, 5)), True)
+    d3 = destroy(3)
+    matrix3 = jnp.asarray(
+        [[0.00000000 + 0.j, 1.00000000 + 0.j, 0.00000000 + 0.j],
+         [0.00000000 + 0.j, 0.00000000 + 0.j, 1.41421356 + 0.j],
+         [0.00000000 + 0.j, 0.00000000 + 0.j, 0.00000000 + 0.j]])
+    assert_equal(np.allclose(matrix3, d3), True)
