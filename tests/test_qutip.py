@@ -37,13 +37,13 @@ def test_fidelity():
         assert_almost_equal(fidelity(rho1, rho1), 1.0)
         assert_almost_equal(fidelity(rho2, rho2), 1.0)
 
-    def test_fidelity_bounded(tol=1e-7)
-        # test for boundedness of fidelity
-        for _ in range(10):
-            rho1 = jnp.asarray(rand_dm(25))
-            rho2 = jnp.asarray(rand_dm(25))
-            F = fidelity(rho1, rho2)
-            assert (-tol <= F <= 1+tol) 
+def test_fidelity_bounded(tol=1e-7)
+# test for boundedness of fidelity
+for _ in range(10):
+    rho1 = jnp.asarray(rand_dm(25))
+    rho2 = jnp.asarray(rand_dm(25))
+    F = fidelity(rho1, rho2)
+    assert (-tol <= F <= 1+tol) 
     
 def test_rot():
     """Tests the rot function and computation of its gradient"""
