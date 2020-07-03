@@ -87,10 +87,10 @@ def test_basis():
 def test_destroy():
     """Tests the annihilation/destroy/lowering operator"""
     # Destruction operator annihilates the bosonic number state
-    b6 = basis(10, 6) # Fock/number state with 1 at 6th index
+    b9 = basis(10, 9) # Fock/number state with 1 at 6th index
     d10 = destroy(10) # 10-dimensional destory operator
-    lowered = jnp.dot(d10, b6)
-    assert_equal(np.allclose(lowered, basis(10, 5)), True)
+    lowered = jnp.dot(d10, b9)
+    assert_equal(np.allclose(lowered, 3.0 * basis(10, 8)), True) #Multiply the eigen value
     d3 = destroy(3)
     matrix3 = jnp.asarray(
         [[0.00000000 + 0.j, 1.00000000 + 0.j, 0.00000000 + 0.j],
@@ -100,10 +100,10 @@ def test_destroy():
 
 def test_create():
     """Tests for the creation operator"""
-    b5 = basis(8, 5)
-    c8 = create(8)
-    raised = jnp.dot(c8, b5)
-    assert_equal(np.allclose(raised, basis(8, 6)), True)
+    b3 = basis(5, 3)
+    c5 = create(8)
+    raised = jnp.dot(c5, b3)
+    assert_equal(np.allclose(raised, 2.0 * basis(5, 4)), True)
     c3 = create(3)
     matrix3 = jnp.asarray(
         [[0.00000000 + 0.j, 0.00000000 + 0.j, 0.00000000 + 0.j],
