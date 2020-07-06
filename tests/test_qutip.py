@@ -48,7 +48,7 @@ def test_fidelity_max_ket():
         assert_almost_equal(fidelity(ket1, ket2), 1.0)
         assert_almost_equal(fidelity(rho2, rho2), 1.0)
 
-def test_fidelity_bounded_mixedmixed(tol=1e-7)
+def test_fidelity_bounded_mixedmixed(tol=1e-7):
     """Tests for boundedness of fidelity among mixed states to be between [0, 1]"""
     for _ in range(10):
         rho1 = jnp.asarray(rand_dm(25))
@@ -56,14 +56,14 @@ def test_fidelity_bounded_mixedmixed(tol=1e-7)
         F = fidelity(rho1, rho2)
         assert (-tol <= F <= 1+tol) 
     
-def test_fidelity_bounded_puremixed(tol=1e-7)
+def test_fidelity_bounded_puremixed(tol=1e-7):
     for _ in range(10):
         rho1 = jnp.asarray(rand_dm(25))
         ket1 = jnp.asarray(rand_ket(25))
         F = fidelity(rho1, ket1)
         assert (-tol <= F <= 1+tol) 
 
-def test_fidelity_bounded_purepure(tol=1e-7)
+def test_fidelity_bounded_purepure(tol=1e-7):
     """Tests for boundedness of fidelity among kets to be between [0, 1]"""
     for _ in range(10):
         ket1 = jnp.asarray(rand_ket(25))
@@ -151,8 +151,12 @@ def test_expect_herm(oper, state):
 def test_expect_dag(oper, state):
     """Reconciles the expectation value of a random operator with the analytic calculation
        
-      .. math: `<A> = <\psi|A|\psi>`
+      .. math:: <A> = <\psi|A|\psi>
     """
     expected = jnp.dot(jnp.dot(dag(state), oper), state)
-    assert expect(oper, state) == expected
+    assert abs(expect(oper, state) - expected) < 1e-7
+
+def test_coherent():
+    """Tests the coherent state method"""
+    assert abs(expect(destroy(10), coherent(10, 0.5))) < 1e-4
 
