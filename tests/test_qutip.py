@@ -3,7 +3,7 @@ from numpy.testing import assert_almost_equal, assert_array_equal, assert_equal
 from jax import grad
 import jax.numpy as jnp
 import pytest
-from qutip import rand_ket, rand_dm, rand_herm
+from qutip import basis, rand_ket, rand_dm, rand_herm
 import numpy as np
 
 from qgrad.qutip import (basis, coherent, create, destroy, expect, fidelity, isket,
@@ -160,3 +160,25 @@ def test_coherent():
     """Tests the coherent state method"""
     assert abs(expect(destroy(10), coherent(10, 0.5))) < 1e-4
 
+def test_dag_ket():
+    """Tests the dagger operation :math:`A^{\dagger}` on operator :math:`A`"""
+    # test with all real entries
+    assert_array_equal(dag(basis(2, 0).full()), [[1., 0.]])
+    assert_array_equal(dag(basis(2, 1).full()), [[0., 1.]])
+    # test with all complex entries
+    ket1 = jnp.array([[ 0.04896761+0.18014458j],
+             [ 0.6698803 +0.13728367j],
+             [-0.07598839+0.38113445j],
+             [-0.00505985+0.10700243j],
+             [-0.18735261+0.5476768j ]], dtype=jnp.complex64)
+    ket1_dag = jnp.array([[ 0.04896761-0.18014458j,  0.6698803 -0.13728367j,
+              -0.07598839-0.38113445j, -0.00505985-0.10700243j,
+              -0.18735261-0.5476768j ]], dtype=jnp.complex64))
+    assert_array_equal(dag(ket1), ket1_dag)
+
+@pytest.mark.repeat(10)    
+def test_dag_dot():
+    """Tests the dagger operation with dot product"""
+    i = 4
+    ket = rand_ket(i + 1)
+    assert_almost_equal(jnp.dot(dag(ket, ket), 1.0)
