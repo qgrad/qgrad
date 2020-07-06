@@ -3,7 +3,7 @@ from numpy.testing import assert_almost_equal, assert_array_equal, assert_equal
 from jax import grad
 import jax.numpy as jnp
 import pytest
-from qutip import basis, rand_ket, rand_dm, rand_herm
+from qutip import qutip_basis, rand_ket, rand_dm, rand_herm
 import numpy as np
 
 from qgrad.qutip import (basis, coherent, create, destroy, expect, fidelity, isket,
@@ -89,10 +89,10 @@ def test_basis():
 def test_destroy():
     """Tests the annihilation/destroy/lowering operator"""
     # Destruction operator annihilates the bosonic number state
-    b9 = basis(10, 9) # Fock/number state with 1 at 6th index
+    b9 = qutip_basis(10, 9) # Fock/number state with 1 at 9th index
     d10 = destroy(10) # 10-dimensional destroy operator
     lowered = jnp.dot(d10, b9)
-    assert_equal(np.allclose(lowered, 3.0 * basis(10, 8)), True) #Multiply the eigen value
+    assert_equal(np.allclose(lowered, 3.0 * qutip_basis(10, 8)), True) #Multiply the eigen value
     d3 = destroy(3)
     matrix3 = jnp.asarray(
         [[0.00000000 + 0.j, 1.00000000 + 0.j, 0.00000000 + 0.j],
@@ -104,10 +104,10 @@ def test_destroy():
 
 def test_create():
     """Tests for the creation operator"""
-    b3 = basis(5, 3)
+    b3 = qutip_basis(5, 3)
     c5 = create(8)
     raised = jnp.dot(c5, b3)
-    assert_equal(np.allclose(raised, 2.0 * basis(5, 4)), True)
+    assert_equal(np.allclose(raised, 2.0 * qutip_basis(5, 4)), True)
     c3 = create(3)
     matrix3 = jnp.asarray(
         [[0.00000000 + 0.j, 0.00000000 + 0.j, 0.00000000 + 0.j],
@@ -125,20 +125,20 @@ def test_sigmaz():
     assert_array_equal(sigmaz, jnp.array([[1.0, 0.0], [0.0, -1.0]]))
 
 @pytest.mark.paramterize("oper", [sigmax(), sigmay(), sigmaz()])
-@pytest.mark.paramterize("state", [basis(2, 0), basis(2, 1)])
+@pytest.mark.paramterize("state", [qutip_basis(2, 0), qutip_basis(2, 1)])
 def test_expect_sigmaxyz(oper, state):
     """Tests the `expect` function on Pauli-X, Pauli-Y and Pauli-Z."""
     # The stacked pytest decorators check all the argument combinations like a Cartesian product
     if oper != sigmaz():
         assert expect(oper, state) == 0.0
-    elif state == basis(2, 0):
+    elif state == qutip_basis(2, 0):
         assert expect(oper, state) == 1.0
     else:
         assert expect(oper, state) == -1.0
 
 displace = Displace(4) # initializing displace object for the test
-@pytest.mark.paramterize("oper, state", [(rand_herm(2), basis(2, 0)), (displace(1.0), 
-basis(2, 1), (squeeze(4, 1.5), basis(2, 1))]
+@pytest.mark.paramterize("oper, state", [(rand_herm(2), qutip_basis(2, 0)), (displace(1.0), 
+qutip_basis(2, 1), (squeeze(4, 1.5), qutip_basis(2, 1))]
 def test_expect_herm(oper, state):
     """Tests that the expectation value of a hermitian operator is real and that of 
        the non-hermitian operator is complex"""
@@ -163,8 +163,8 @@ def test_coherent():
 def test_dag_ket():
     """Tests the dagger operation :math:`A^{\dagger}` on operator :math:`A`"""
     # test with all real entries
-    assert_array_equal(dag(basis(2, 0).full()), [[1., 0.]])
-    assert_array_equal(dag(basis(2, 1).full()), [[0., 1.]])
+    assert_array_equal(dag(qutip_basis(2, 0).full()), [[1., 0.]])
+    assert_array_equal(dag(qutip_basis(2, 1).full()), [[0., 1.]])
     # test with all complex entries
     ket1 = jnp.array([[ 0.04896761+0.18014458j],
              [ 0.6698803 +0.13728367j],
@@ -182,3 +182,14 @@ def test_dag_dot():
     i = 4
     ket = rand_ket(i + 1)
     assert_almost_equal(jnp.dot(dag(ket, ket), 1.0)
+
+def test_isket():
+    """Tests the `isket` method to see whether a state is a ket based on its shape"""
+    for i in range(2, 6):
+        assert isket(rand_ket(i).full()) == True
+
+    for j in range(2, 6):
+        assert isket(dag(rand_ket(j).full())) == False
+
+    for k in range(2, 6):
+        assert isket(rand_dm(k).full()) == False
