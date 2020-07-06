@@ -124,10 +124,15 @@ def test_sigmay():
 def test_sigmaz():
     assert_array_equal(sigmaz, jnp.array([[1.0, 0.0], [0.0, -1.0]]))
 
-@pytest.mark.paramterize("oper", [sigmax(), sigmay()])
+@pytest.mark.paramterize("oper", [sigmax(), sigmay(), sigmaz()])
 @pytest.mark.paramterize("state", [basis(2, 0), basis(2, 1)])
 def test_expect_sigmaxy(oper, state):
     """Tests the `expect` function on Pauli-X and Pauli-Y."""
     # The stacked pytest decorators check all the argument combinations like a Cartesian product
-    assert expect(oper, state) == 0.0
-
+    if oper != sigmaz():
+        assert expect(oper, state) == 0.0
+    elif state == basis(2, 0):
+        assert expect(oper, state) == 1.0
+    else:
+        assert expect(oper, state) == -1.0
+        
