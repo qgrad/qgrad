@@ -185,11 +185,23 @@ def test_dag_dot():
 
 def test_isket():
     """Tests the `isket` method to see whether a state is a ket based on its shape"""
-    for i in range(2, 6):
+    for i in range(2, 6): # tests kets
         assert isket(rand_ket(i).full()) == True
 
     for j in range(2, 6):
-        assert isket(dag(rand_ket(j).full())) == False
+        assert isket(dag(rand_ket(j).full())) == False # tests bras
 
     for k in range(2, 6):
-        assert isket(rand_dm(k).full()) == False
+        assert isket(rand_dm(k).full()) == False # tests density matrices
+
+def test_isbra():
+    """Tests the `isbra` method to see whether a state is a bra based on its shape"""
+    for i in range(2, 6): # tests kets
+        assert isbra(rand_ket(i).full()) == False
+
+    for j in range(2, 6):
+        assert isket(dag(rand_ket(j).full())) == True # tests bras
+
+    for k in range(2, 6):
+        assert isket(rand_dm(k).full()) == False # tests density matrices
+
