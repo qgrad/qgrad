@@ -327,6 +327,8 @@ def isket(state):
     -------
         bool: `True` if state is a ket and `False` otherwise
     """
+    if jnp.isclose(jnp.norm(jnp.array(state)), 1) == False:
+        raise TypeError("A valid ket should be normalized to 1")
     return state.shape[1] == 1
 
 def isbra(state):
@@ -340,6 +342,8 @@ def isbra(state):
     -------
         bool: `True` if state is a bra and `False` otherwise
     """
+    if jnp.isclose(jnp.norm(jnp.array(state)), 1) == False:
+        raise TypeError("A valid bra should be normalized to 1")
     return state.shape[0] == 1
 
 def to_dm(state):
