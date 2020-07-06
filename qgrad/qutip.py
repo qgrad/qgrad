@@ -314,7 +314,7 @@ def dag(state):
         state (`obj:numpy.array`[complex]): Conjugate transposed numpy representation of input state
  
     """
-    return jnp.vdot(jnp.transpose(state))
+    return jnp.conjugate(jnp.transpose(state))
 
 def isket(state):
     """Checks whether a state is a ket based on its shape
