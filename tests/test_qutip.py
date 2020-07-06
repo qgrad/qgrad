@@ -147,3 +147,12 @@ def test_expect_herm(oper, state):
     else:
         assert jnp.iscomplex(expect(oper, state)) == True
 
+@pytest.mark.parameterize("oper, state", [(rand_herm(5), rand_ket(5)), (rand_dm(5), rand_ket(5))])
+def test_expect_dag(oper, state):
+    """Reconciles the expectation value of a random operator with the analytic calculation
+       
+      .. math: `<A> = <\psi|A|\psi>`
+    """
+    expected = jnp.dot(jnp.dot(dag(state), oper), state)
+    assert expect(oper, state) == expected
+
