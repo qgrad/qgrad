@@ -1,11 +1,12 @@
 """Tests for qgrad implementation of qutip functions"""
-from numpy.testing import assert_almost_equal, assert_equal
+from numpy.testing import assert_almost_equal, assert_array_equal, assert_equal
 from jax import grad
 import jax.numpy as jnp
 from qutip import rand_ket, rand_dm
 import numpy as np
 
-from qgrad.qutip import basis, create, destroy, fidelity, rot
+from qgrad.qutip import (basis, coherent, create, destroy, expect, fidelity, isket,
+                         isbra, rot, to_dm, sigmax, sigmay, sigmaz, squeeze)
 
 
 def test_fidelity():
@@ -88,7 +89,7 @@ def test_destroy():
     """Tests the annihilation/destroy/lowering operator"""
     # Destruction operator annihilates the bosonic number state
     b9 = basis(10, 9) # Fock/number state with 1 at 6th index
-    d10 = destroy(10) # 10-dimensional destory operator
+    d10 = destroy(10) # 10-dimensional destroy operator
     lowered = jnp.dot(d10, b9)
     assert_equal(np.allclose(lowered, 3.0 * basis(10, 8)), True) #Multiply the eigen value
     d3 = destroy(3)
@@ -97,6 +98,8 @@ def test_destroy():
          [0.00000000 + 0.j, 0.00000000 + 0.j, 1.41421356 + 0.j],
          [0.00000000 + 0.j, 0.00000000 + 0.j, 0.00000000 + 0.j]])
     assert_equal(np.allclose(matrix3, d3), True)
+    
+    assert_equal(np.allclose(dag(destroy(3)), create(3)), True)
 
 def test_create():
     """Tests for the creation operator"""
@@ -110,3 +113,12 @@ def test_create():
          [1.00000000 + 0.j, 0.00000000 + 0.j, 0.00000000 + 0.j],
          [0.00000000 + 0.j, 1.41421356 + 0.j, 0.00000000 + 0.j]])
     assert_equal(np.allclose(matrix3, c3), True)
+
+def test_sigmax():
+    assert_array_equal(sigmax, jnp.array([[0.0, 1.0], [1.0, 0.0]]) 
+
+def test_sigmay():
+    assert_array_equal(sigmay, jnp.array([[0.0 + 0.0j, 0.0 - 1.0j], [0.0 + 1.0j, 0.0 + 0.0j]]))
+
+def test_sigmaz():
+    assert_array_equal(sigmaz, jnp.array([[1.0, 0.0], [0.0, -1.0]]))
