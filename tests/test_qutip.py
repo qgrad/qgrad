@@ -2,6 +2,7 @@
 from numpy.testing import assert_almost_equal, assert_array_equal, assert_equal
 from jax import grad
 import jax.numpy as jnp
+import pytest
 from qutip import rand_ket, rand_dm
 import numpy as np
 
@@ -122,3 +123,11 @@ def test_sigmay():
 
 def test_sigmaz():
     assert_array_equal(sigmaz, jnp.array([[1.0, 0.0], [0.0, -1.0]]))
+
+@pytest.mark.paramterize("oper", [sigmax(), sigmay()])
+@pytest.mark.paramterize("state", [basis(2, 0), basis(2, 1)])
+def test_expect_sigmaxy(oper, state):
+    """Tests the `expect` function on Pauli-X and Pauli-Y."""
+    # The stacked pytest decorators check all the argument combinations like a Cartesian product
+    assert expect(oper, state) == 0.0
+
