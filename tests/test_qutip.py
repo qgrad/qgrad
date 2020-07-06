@@ -3,11 +3,11 @@ from numpy.testing import assert_almost_equal, assert_array_equal, assert_equal
 from jax import grad
 import jax.numpy as jnp
 import pytest
-from qutip import rand_ket, rand_dm
+from qutip import rand_ket, rand_dm, rand_herm
 import numpy as np
 
 from qgrad.qutip import (basis, coherent, create, destroy, expect, fidelity, isket,
-                         isbra, rot, to_dm, sigmax, sigmay, sigmaz, squeeze)
+                         isbra, rot, to_dm, sigmax, sigmay, sigmaz, squeeze, Displace)
 
 
 def test_fidelity():
@@ -126,8 +126,8 @@ def test_sigmaz():
 
 @pytest.mark.paramterize("oper", [sigmax(), sigmay(), sigmaz()])
 @pytest.mark.paramterize("state", [basis(2, 0), basis(2, 1)])
-def test_expect_sigmaxy(oper, state):
-    """Tests the `expect` function on Pauli-X and Pauli-Y."""
+def test_expect_sigmaxyz(oper, state):
+    """Tests the `expect` function on Pauli-X, Pauli-Y and Pauli-Z."""
     # The stacked pytest decorators check all the argument combinations like a Cartesian product
     if oper != sigmaz():
         assert expect(oper, state) == 0.0
@@ -135,4 +135,15 @@ def test_expect_sigmaxy(oper, state):
         assert expect(oper, state) == 1.0
     else:
         assert expect(oper, state) == -1.0
-        
+
+displace = Displace(4) # initializing displace object for the test
+@pytest.mark.paramterize("oper, state", [(rand_herm(2), basis(2, 0)), (displace(1.0), 
+basis(2, 1), (squeeze(4, 1.5), basis(2, 1))]
+def test_expect_herm(oper, state):
+    """Tests that the expectation value of a hermitian operator is real and that of 
+       the non-hermitian operator is complex"""
+    if oper == squeeze(4, 1.5):
+        assert jnp.iscomplex(expect(oper, state)) == False
+    else:
+        assert jnp.iscomplex(expect(oper, state)) == True
+
