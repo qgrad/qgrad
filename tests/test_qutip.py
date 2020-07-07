@@ -142,8 +142,8 @@ basis(2, 1), (squeeze(4, 1.5), basis(2, 1))]
 def test_expect_herm(oper, state):
     """Tests that the expectation value of a hermitian operator is real and that of 
        the non-hermitian operator is complex"""
-    if oper == squeeze(4, 1.5):
-        assert jnp.iscomplex(expect(oper, state)) == False
+    if oper == squeeze(4, 1.5) or oper == displace(1.0):
+        assert jnp.iscomplex(expect(oper, state)) == True
     else:
         assert jnp.iscomplex(expect(oper, state)) == True
 
@@ -185,19 +185,19 @@ def test_dag_dot():
 
 def test_isket():
     """Tests the `isket` method to see whether a state is a ket based on its shape"""
-    for i in range(2, 6): # tests kets
-        assert isket(rand_ket(i).full()) == True
+    for i in range(2, 6): 
+        assert isket(rand_ket(i).full()) == True  # tests kets
 
     for j in range(2, 6):
-        assert isket(dag(rand_ket(j).full())) == False # tests bras
+        assert isket(dag(rand_ket(j).full())) == False  # tests bras
 
     for k in range(2, 6):
-        assert isket(rand_dm(k).full()) == False # tests density matrices
+        assert isket(rand_dm(k).full()) == False  # tests density matrices
 
 def test_isbra():
     """Tests the `isbra` method to see whether a state is a bra based on its shape"""
-    for i in range(2, 6): # tests kets
-        assert isbra(rand_ket(i).full()) == False
+    for i in range(2, 6): 
+        assert isbra(rand_ket(i).full()) == False  # tests kets
 
     for j in range(2, 6):
         assert isket(dag(rand_ket(j).full())) == True # tests bras
@@ -217,3 +217,19 @@ def test_to_dm():
     # testing bras
     assert_array_equal(to_dm(dag(basis(2, 0))), dm0)
     assert_array_equal(to_dm(dag(basis(2, 1))), dm1)
+
+def test_squeeze():
+    """Tests the squeeze operator"""
+    sq = squeeze(4, 0.1 + 0.1j)
+    sqmatrix = jnp.array([[0.99500417 + 0.j, 0.00000000 + 0.j, 
+                          0.07059289 - 0.07059289j, 0.00000000 + 0.j],
+                         [0.00000000 + 0.j, 0.98503746 + 0.j,
+                          0.00000000 + 0.j, 0.12186303 - 0.12186303j],
+                         [-0.07059289 - 0.07059289j, 0.00000000 + 0.j,
+                          0.99500417 + 0.j, 0.00000000 + 0.j],
+                         [0.00000000 + 0.j, -0.12186303 - 0.12186303j,
+                          0.00000000 + 0.j, 0.98503746 + 0.j]], dtype=jnp.complex64)
+
+    assert_equal(np.allclose(sq, sqmatrix), True)
+
+
