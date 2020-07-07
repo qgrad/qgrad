@@ -232,4 +232,19 @@ def test_squeeze():
 
     assert_equal(np.allclose(sq, sqmatrix), True)
 
+class TestDisplace:
+    """A test class for the displace operator"""
+    
+    def test_displace():
+        dp = Displace(4)
+        dpmatrix = jnp.array(
+        [[0.96923323 + 0.j, -0.24230859 + 0.j, 0.04282883 + 0.j, -
+          0.00626025 + 0.j],
+         [0.24230859 + 0.j, 0.90866411 + 0.j, -0.33183303 +
+          0.j, 0.07418172 + 0.j],
+         [0.04282883 + 0.j, 0.33183303 + 0.j, 0.84809499 +
+          0.j, -0.41083747 + 0.j],
+         [0.00626025 + 0.j, 0.07418172 + 0.j, 0.41083747 + 0.j,
+          0.90866411 + 0.j]], dtype=jnp.complex64)
 
+        assert_equal(np.allclose(dp(0.25), dpmatrix), True)
