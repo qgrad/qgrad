@@ -1,0 +1,704 @@
+============================= test session starts ==============================
+platform linux -- Python 3.6.9, pytest-5.1.3, py-1.8.0, pluggy-0.13.0
+rootdir: /home/asad/GSoC_repos/qgrad
+collected 23 items
+
+qgrad/tests/test_qutip.py .FF.FFF.FF...EFFFFFFFFF                        [100%]
+
+==================================== ERRORS ====================================
+____________________ ERROR at setup of test_expect_sigmaxyz ____________________
+file /home/asad/GSoC_repos/qgrad/qgrad/tests/test_qutip.py, line 166
+  @pytest.mark.paramterize("oper", [sigmax(), sigmay(), sigmaz()])
+  @pytest.mark.paramterize("state", [basis(2, 0), basis(2, 1)])
+  def test_expect_sigmaxyz(oper, state):
+E       fixture 'oper' not found
+>       available fixtures: cache, capfd, capfdbinary, caplog, capsys, capsysbinary, doctest_namespace, monkeypatch, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+/home/asad/GSoC_repos/qgrad/qgrad/tests/test_qutip.py:166
+=================================== FAILURES ===================================
+_____________________________ test_fidelity_max_dm _____________________________
+
+actual = DeviceArray(1.0000043-2.2043358e-05j, dtype=complex64), desired = 1.0
+decimal = 7, err_msg = '', verbose = True
+
+    def assert_almost_equal(actual,desired,decimal=7,err_msg='',verbose=True):
+        """
+        Raises an AssertionError if two items are not equal up to desired
+        precision.
+    
+        .. note:: It is recommended to use one of `assert_allclose`,
+                  `assert_array_almost_equal_nulp` or `assert_array_max_ulp`
+                  instead of this function for more consistent floating point
+                  comparisons.
+    
+        The test verifies that the elements of ``actual`` and ``desired`` satisfy.
+    
+            ``abs(desired-actual) < 1.5 * 10**(-decimal)``
+    
+        That is a looser test than originally documented, but agrees with what the
+        actual implementation in `assert_array_almost_equal` did up to rounding
+        vagaries. An exception is raised at conflicting values. For ndarrays this
+        delegates to assert_array_almost_equal
+    
+        Parameters
+        ----------
+        actual : array_like
+            The object to check.
+        desired : array_like
+            The expected object.
+        decimal : int, optional
+            Desired precision, default is 7.
+        err_msg : str, optional
+            The error message to be printed in case of failure.
+        verbose : bool, optional
+            If True, the conflicting values are appended to the error message.
+    
+        Raises
+        ------
+        AssertionError
+          If actual and desired are not equal up to specified precision.
+    
+        See Also
+        --------
+        assert_allclose: Compare two array_like objects for equality with desired
+                         relative and/or absolute precision.
+        assert_array_almost_equal_nulp, assert_array_max_ulp, assert_equal
+    
+        Examples
+        --------
+        >>> import numpy.testing as npt
+        >>> npt.assert_almost_equal(2.3333333333333, 2.33333334)
+        >>> npt.assert_almost_equal(2.3333333333333, 2.33333334, decimal=10)
+        Traceback (most recent call last):
+            ...
+        AssertionError:
+        Arrays are not almost equal to 10 decimals
+         ACTUAL: 2.3333333333333
+         DESIRED: 2.33333334
+    
+        >>> npt.assert_almost_equal(np.array([1.0,2.3333333333333]),
+        ...                         np.array([1.0,2.33333334]), decimal=9)
+        Traceback (most recent call last):
+            ...
+        AssertionError:
+        Arrays are not almost equal to 9 decimals
+        <BLANKLINE>
+        Mismatched elements: 1 / 2 (50%)
+        Max absolute difference: 6.66669964e-09
+        Max relative difference: 2.85715698e-09
+         x: array([1.         , 2.333333333])
+         y: array([1.        , 2.33333334])
+    
+        """
+        __tracebackhide__ = True  # Hide traceback for py.test
+        from numpy.core import ndarray
+        from numpy.lib import iscomplexobj, real, imag
+    
+        # Handle complex numbers: separate into real/imag to handle
+        # nan/inf/negative zero correctly
+        # XXX: catch ValueError for subclasses of ndarray where iscomplex fail
+        try:
+            usecomplex = iscomplexobj(actual) or iscomplexobj(desired)
+        except ValueError:
+            usecomplex = False
+    
+        def _build_err_msg():
+            header = ('Arrays are not almost equal to %d decimals' % decimal)
+            return build_err_msg([actual, desired], err_msg, verbose=verbose,
+                                 header=header)
+    
+        if usecomplex:
+            if iscomplexobj(actual):
+                actualr = real(actual)
+                actuali = imag(actual)
+            else:
+                actualr = actual
+                actuali = 0
+            if iscomplexobj(desired):
+                desiredr = real(desired)
+                desiredi = imag(desired)
+            else:
+                desiredr = desired
+                desiredi = 0
+            try:
+>               assert_almost_equal(actualr, desiredr, decimal=decimal)
+
+../../anaconda3/lib/python3.6/site-packages/numpy/testing/_private/utils.py:572: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+actual = DeviceArray(1.0000043, dtype=float32), desired = 1.0, decimal = 7
+err_msg = '', verbose = True
+
+    def assert_almost_equal(actual,desired,decimal=7,err_msg='',verbose=True):
+        """
+        Raises an AssertionError if two items are not equal up to desired
+        precision.
+    
+        .. note:: It is recommended to use one of `assert_allclose`,
+                  `assert_array_almost_equal_nulp` or `assert_array_max_ulp`
+                  instead of this function for more consistent floating point
+                  comparisons.
+    
+        The test verifies that the elements of ``actual`` and ``desired`` satisfy.
+    
+            ``abs(desired-actual) < 1.5 * 10**(-decimal)``
+    
+        That is a looser test than originally documented, but agrees with what the
+        actual implementation in `assert_array_almost_equal` did up to rounding
+        vagaries. An exception is raised at conflicting values. For ndarrays this
+        delegates to assert_array_almost_equal
+    
+        Parameters
+        ----------
+        actual : array_like
+            The object to check.
+        desired : array_like
+            The expected object.
+        decimal : int, optional
+            Desired precision, default is 7.
+        err_msg : str, optional
+            The error message to be printed in case of failure.
+        verbose : bool, optional
+            If True, the conflicting values are appended to the error message.
+    
+        Raises
+        ------
+        AssertionError
+          If actual and desired are not equal up to specified precision.
+    
+        See Also
+        --------
+        assert_allclose: Compare two array_like objects for equality with desired
+                         relative and/or absolute precision.
+        assert_array_almost_equal_nulp, assert_array_max_ulp, assert_equal
+    
+        Examples
+        --------
+        >>> import numpy.testing as npt
+        >>> npt.assert_almost_equal(2.3333333333333, 2.33333334)
+        >>> npt.assert_almost_equal(2.3333333333333, 2.33333334, decimal=10)
+        Traceback (most recent call last):
+            ...
+        AssertionError:
+        Arrays are not almost equal to 10 decimals
+         ACTUAL: 2.3333333333333
+         DESIRED: 2.33333334
+    
+        >>> npt.assert_almost_equal(np.array([1.0,2.3333333333333]),
+        ...                         np.array([1.0,2.33333334]), decimal=9)
+        Traceback (most recent call last):
+            ...
+        AssertionError:
+        Arrays are not almost equal to 9 decimals
+        <BLANKLINE>
+        Mismatched elements: 1 / 2 (50%)
+        Max absolute difference: 6.66669964e-09
+        Max relative difference: 2.85715698e-09
+         x: array([1.         , 2.333333333])
+         y: array([1.        , 2.33333334])
+    
+        """
+        __tracebackhide__ = True  # Hide traceback for py.test
+        from numpy.core import ndarray
+        from numpy.lib import iscomplexobj, real, imag
+    
+        # Handle complex numbers: separate into real/imag to handle
+        # nan/inf/negative zero correctly
+        # XXX: catch ValueError for subclasses of ndarray where iscomplex fail
+        try:
+            usecomplex = iscomplexobj(actual) or iscomplexobj(desired)
+        except ValueError:
+            usecomplex = False
+    
+        def _build_err_msg():
+            header = ('Arrays are not almost equal to %d decimals' % decimal)
+            return build_err_msg([actual, desired], err_msg, verbose=verbose,
+                                 header=header)
+    
+        if usecomplex:
+            if iscomplexobj(actual):
+                actualr = real(actual)
+                actuali = imag(actual)
+            else:
+                actualr = actual
+                actuali = 0
+            if iscomplexobj(desired):
+                desiredr = real(desired)
+                desiredi = imag(desired)
+            else:
+                desiredr = desired
+                desiredi = 0
+            try:
+                assert_almost_equal(actualr, desiredr, decimal=decimal)
+                assert_almost_equal(actuali, desiredi, decimal=decimal)
+            except AssertionError:
+                raise AssertionError(_build_err_msg())
+    
+        if isinstance(actual, (ndarray, tuple, list)) \
+                or isinstance(desired, (ndarray, tuple, list)):
+            return assert_array_almost_equal(actual, desired, decimal, err_msg)
+        try:
+            # If one of desired/actual is not finite, handle it specially here:
+            # check that both are nan if any is a nan, and test for equality
+            # otherwise
+            if not (gisfinite(desired) and gisfinite(actual)):
+                if gisnan(desired) or gisnan(actual):
+                    if not (gisnan(desired) and gisnan(actual)):
+                        raise AssertionError(_build_err_msg())
+                else:
+                    if not desired == actual:
+                        raise AssertionError(_build_err_msg())
+                return
+        except (NotImplementedError, TypeError):
+            pass
+        if abs(desired - actual) >= 1.5 * 10.0**(-decimal):
+>           raise AssertionError(_build_err_msg())
+E           AssertionError: 
+E           Arrays are not almost equal to 7 decimals
+E            ACTUAL: DeviceArray(1.0000043, dtype=float32)
+E            DESIRED: 1.0
+
+../../anaconda3/lib/python3.6/site-packages/numpy/testing/_private/utils.py:595: AssertionError
+
+During handling of the above exception, another exception occurred:
+
+    def test_fidelity_max_dm():
+        """Tests for density matrices with respect to themselves to be equal to 1 (max)"""
+        for _ in range(10):
+            rho1 = jnp.asarray(rand_dm(25))
+            rho2 = jnp.asarray(rand_dm(25))
+>           assert_almost_equal(fidelity(rho1, rho1), 1.0)
+E           AssertionError: 
+E           Arrays are not almost equal to 7 decimals
+E            ACTUAL: DeviceArray(1.0000043-2.2043358e-05j, dtype=complex64)
+E            DESIRED: 1.0
+
+qgrad/tests/test_qutip.py:57: AssertionError
+____________________________ test_fidelity_max_ket _____________________________
+
+    def test_fidelity_max_ket():
+        """Tests for ket states with respect to themselves to be equal to 1 (max)"""
+        for _ in range(10):
+            ket1 = jnp.asarray(rand_ket(25))
+            ket2 = jnp.asarray(rand_ket(25))
+>           assert_almost_equal(fidelity(ket1, ket2), 1.0)
+E           AssertionError: 
+E           Arrays are not almost equal to 7 decimals
+E            ACTUAL: DeviceArray([[0.04152815]], dtype=float32)
+E            DESIRED: 1.0
+
+qgrad/tests/test_qutip.py:66: AssertionError
+_______________________ test_fidelity_bounded_puremixed ________________________
+
+tol = 1e-07
+
+    def test_fidelity_bounded_puremixed(tol=1e-7):
+        for _ in range(10):
+            rho1 = jnp.asarray(rand_dm(25))
+            ket1 = jnp.asarray(rand_ket(25))
+>           F = fidelity(rho1, ket1)
+
+qgrad/tests/test_qutip.py:83: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+qgrad/qgrad_qutip.py:27: in fidelity
+    return _fidelity_dm(a, b)
+qgrad/qgrad_qutip.py:61: in _fidelity_dm
+    return jnp.trace(sqrtm(jnp.dot(jnp.dot(sqrtm(dm1), dm2), sqrtm(dm1)))) ** 2
+../../anaconda3/lib/python3.6/site-packages/jax/numpy/lax_numpy.py:2693: in dot
+    return lax.dot(a, b, precision=precision)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+lhs = DeviceArray([[ 0.01248814-0.03408339j],
+             [-0.00012856+0.03516125j],
+             [ 0.01948812-0.03606057j]...2559537+0.05255266j],
+             [ 0.00766575+0.01851591j],
+             [ 0.04691577+0.0597554j ]], dtype=complex64)
+rhs = array([[ 1.55833496e-01-2.08347899e-08j,  1.93786515e-02-5.97615027e-03j,
+         2.27066550e-03-1.09881081e-02j, -1....j,
+         1.00524803e-02-1.47806431e-02j, -4.94245055e-03-9.93493554e-03j,
+         1.87610062e-01-1.71563803e-08j]])
+precision = None
+
+    def dot(lhs: Array, rhs: Array, precision: Optional[PrecisionType] = None) -> Array:
+      """Vector/vector, matrix/vector, and matrix/matrix multiplication.
+    
+      Wraps XLA's `Dot
+      <https://www.tensorflow.org/xla/operation_semantics#dot>`_
+      operator.
+    
+      For more general contraction, see the `dot_general` operator.
+    
+      Args:
+        lhs: an array of rank 1 or 2.
+        rhs: an array of rank 1 or 2.
+        precision: Optional. Either `None`, which means the default precision for
+          the backend, or a `Precision` enum value.
+    
+      Returns:
+        An array containing the product.
+      """
+      if 1 <= lhs.ndim <= 2 and 1 <= rhs.ndim <= 2 and lhs.shape[-1] == rhs.shape[0]:
+        return dot_general(lhs, rhs, (((lhs.ndim - 1,), (0,)), ((), ())),
+                           precision=precision)
+      else:
+        raise TypeError("Incompatible shapes for dot: got {} and {}.".format(
+>           lhs.shape, rhs.shape))
+E       TypeError: Incompatible shapes for dot: got (25, 1) and (25, 25).
+
+../../anaconda3/lib/python3.6/site-packages/jax/lax/lax.py:580: TypeError
+________________________ test_fidelity_bounded_purepure ________________________
+
+tol = 1e-07
+
+    def test_fidelity_bounded_purepure(tol=1e-7):
+        """Tests for boundedness of fidelity among kets to be between [0, 1]"""
+        for _ in range(10):
+            ket1 = jnp.asarray(rand_ket(25))
+            ket2 = jnp.asarray(rand_ket(25))
+>           F = fidelity(ket1, ket22)
+E           NameError: name 'ket22' is not defined
+
+qgrad/tests/test_qutip.py:92: NameError
+___________________________________ test_rot ___________________________________
+
+    def test_rot():
+        """Tests the rot function and computation of its gradient"""
+        ket0 = jnp.asarray([1, 0], dtype="complex64")
+>       evo = jnp.dot(rot[0.5, 0.7, 0.8], ket0)
+E       TypeError: 'function' object is not subscriptable
+
+qgrad/tests/test_qutip.py:99: TypeError
+_________________________________ test_destroy _________________________________
+
+    def test_destroy():
+        """Tests the annihilation/destroy/lowering operator"""
+        # Destruction operator annihilates the bosonic number state
+        b9 = basis(10, 9)  # Fock/number state with 1 at 9th index
+        d10 = destroy(10)  # 10-dimensional destroy operator
+        lowered = jnp.dot(d10, b9)
+        assert_equal(
+            np.allclose(lowered, 3.0 * basis(10, 8)), True
+        )  # Multiply the eigen value
+        d3 = destroy(3)
+        matrix3 = jnp.asarray(
+            [
+                [0.00000000 + 0.0j, 1.00000000 + 0.0j, 0.00000000 + 0.0j],
+                [0.00000000 + 0.0j, 0.00000000 + 0.0j, 1.41421356 + 0.0j],
+                [0.00000000 + 0.0j, 0.00000000 + 0.0j, 0.00000000 + 0.0j],
+            ]
+        )
+        assert_equal(np.allclose(matrix3, d3), True)
+    
+>       assert_equal(np.allclose(dag(destroy(3)), create(3)), True)
+E       NameError: name 'dag' is not defined
+
+qgrad/tests/test_qutip.py:132: NameError
+_________________________________ test_create __________________________________
+
+    def test_create():
+        """Tests for the creation operator"""
+        b3 = basis(5, 3)
+        c5 = create(8)
+>       raised = jnp.dot(c5, b3)
+
+qgrad/tests/test_qutip.py:139: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../anaconda3/lib/python3.6/site-packages/jax/numpy/lax_numpy.py:2693: in dot
+    return lax.dot(a, b, precision=precision)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+lhs = DeviceArray([1.       +0.j, 1.4142135+0.j, 1.7320508+0.j, 2.       +0.j,
+             2.236068 +0.j, 2.4494898+0.j, 2.6457512+0.j],            dtype=complex64)
+rhs = DeviceArray([[0.+0.j],
+             [0.+0.j],
+             [0.+0.j],
+             [1.+0.j],
+             [0.+0.j]], dtype=complex64)
+precision = None
+
+    def dot(lhs: Array, rhs: Array, precision: Optional[PrecisionType] = None) -> Array:
+      """Vector/vector, matrix/vector, and matrix/matrix multiplication.
+    
+      Wraps XLA's `Dot
+      <https://www.tensorflow.org/xla/operation_semantics#dot>`_
+      operator.
+    
+      For more general contraction, see the `dot_general` operator.
+    
+      Args:
+        lhs: an array of rank 1 or 2.
+        rhs: an array of rank 1 or 2.
+        precision: Optional. Either `None`, which means the default precision for
+          the backend, or a `Precision` enum value.
+    
+      Returns:
+        An array containing the product.
+      """
+      if 1 <= lhs.ndim <= 2 and 1 <= rhs.ndim <= 2 and lhs.shape[-1] == rhs.shape[0]:
+        return dot_general(lhs, rhs, (((lhs.ndim - 1,), (0,)), ((), ())),
+                           precision=precision)
+      else:
+        raise TypeError("Incompatible shapes for dot: got {} and {}.".format(
+>           lhs.shape, rhs.shape))
+E       TypeError: Incompatible shapes for dot: got (7,) and (5, 1).
+
+../../anaconda3/lib/python3.6/site-packages/jax/lax/lax.py:580: TypeError
+________________________ test_expect_dag[oper0-state0] _________________________
+
+oper = Quantum object: dims = [[5], [5]], shape = (5, 5), type = oper, isherm = True
+Qobj data =
+[[-0.97253516+0.j          0...1909005-0.19175404j  0.31723123-0.17809598j  0.59256963-0.63296988j
+   0.        +0.j         -0.89086253+0.j        ]]
+state = Quantum object: dims = [[5], [1]], shape = (5, 1), type = ket
+Qobj data =
+[[ 0.05984234+2.98452059e-01j]
+ [ 0.19613419+3.04226559e-01j]
+ [ 0.41429052-1.06975076e-01j]
+ [-0.45977902+1.30552098e-04j]
+ [ 0.32237954+5.27178542e-01j]]
+
+    @pytest.mark.parametrize(
+        "oper, state", [(rand_herm(5), rand_ket(5)), (rand_dm(5), rand_ket(5))]
+    )
+    def test_expect_dag(oper, state):
+        r"""Reconciles the expectation value of a random operator with the analytic calculation
+    
+          .. math:: <A> = <\psi|A|\psi>
+        """
+>       expected = jnp.dot(jnp.dot(dag(state), oper), state)
+E       NameError: name 'dag' is not defined
+
+qgrad/tests/test_qutip.py:208: NameError
+________________________ test_expect_dag[oper1-state1] _________________________
+
+oper = Quantum object: dims = [[5], [5]], shape = (5, 5), type = oper, isherm = True
+Qobj data =
+[[ 0.27627926+0.j         -0...2421575+0.02394852j  0.0188553 +0.05256307j -0.12739625-0.00556098j
+  -0.00592337+0.10148334j  0.29145934+0.j        ]]
+state = Quantum object: dims = [[5], [1]], shape = (5, 1), type = ket
+Qobj data =
+[[-0.15133622+0.10994045j]
+ [-0.56901809+0.11202542j]
+ [-0.42930831-0.47385692j]
+ [-0.40614808+0.13172467j]
+ [ 0.08430667+0.17440726j]]
+
+    @pytest.mark.parametrize(
+        "oper, state", [(rand_herm(5), rand_ket(5)), (rand_dm(5), rand_ket(5))]
+    )
+    def test_expect_dag(oper, state):
+        r"""Reconciles the expectation value of a random operator with the analytic calculation
+    
+          .. math:: <A> = <\psi|A|\psi>
+        """
+>       expected = jnp.dot(jnp.dot(dag(state), oper), state)
+E       NameError: name 'dag' is not defined
+
+qgrad/tests/test_qutip.py:208: NameError
+________________________________ test_coherent _________________________________
+
+    def test_coherent():
+        """Tests the coherent state method"""
+>       assert abs(expect(destroy(10), coherent(10, 0.5))) < 1e-4
+E       assert DeviceArray(0.49999997, dtype=float32) < 0.0001
+E        +  where DeviceArray(0.49999997, dtype=float32) = abs(DeviceArray(0.49999997+1.220461e-15j, dtype=complex64))
+E        +    where DeviceArray(0.49999997+1.220461e-15j, dtype=complex64) = expect(array([[0.       , 1.       , 0.       , 0.       , 0.       , 0.       ,\n        0.       , 0.       , 0.       , 0. ...     , 0.       , 0.       , 0.       , 0.       ,\n        0.       , 0.       , 0.       , 0.       ]], dtype=float32), DeviceArray([[8.8249689e-01+6.5124086e-16j],\n             [4.4124845e-01+1.6802254e-15j],\n             [1.5600489e-01+...8860e-17j],\n             [1.7159517e-05+3.1225023e-17j],\n             [2.9266271e-06-1.3682631e-16j]], dtype=complex64))
+E        +      where array([[0.       , 1.       , 0.       , 0.       , 0.       , 0.       ,\n        0.       , 0.       , 0.       , 0. ...     , 0.       , 0.       , 0.       , 0.       ,\n        0.       , 0.       , 0.       , 0.       ]], dtype=float32) = destroy(10)
+E        +      and   DeviceArray([[8.8249689e-01+6.5124086e-16j],\n             [4.4124845e-01+1.6802254e-15j],\n             [1.5600489e-01+...8860e-17j],\n             [1.7159517e-05+3.1225023e-17j],\n             [2.9266271e-06-1.3682631e-16j]], dtype=complex64) = coherent(10, 0.5)
+
+qgrad/tests/test_qutip.py:214: AssertionError
+_________________________________ test_dag_ket _________________________________
+
+    def test_dag_ket():
+        r"""Tests the dagger operation :math:`A^{\dagger}` on operator :math:`A`"""
+        # test with all real entries
+>       assert_array_equal(dag(basis(2, 0).full()), [[1.0, 0.0]])
+E       NameError: name 'dag' is not defined
+
+qgrad/tests/test_qutip.py:220: NameError
+_________________________________ test_dag_dot _________________________________
+
+    @pytest.mark.repeat(10)
+    def test_dag_dot():
+        """Tests the dagger operation with dot product"""
+        i = np.random.randint(3, 10)
+        ket = rand_ket(i)
+>       assert_almost_equal(jnp.dot(dag(ket), ket), 1.0)
+E       NameError: name 'dag' is not defined
+
+qgrad/tests/test_qutip.py:253: NameError
+__________________________________ test_isket __________________________________
+
+    def test_isket():
+        """Tests the `isket` method to see whether a state is a ket based on its shape"""
+        for i in range(2, 6):
+>           assert isket(rand_ket(i).full()) == True  # tests kets
+
+qgrad/tests/test_qutip.py:259: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+state = array([[0.41772369-0.07853119j],
+       [0.22935625+0.87563433j]])
+
+    def isket(state):
+        """Checks whether a state is a ket based on its shape
+    
+        Args:
+        ----
+            state (`obj:numpy.array`[complex]): input state
+    
+        Returns:
+        -------
+            bool: `True` if state is a ket and `False` otherwise
+        """
+>       if jnp.isclose(jnp.norm(jnp.array(state)), 1) == False:
+E       AttributeError: module 'jax.numpy' has no attribute 'norm'
+
+qgrad/qgrad_qutip.py:333: AttributeError
+__________________________________ test_isbra __________________________________
+
+    def test_isbra():
+        """Tests the `isbra` method to see whether a state is a bra based on its shape"""
+        for i in range(2, 6):
+>           assert isbra(rand_ket(i).full()) == False  # tests kets
+
+qgrad/tests/test_qutip.py:271: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+state = array([[-0.66703341-0.21368971j],
+       [-0.5842558 -0.40993693j]])
+
+    def isbra(state):
+        """Checks whether a state is a bra based on its shape
+    
+        Args:
+        ----
+            state (`obj:numpy.array`[complex]): input state
+    
+        Returns:
+        -------
+            bool: `True` if state is a bra and `False` otherwise
+        """
+>       if jnp.isclose(jnp.norm(jnp.array(state)), 1) == False:
+E       AttributeError: module 'jax.numpy' has no attribute 'norm'
+
+qgrad/qgrad_qutip.py:348: AttributeError
+__________________________________ test_to_dm __________________________________
+
+    def test_to_dm():
+        """Tests the `to_dm` method that converts kets and bras to density matrices"""
+        dm0 = jnp.array(
+            [[1.0 + 0.0j, 0.0 + 0.0j], [0.0 + 0.0j, 0.0 + 0.0j]], dtype=jnp.complex64
+        )
+        dm1 = jnp.array(
+            [[0.0 + 0.0j, 0.0 + 0.0j], [0.0 + 0.0j, 1.0 + 0.0j]], dtype=jnp.complex64
+        )
+        # testing kets
+>       assert_array_equal(to_dm(basis(2, 0)), dm0)
+
+qgrad/tests/test_qutip.py:289: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+qgrad/qgrad_qutip.py:363: in to_dm
+    if isket(state):
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+state = DeviceArray([[1.+0.j],
+             [0.+0.j]], dtype=complex64)
+
+    def isket(state):
+        """Checks whether a state is a ket based on its shape
+    
+        Args:
+        ----
+            state (`obj:numpy.array`[complex]): input state
+    
+        Returns:
+        -------
+            bool: `True` if state is a ket and `False` otherwise
+        """
+>       if jnp.isclose(jnp.norm(jnp.array(state)), 1) == False:
+E       AttributeError: module 'jax.numpy' has no attribute 'norm'
+
+qgrad/qgrad_qutip.py:333: AttributeError
+__________________________ TestDisplace.test_displace __________________________
+
+cls = <class '_pytest.runner.CallInfo'>
+func = <function call_runtest_hook.<locals>.<lambda> at 0x7f9d5b177ae8>
+when = 'call'
+reraise = (<class '_pytest.outcomes.Exit'>, <class 'KeyboardInterrupt'>)
+
+    @classmethod
+    def from_call(cls, func, when, reraise=None):
+        #: context of invocation: one of "setup", "call",
+        #: "teardown", "memocollect"
+        start = time()
+        excinfo = None
+        try:
+>           result = func()
+
+../../anaconda3/lib/python3.6/site-packages/_pytest/runner.py:220: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../anaconda3/lib/python3.6/site-packages/_pytest/runner.py:192: in <lambda>
+    lambda: ihook(item=item, **kwds), when=when, reraise=reraise
+../../anaconda3/lib/python3.6/site-packages/pluggy/hooks.py:286: in __call__
+    return self._hookexec(self, self.get_hookimpls(), kwargs)
+../../anaconda3/lib/python3.6/site-packages/pluggy/manager.py:92: in _hookexec
+    return self._inner_hookexec(hook, methods, kwargs)
+../../anaconda3/lib/python3.6/site-packages/pluggy/manager.py:86: in <lambda>
+    firstresult=hook.spec.opts.get("firstresult") if hook.spec else False,
+../../anaconda3/lib/python3.6/site-packages/_pytest/runner.py:117: in pytest_runtest_call
+    item.runtest()
+../../anaconda3/lib/python3.6/site-packages/_pytest/python.py:1423: in runtest
+    self.ihook.pytest_pyfunc_call(pyfuncitem=self)
+../../anaconda3/lib/python3.6/site-packages/pluggy/hooks.py:286: in __call__
+    return self._hookexec(self, self.get_hookimpls(), kwargs)
+../../anaconda3/lib/python3.6/site-packages/pluggy/manager.py:92: in _hookexec
+    return self._inner_hookexec(hook, methods, kwargs)
+../../anaconda3/lib/python3.6/site-packages/pluggy/manager.py:86: in <lambda>
+    firstresult=hook.spec.opts.get("firstresult") if hook.spec else False,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+pyfuncitem = <Function test_displace>
+
+    @hookimpl(trylast=True)
+    def pytest_pyfunc_call(pyfuncitem):
+        def async_warn():
+            msg = "async def functions are not natively supported and have been skipped.\n"
+            msg += "You need to install a suitable plugin for your async framework, for example:\n"
+            msg += "  - pytest-asyncio\n"
+            msg += "  - pytest-trio\n"
+            msg += "  - pytest-tornasync"
+            warnings.warn(PytestUnhandledCoroutineWarning(msg.format(pyfuncitem.nodeid)))
+            skip(msg="async def function and no async plugin installed (see warnings)")
+    
+        testfunction = pyfuncitem.obj
+        if iscoroutinefunction(testfunction) or (
+            sys.version_info >= (3, 6) and inspect.isasyncgenfunction(testfunction)
+        ):
+            async_warn()
+        funcargs = pyfuncitem.funcargs
+        testargs = {arg: funcargs[arg] for arg in pyfuncitem._fixtureinfo.argnames}
+>       result = testfunction(**testargs)
+E       TypeError: test_displace() takes 0 positional arguments but 1 was given
+
+../../anaconda3/lib/python3.6/site-packages/_pytest/python.py:170: TypeError
+=============================== warnings summary ===============================
+/home/asad/anaconda3/lib/python3.6/site-packages/pyximport/pyximport.py:51
+  /home/asad/anaconda3/lib/python3.6/site-packages/pyximport/pyximport.py:51: DeprecationWarning: the imp module is deprecated in favour of importlib; see the module's documentation for alternative uses
+    import imp
+
+/home/asad/anaconda3/lib/python3.6/site-packages/_pytest/mark/structures.py:324
+  /home/asad/anaconda3/lib/python3.6/site-packages/_pytest/mark/structures.py:324: PytestUnknownMarkWarning: Unknown pytest.mark.paramterize - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/latest/mark.html
+    PytestUnknownMarkWarning,
+
+/home/asad/anaconda3/lib/python3.6/site-packages/jax/lib/xla_bridge.py:125
+  /home/asad/anaconda3/lib/python3.6/site-packages/jax/lib/xla_bridge.py:125: UserWarning: No GPU/TPU found, falling back to CPU.
+    warnings.warn('No GPU/TPU found, falling back to CPU.')
+
+/home/asad/anaconda3/lib/python3.6/site-packages/_pytest/mark/structures.py:324
+  /home/asad/anaconda3/lib/python3.6/site-packages/_pytest/mark/structures.py:324: PytestUnknownMarkWarning: Unknown pytest.mark.repeat - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/latest/mark.html
+    PytestUnknownMarkWarning,
+
+-- Docs: https://docs.pytest.org/en/latest/warnings.html
+============== 16 failed, 6 passed, 4 warnings, 1 error in 5.01s ===============

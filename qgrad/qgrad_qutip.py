@@ -5,8 +5,10 @@ Implementation of some common quantum mechanics functions that work with Jax
 from scipy.sparse import csr_matrix
 from jax.ops import index, index_update
 import jax.numpy as jnp
+import numpy as np
 from scipy.linalg import expm, sqrtm
 from numpy.linalg import matrix_power
+import scipy 
 
 def fidelity(a, b):
     """
@@ -170,16 +172,17 @@ def create(N, full=False):
     if not isinstance(N, (int, jnp.integer)):  # raise error if N not integer
         raise ValueError("Hilbert space dimension must be an integer value")
     data = jnp.sqrt(jnp.arange(1, N, dtype=jnp.float32))
-    ind = jnp.arange(0, N - 1, dtype=jnp.float32)
-    ptr = jnp.arange(N + 1, dtype=jnp.float32)
-    ptr = index_update(
-        ptr, index[0], 0
-    )  # index_update mutates the jnp array in-place like numpy
-    return (
-        csr_matrix((data, ind, ptr), shape=(N, N))
-        if full is True
-        else csr_matrix((data, ind, ptr), shape=(N, N)).toarray()
-    )
+    #ind = jnp.arange(0, N - 1, dtype=jnp.float32)
+    #ptr = jnp.arange(N + 1, dtype=jnp.float32)
+    #ptr = index_update(
+    #    ptr, index[0], 0
+    #)  # index_update mutates the jnp array in-place like numpy
+    #return (
+    #    csr_matrix((data, ind, ptr), shape=(N, N))
+    #    if full is True
+    #    else csr_matrix((data, ind, ptr), shape=(N, N)).toarray()
+    #)
+    return data
 
 
 def expect(oper, state):
@@ -276,11 +279,11 @@ def basis(N, n=0):
     -------
         state (`obj:numpy.array`[complex]): number state :math:`|n>`
     """
-if (not isinstance(N, (int, np.integer))) or N < 0:
-    raise ValueError("N must be integer N >= 0")
+    if (not isinstance(N, (int, np.integer))) or N < 0:
+        raise ValueError("N must be integer N >= 0")
 
-zeros = jnp.zeros((N, 1), dtype=jnp.complex64) #column of zeros
-return index_update(zeros, index[n, 0], 1.)
+    zeros = jnp.zeros((N, 1), dtype=jnp.complex64) #column of zeros
+    return index_update(zeros, index[n, 0], 1.)
 
 
 def coherent(N, alpha):
@@ -302,7 +305,7 @@ def coherent(N, alpha):
     return jnp.dot(displace(alpha), x)
 
 def dag(state):
-    """Returns conjugate transpose of a given state, represented by :math:`A^{\dagger}`, where :math:`A` may 
+    r"""Returns conjugate transpose of a given state, represented by :math:`A^{\dagger}`, where :math:`A` may 
     be a density matrix representation of a state. For kets, bras are returned and vice-versa.
 
     Args:
