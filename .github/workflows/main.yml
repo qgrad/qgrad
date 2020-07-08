@@ -24,7 +24,9 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install pytest cython numpy qutip jaxlib
+        pip install pytest cython numpy
+        pip install qutip
+        pip jaxlib
         python setup.py install
        
     - name: Test with pytest
