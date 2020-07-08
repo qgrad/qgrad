@@ -61,7 +61,7 @@ def _fidelity_dm(a, b):
 
 def rot(params):
     """
-    Returns a unitary matrix describing rotation around Z-Y-Z axis
+    Returns a unitary matrix describing rotation around Z-Y-Z axis for a single qubit
 
     Args:
         params (`:obj:numpy.array`[float]): an array of three parameters defining the
