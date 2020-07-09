@@ -176,7 +176,7 @@ def test_sigmaz():
 def test_expect_sigmaxyz(op, state):
     """Tests the `expect` function on Pauli-X, Pauli-Y and Pauli-Z."""
     # The stacked pytest decorators check all the argument combinations like a Cartesian product
-    if op != sigmaz():
+    if jnp.all(op != sigmaz()):
         assert expect(op, state) == 0.0
     elif state == basis(2, 0):
         assert expect(op, state) == 1.0
