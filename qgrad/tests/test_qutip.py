@@ -214,7 +214,7 @@ def test_expect_dag(oper, state):
       .. math:: <A> = <\psi|A|\psi>
     """
     expected = jnp.dot(jnp.dot(dag(state), oper), state)
-    assert abs(expect(oper, state) - expected) < 1e-7
+    assert abs(expect(oper, state) - expected) < 1e-6
 
 
 def test_coherent():
