@@ -178,7 +178,6 @@ def test_expect_sigmaxyz(oper, state):
 
 displace = Displace(4)  # initializing displace object for the test
 
-'''
 @pytest.mark.paramterize(
     "oper, state",
     [
@@ -195,7 +194,6 @@ def test_expect_herm(oper, state):
         assert jnp.iscomplex(expect(oper, state)) == True
     else:
         assert jnp.iscomplex(expect(oper, state)) == True
-'''
 
 @pytest.mark.parametrize(
     "oper, state", [(rand_herm(5).full(), rand_ket(5).full()), (rand_dm(5).full(), rand_ket(5).full())]
@@ -211,7 +209,7 @@ def test_expect_dag(oper, state):
 
 def test_coherent():
     """Tests the coherent state method"""
-    assert abs(expect(destroy(10), coherent(10, 0.5))) < 1e-4
+    assert abs(expect(destroy(10), coherent(10, 0.5)) - 0.5) < 1e-4
 
 
 def test_dag_ket():
@@ -292,7 +290,6 @@ def test_to_dm():
     assert_array_equal(to_dm(dag(basis(2, 0))), dm0)
     assert_array_equal(to_dm(dag(basis(2, 1))), dm1)
 
-'''
 def test_squeeze():
     """Tests the squeeze operator"""
     sq = squeeze(4, 0.1 + 0.1j)
@@ -327,7 +324,6 @@ def test_squeeze():
     )
 
     assert_equal(np.allclose(sq, sqmatrix), True)
-'''
 
 class TestDisplace:
     """A test class for the displace operator"""
