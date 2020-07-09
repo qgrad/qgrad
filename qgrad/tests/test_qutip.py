@@ -10,6 +10,7 @@ import scipy
 from qgrad.qgrad_qutip import (
     basis,
     coherent,
+    dag,
     create,
     destroy,
     expect,

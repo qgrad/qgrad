@@ -158,8 +158,6 @@ def destroy(N, full=False):
         else csr_matrix((data, ind, ptr), shape=(N, N)).toarray()
     )
 
-
-# TODO: Add test destroy(N).dag() == create(N)
 def create(N, full=False):
     """Creation (raising) operator.
 
@@ -174,16 +172,16 @@ def create(N, full=False):
     if not isinstance(N, (int, jnp.integer)):  # raise error if N not integer
         raise ValueError("Hilbert space dimension must be an integer value")
     data = jnp.sqrt(jnp.arange(1, N, dtype=jnp.float32))
-    #ind = jnp.arange(0, N - 1, dtype=jnp.float32)
-    #ptr = jnp.arange(N + 1, dtype=jnp.float32)
-    #ptr = index_update(
-    #    ptr, index[0], 0
-    #)  # index_update mutates the jnp array in-place like numpy
-    #return (
-    #    csr_matrix((data, ind, ptr), shape=(N, N))
-    #    if full is True
-    #    else csr_matrix((data, ind, ptr), shape=(N, N)).toarray()
-    #)
+    ind = jnp.arange(0, N - 1, dtype=jnp.float32)
+    ptr = jnp.arange(N + 1, dtype=jnp.float32)
+    ptr = index_update(
+        ptr, index[0], 0
+    )  # index_update mutates the jnp array in-place like numpy
+    return (
+        csr_matrix((data, ind, ptr), shape=(N, N))
+        if full is True
+        else csr_matrix((data, ind, ptr), shape=(N, N)).toarray()
+    )
     return data
 
 
