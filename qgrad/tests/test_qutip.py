@@ -191,17 +191,14 @@ displace = Displace(2)  # Initializing displace obj for `test_expect_herm`
     "oper, state",
     [
         (rand_herm(2).full(), basis(2, 0)),
-        (displace(1.0), basis(2, 1)),
-        (squeeze(4, 1.5), basis(2, 1)),
+        (rand_herm(4).full(), basis(4, 0)),
+        (rand_herm(20).full(), basis(20, 20)),
     ],
 )
 def test_expect_herm(oper, state):
     """Tests that the expectation value of a hermitian operator is real and that of 
        the non-hermitian operator is complex"""
-    if jnp.all(oper == squeeze(4, 1.5)) or jnp.all(oper == displace(1.0)):
-        assert jnp.iscomplex(expect(oper, state)) == True
-    else:
-        assert jnp.iscomplex(expect(oper, state)) == False
+    assert jnp.imag(expect(oper, state)) == 0.0
 
 
 @pytest.mark.parametrize(
