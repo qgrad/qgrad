@@ -328,7 +328,7 @@ def test_squeeze():
 class TestDisplace:
     """A test class for the displace operator"""
 
-    def test_displace():
+    def test_displace(self):
         dp = Displace(4)
         dpmatrix = jnp.array(
             [
