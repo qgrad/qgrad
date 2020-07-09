@@ -247,7 +247,7 @@ def test_dag_ket():
 def test_dag_dot():
     """Tests the dagger operation with dot product"""
     i = np.random.randint(3, 10)
-    ket = rand_ket(i)
+    ket = rand_ket(i).full()
     assert_almost_equal(jnp.dot(dag(ket), ket), 1.0)
 
 
