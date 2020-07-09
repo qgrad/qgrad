@@ -23,12 +23,12 @@ def fidelity(a, b):
     Returns:
         float: fidelity between the two states
     """
-    if isket(a) == False or isket(b) == False:
+    if isket(a) and isket(b):
+        return _fidelity_ket(a, b)
+    else:
         a, b = to_dm(a), to_dm(b)
         return _fidelity_dm(a, b)
 
-    else:
-        return _fidelity_ket(a, b)
 
 
 def _fidelity_ket(a, b):
