@@ -43,7 +43,7 @@ def test_fidelity():
     assert fidelity(ket0, ket1) == 0.0
     assert fidelity(ket0, ket0) == 1.0
     assert fidelity(ket1, ket1) == 1.0
-    assert fidelity(ket_plus, ket_minus) == 0.0
+    assert_almost_equal(fidelity(ket_plus, ket_minus), 0.0)
     assert fidelity(rand_ket(4).full(), rand_ket(4).full()) <= 1.0
     assert fidelity(rand_ket(10).full(), rand_ket(10).full()) >= 0.0
     assert np.isclose(fidelity(ket_complx, ket_complx),  1.0)
