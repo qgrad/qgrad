@@ -198,7 +198,7 @@ def test_expect_herm(oper, state):
 '''
 
 @pytest.mark.parametrize(
-    "oper, state", [(rand_herm(5), rand_ket(5)), (rand_dm(5), rand_ket(5))]
+    "oper, state", [(rand_herm(5).full(), rand_ket(5).full()), (rand_dm(5).full(), rand_ket(5).full())]
 )
 def test_expect_dag(oper, state):
     r"""Reconciles the expectation value of a random operator with the analytic calculation
