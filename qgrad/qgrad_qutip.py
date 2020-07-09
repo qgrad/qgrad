@@ -16,9 +16,9 @@ def fidelity(a, b):
     Computes fidelity between two states (pure or mixed).
     
     Args:
-        a (`:obj:numpy.ndarray`): State vector (ket) or a density
+        a (:obj:`numpy.ndarray`): State vector (ket) or a density
              matrix. 
-        b (`:obj:numpy.ndarray`): State vector (ket) or a density
+        b (:obj:`numpy.ndarray`): State vector (ket) or a density
              matrix. 
         
     Returns:
@@ -39,8 +39,8 @@ def _fidelity_ket(a, b):
     Private function that computes fidelity between two kets.
     
     Args:
-        a (`:obj:numpy.ndarray`): State vector (ket)
-        b (`:obj:numpy.ndarray`): State vector (ket) 
+        a (:obj:`numpy.ndarray`): State vector (ket)
+        b (:obj:`numpy.ndarray`): State vector (ket) 
         
     Returns:
         float: fidelity between the two state vectors
@@ -54,8 +54,8 @@ def _fidelity_dm(a, b):
     Private function that computes fidelity among two mixed states.
     
     Args:
-        a (`:obj:numpy.ndarray`): density matrix (density matrix)
-        b (`:obj:numpy.ndarray`): density matrix (density matrix)
+        a (:obj:`numpy.ndarray`): density matrix (density matrix)
+        b (:obj:`numpy.ndarray`): density matrix (density matrix)
         
     Returns:
         float: fidelity between the two density matrices 
@@ -206,9 +206,9 @@ def expect(oper, state):
     with respect to a given (pure or mixed) state.
 
     Args:
-        oper (`:obj:numpy.ndarray`): Numpy array representing
+        oper (:obj:`numpy.ndarray`): Numpy array representing
                 an operator
-        state (`:obj:numpy.ndarray`): Numpy array representing 
+        state (:obj:`numpy.ndarray`): Numpy array representing 
                 a density matrix. Standard Python list can also be passed in case of a pure state (ket).
 
     Returns:
