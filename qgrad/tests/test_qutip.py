@@ -178,7 +178,7 @@ def test_expect_sigmaxyz(op, state):
     # The stacked pytest decorators check all the argument combinations like a Cartesian product
     if jnp.all(op != sigmaz()):
         assert expect(op, state) == 0.0
-    elif state == basis(2, 0):
+    elif jnp.all(state == basis(2, 0)):
         assert expect(op, state) == 1.0
     else:
         assert expect(op, state) == -1.0
@@ -198,10 +198,10 @@ displace = Displace(2)  # Initializing displace obj for `test_expect_herm`
 def test_expect_herm(oper, state):
     """Tests that the expectation value of a hermitian operator is real and that of 
        the non-hermitian operator is complex"""
-    if oper == squeeze(4, 1.5) or oper == displace(1.0):
+    if jnp.all(oper == squeeze(4, 1.5)) or jnp.all(oper == displace(1.0)):
         assert jnp.iscomplex(expect(oper, state)) == True
     else:
-        assert jnp.iscomplex(expect(oper, state)) == True
+        assert jnp.iscomplex(expect(oper, state)) == False
 
 
 @pytest.mark.parametrize(
