@@ -146,19 +146,21 @@ def destroy(N, full=False):
     if not isinstance(N, (int, jnp.integer)):  # raise error if N not integer
         raise ValueError("Hilbert space dimension must be an integer value")
     data = jnp.sqrt(jnp.arange(1, N, dtype=jnp.float32))
-#TODO: apply data type to everything all at once
-    ind = jnp.arange(1, N, dtype=jnp.float32)
-    ptr = jnp.arange(N + 1, dtype=jnp.float32)
-    ptr = index_update(
-        ptr, index[-1], N - 1
-    )  # index_update mutates the jnp array in-place like numpy
-    return (
-        csr_matrix((data, ind, ptr), shape=(N, N))
-        if full is True
-        else csr_matrix((data, ind, ptr), shape=(N, N)).toarray()
-    )
+    zeros = np.zeros((N, N))
+    return jnp.array(np.fill_diagonal(zeros[:,1:], data), dtype=jnp.complex64)
+#TODO: apply jax device array data type to everything all at once
+    #ind = jnp.arange(1, N, dtype=jnp.float32)
+    #ptr = jnp.arange(N + 1, dtype=jnp.float32)
+    #ptr = index_update(
+    #    ptr, index[-1], N - 1
+    #)    index_update mutates the jnp array in-place like numpy
+    #return (
+    #    csr_matrix((data, ind, ptr), shape=(N, N))
+    #    if full is True
+    #    else csr_matrix((data, ind, ptr), shape=(N, N)).toarray()
+    #)
 
-def create(N, full=False):
+def create(N):
     """Creation (raising) operator.
 
     Args:
@@ -172,17 +174,19 @@ def create(N, full=False):
     if not isinstance(N, (int, jnp.integer)):  # raise error if N not integer
         raise ValueError("Hilbert space dimension must be an integer value")
     data = jnp.sqrt(jnp.arange(1, N, dtype=jnp.float32))
-    ind = jnp.arange(0, N - 1, dtype=jnp.float32)
-    ptr = jnp.arange(N + 1, dtype=jnp.float32)
-    ptr = index_update(
-        ptr, index[0], 0
-    )  # index_update mutates the jnp array in-place like numpy
-    return (
-        csr_matrix((data, ind, ptr), shape=(N, N))
-        if full is True
-        else csr_matrix((data, ind, ptr), shape=(N, N)).toarray()
-    )
-    return data
+    zeros = np.zeros((N, N))
+    return jnp.array(np.fill_diagonal(zeros[1:], data), dtype=jnp.complex64)
+    #ind = jnp.arange(0, N - 1, dtype=jnp.float32)
+    #ptr = jnp.arange(N + 1, dtype=jnp.float32)
+    #ptr = index_update(
+    #    ptr, index[0], 0
+    #)  # index_update mutates the jnp array in-place like numpy
+    #return (
+    #    csr_matrix((data, ind, ptr), shape=(N, N))
+    #    if full is True
+    #    else csr_matrix((data, ind, ptr), shape=(N, N)).toarray()
+    #)
+    #return data
 
 
 def expect(oper, state):

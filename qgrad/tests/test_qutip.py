@@ -119,7 +119,7 @@ def test_destroy():
     lowered = jnp.dot(d10, b9)
     assert_equal(
         np.allclose(lowered, 3.0 * basis(10, 8)), True
-    )  # Multiply the eigen value
+    )  # Multiply the eigenvalue
     d3 = destroy(3)
     matrix3 = jnp.asarray(
         [
