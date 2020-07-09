@@ -89,7 +89,7 @@ def test_fidelity_bounded_purepure(tol=1e-7):
     for _ in range(10):
         ket1 = jnp.asarray(rand_ket(25))
         ket2 = jnp.asarray(rand_ket(25))
-        F = fidelity(ket1, ket22)
+        F = fidelity(ket1, ket2)
         assert -tol <= F <= 1 + tol
 
 
