@@ -180,7 +180,7 @@ def test_expect_sigmaxyz(op, state):
 
 
 displace = Displace(2) #Initializing displace obj for `test_expect_herm`
-@pytest.mark.paramterize("oper, state", [(rand_herm(2).full(), basis(2, 0)),
+@pytest.mark.parametrize("oper, state", [(rand_herm(2).full(), basis(2, 0)),
         (displace(1.0), basis(2, 1)), (squeeze(4, 1.5), basis(2, 1))])
 def test_expect_herm(oper, state):
     """Tests that the expectation value of a hermitian operator is real and that of 
