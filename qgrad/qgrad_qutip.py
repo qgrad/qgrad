@@ -30,7 +30,6 @@ def fidelity(a, b):
         return _fidelity_ket(a, b)
 
 
-# TODO: Add tests with python list inputs for fidel and expect
 def _fidelity_ket(a, b):
     """
     Private function that computes fidelity between two kets.
@@ -58,8 +57,8 @@ def _fidelity_dm(a, b):
         float: fidelity between the two density matrices 
     """
     dm1, dm2 = jnp.asarray(a), jnp.asarray(b)
-    return jnp.trace(sqrtm(jnp.dot(jnp.dot(sqrtm(dm1), dm2), sqrtm(dm1)))) ** 2
-
+    fidel = jnp.trace(sqrtm(jnp.dot(jnp.dot(sqrtm(dm1), dm2), sqrtm(dm1)))) ** 2
+    return jnp.real(fidel)
 
 def rot(params):
     """
