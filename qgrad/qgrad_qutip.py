@@ -1,7 +1,7 @@
 """
 Implementation of some common quantum mechanics functions that work with JAX
 """
-#TODO: Import Jax scipy
+#TODO: work with JAX-wrapped scipy
 from scipy.sparse import csr_matrix
 from jax.ops import index, index_update
 import jax.numpy as jnp
@@ -26,9 +26,11 @@ def fidelity(a, b):
     if isket(a) and isket(b):
         return _fidelity_ket(a, b)
     else:
-        a, b = to_dm(a), to_dm(b)
+        if isket(a) == True:
+            a = to_dm(a)
+        if isket(b) == True:
+            b = to_dm(b)
         return _fidelity_dm(a, b)
-
 
 
 def _fidelity_ket(a, b):
