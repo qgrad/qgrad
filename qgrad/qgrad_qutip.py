@@ -1,5 +1,5 @@
 """
-Implementation of some common quantum mechanics functions that work with Jax
+Implementation of some common quantum mechanics functions that work with JAX
 """
 #TODO: Import Jax scipy
 from scipy.sparse import csr_matrix
@@ -16,14 +16,16 @@ def fidelity(a, b):
     
     Args:
         a (`:obj:numpy.ndarray`): State vector (ket) or a density
-             matrix. Pure Python list can also be passed for a ket.
+             matrix. 
         b (`:obj:numpy.ndarray`): State vector (ket) or a density
-             matrix. Pure Python list can also be passed for a ket.
+             matrix. 
         
     Returns:
         float: fidelity between the two states
     """
-    if jnp.asarray(a).shape[1] >= 2 or jnp.asarray(b).shape[1] >= 2:
+    #if jnp.asarray(a).shape[1] >= 2 or jnp.asarray(b).shape[1] >= 2:
+    if isket(a) == False or isket(b) == False:
+        a, b = to_dm(a), to_dm(b)
         return _fidelity_dm(a, b)
 
     else:
@@ -35,8 +37,8 @@ def _fidelity_ket(a, b):
     Private function that computes fidelity between two kets.
     
     Args:
-        a (`:obj:numpy.ndarray`): State vector (ket) or a Python list
-        b (`:obj:numpy.ndarray`): State vector (ket) or a Python list
+        a (`:obj:numpy.ndarray`): State vector (ket)
+        b (`:obj:numpy.ndarray`): State vector (ket) 
         
     Returns:
         float: fidelity between the two state vectors
