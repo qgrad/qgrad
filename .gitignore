@@ -39,6 +39,7 @@ wheels/
 *.egg
 MANIFEST
 
+*.swp
 # txt files
 *.txt
 # PyInstaller
