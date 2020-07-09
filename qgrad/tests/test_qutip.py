@@ -55,7 +55,7 @@ def test_fidelity_max_dm():
         rho1 = jnp.asarray(rand_dm(25))
         rho2 = jnp.asarray(rand_dm(25))
         assert_almost_equal(fidelity(rho1, rho1), 1.0, decimal=4)
-        assert_almost_equal(fidelity(rho2, rho2), 1.0, decimla=4)
+        assert_almost_equal(fidelity(rho2, rho2), 1.0, decimal=4)
 
 
 def test_fidelity_max_ket():
