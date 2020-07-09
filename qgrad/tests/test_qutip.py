@@ -24,6 +24,9 @@ from qgrad.qgrad_qutip import (
     sigmaz,
     squeeze,
     Displace,
+    sigmax,
+    sigmay,
+    sigmaz
 )
 
 
@@ -163,30 +166,22 @@ def test_sigmaz():
     assert_array_equal(sigmaz(), jnp.array([[1.0, 0.0], [0.0, -1.0]]))
 
 
-@pytest.mark.paramterize("oper", [sigmax(), sigmay(), sigmaz()])
+@pytest.mark.paramterize("op", [sigmax(), sigmay(), sigmaz()])
 @pytest.mark.paramterize("state", [basis(2, 0), basis(2, 1)])
-def test_expect_sigmaxyz(oper, state):
+def test_expect_sigmaxyz(op, state):
     """Tests the `expect` function on Pauli-X, Pauli-Y and Pauli-Z."""
     # The stacked pytest decorators check all the argument combinations like a Cartesian product
-    if oper != sigmaz():
-        assert expect(oper, state) == 0.0
+    if op != sigmaz():
+        assert expect(op, state) == 0.0
     elif state == basis(2, 0):
-        assert expect(oper, state) == 1.0
+        assert expect(op, state) == 1.0
     else:
-        assert expect(oper, state) == -1.0
+        assert expect(op, state) == -1.0
 
 
-displace = Displace(4)  # initializing displace object for the test
-
-@pytest.mark.paramterize(
-    "oper, state",
-    [
-        (rand_herm(2), basis(2, 0)),
-        (displace(1.0), basis(2, 1)),
-        (squeeze(4, 1.5), basis(2, 1)),
-    ],
-)
-
+displace = Displace(2) #Initializing displace obj for `test_expect_herm`
+@pytest.mark.paramterize("oper, state", [(rand_herm(2).full(), basis(2, 0)),
+        (displace(1.0), basis(2, 1)), (squeeze(4, 1.5), basis(2, 1))])
 def test_expect_herm(oper, state):
     """Tests that the expectation value of a hermitian operator is real and that of 
        the non-hermitian operator is complex"""

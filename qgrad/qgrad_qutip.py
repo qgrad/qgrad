@@ -95,12 +95,12 @@ def sigmax():
     
     Examples
     -------
-    >>>sigmax()
+    >>> sigmax()
     [[0. 1.]
      [1. 0.]]
 
     """
-    return jnp.asarray([[0.0, 1.0], [1.0, 0.0]])
+    return jnp.array([[0.0, 1.0], [1.0, 0.0]], dtype=jnp.complex64)
 
 
 def sigmay():
@@ -115,7 +115,7 @@ def sigmay():
      [0.+1.j 0.+0.j]]
 
     """
-    return jnp.asarray([[0.0 + 0.0j, 0.0 - 1.0j], [0.0 + 1.0j, 0.0 + 0.0j]])
+    return jnp.array([[0.0 + 0.0j, 0.0 - 1.0j], [0.0 + 1.0j, 0.0 + 0.0j]], dtype=jnp.complex64)
 
 
 def sigmaz():
@@ -129,7 +129,7 @@ def sigmaz():
      [0. -1.]]
 
     """
-    return jnp.asarray([[1.0, 0.0], [0.0, -1.0]])
+    return jnp.array([[1.0, 0.0], [0.0, -1.0]], dtype=jnp.complex64)
 
 #TODO:Remove False and return jnp matrix
 def destroy(N):
