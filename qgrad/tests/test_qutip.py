@@ -269,10 +269,10 @@ def test_isbra():
         assert isbra(rand_ket(i).full()) == False  # tests kets
 
     for j in range(2, 6):
-        assert isket(dag(rand_ket(j).full())) == True  # tests bras
+        assert isbra(dag(rand_ket(j).full())) == True  # tests bras
 
     for k in range(2, 6):
-        assert isket(rand_dm(k).full()) == False  # tests density matrices
+        assert isbra(rand_dm(k).full()) == False  # tests density matrices
 
 
 def test_to_dm():
