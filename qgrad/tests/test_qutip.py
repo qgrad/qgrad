@@ -1,5 +1,5 @@
 """Tests for qgrad implementation of qutip functions"""
-from numpy.testing import assert_almost_equal, assert_array_equal, assert_equal
+from numpy.testing import assert_almost_equal, assert_array_equal, assert_array_almost_equal, assert_equal
 from jax import grad
 import jax.numpy as jnp
 import pytest
@@ -117,9 +117,8 @@ def test_destroy():
     b9 = basis(10, 9)  # Fock/number state with 1 at 9th index
     d10 = destroy(10)  # 10-dimensional destroy operator
     lowered = jnp.dot(d10, b9)
-    assert_equal(
-        np.allclose(lowered, 3.0 * basis(10, 8)), True
-    )  # Multiply the eigenvalue
+    assert_array_almost_equal(lowered, 3.0 * basis(10, 8))
+
     d3 = destroy(3)
     matrix3 = jnp.asarray(
         [
@@ -136,7 +135,7 @@ def test_destroy():
 def test_create():
     """Tests for the creation operator"""
     b3 = basis(5, 3)
-    c5 = create(8)
+    c5 = create(5)
     raised = jnp.dot(c5, b3)
     assert_equal(np.allclose(raised, 2.0 * basis(5, 4)), True)
     c3 = create(3)
