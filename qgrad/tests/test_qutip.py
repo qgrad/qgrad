@@ -215,8 +215,8 @@ def test_coherent():
 def test_dag_ket():
     r"""Tests the dagger operation :math:`A^{\dagger}` on operator :math:`A`"""
     # test with all real entries
-    assert_array_equal(dag(basis(2, 0).full()), [[1.0, 0.0]])
-    assert_array_equal(dag(basis(2, 1).full()), [[0.0, 1.0]])
+    assert_array_equal(dag(basis(2, 0)), [[1.0, 0.0]])
+    assert_array_equal(dag(basis(2, 1)), [[0.0, 1.0]])
     # test with all complex entries
     ket1 = jnp.array(
         [
