@@ -132,7 +132,7 @@ def sigmaz():
     return jnp.asarray([[1.0, 0.0], [0.0, -1.0]])
 
 #TODO:Remove False and return jnp matrix
-def destroy(N, full=False):
+def destroy(N):
     """Destruction (lowering or annihilation) operator.
     
     Args:
@@ -146,8 +146,9 @@ def destroy(N, full=False):
     if not isinstance(N, (int, jnp.integer)):  # raise error if N not integer
         raise ValueError("Hilbert space dimension must be an integer value")
     data = jnp.sqrt(jnp.arange(1, N, dtype=jnp.float32))
-    zeros = np.zeros((N, N))
-    return jnp.array(np.fill_diagonal(zeros[:,1:], data), dtype=jnp.complex64)
+    mat = np.zeros((N, N))
+    np.fill_diagonal(mat[:,1:], data) # np.full_diagonal is not implemented in jax.numpy
+    return jnp.asarray(mat, dtype=jnp.complex64) # wrap as a jax.numpy array
 #TODO: apply jax device array data type to everything all at once
     #ind = jnp.arange(1, N, dtype=jnp.float32)
     #ptr = jnp.arange(N + 1, dtype=jnp.float32)
@@ -174,8 +175,9 @@ def create(N):
     if not isinstance(N, (int, jnp.integer)):  # raise error if N not integer
         raise ValueError("Hilbert space dimension must be an integer value")
     data = jnp.sqrt(jnp.arange(1, N, dtype=jnp.float32))
-    zeros = np.zeros((N, N))
-    return jnp.array(np.fill_diagonal(zeros[1:], data), dtype=jnp.complex64)
+    mat = np.zeros((N, N))
+    np.fill_diagonal(mat[1:], data) # np.full_diagonal is not implemented in jax.numpy
+    return jnp.asarray(mat, dtype=jnp.complex64) # wrap as a jax.numpy array
     #ind = jnp.arange(0, N - 1, dtype=jnp.float32)
     #ptr = jnp.arange(N + 1, dtype=jnp.float32)
     #ptr = index_update(
