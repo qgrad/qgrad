@@ -23,7 +23,6 @@ def fidelity(a, b):
     Returns:
         float: fidelity between the two states
     """
-    #if jnp.asarray(a).shape[1] >= 2 or jnp.asarray(b).shape[1] >= 2:
     if isket(a) == False or isket(b) == False:
         a, b = to_dm(a), to_dm(b)
         return _fidelity_dm(a, b)
@@ -331,7 +330,7 @@ def isket(state):
     -------
         bool: `True` if state is a ket and `False` otherwise
     """
-    if jnp.isclose(jnp.norm(jnp.array(state)), 1) == False:
+    if jnp.isclose(jnp.linalg.norm(jnp.array(state)), 1) == False:
         raise TypeError("A valid ket should be normalized to 1")
     return state.shape[1] == 1
 
@@ -346,7 +345,7 @@ def isbra(state):
     -------
         bool: `True` if state is a bra and `False` otherwise
     """
-    if jnp.isclose(jnp.norm(jnp.array(state)), 1) == False:
+    if jnp.isclose(jnp.linalg.norm(jnp.array(state)), 1) == False:
         raise TypeError("A valid bra should be normalized to 1")
     return state.shape[0] == 1
 
