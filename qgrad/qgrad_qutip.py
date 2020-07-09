@@ -1,14 +1,15 @@
 """
 Implementation of some common quantum mechanics functions that work with JAX
 """
-#TODO: work with JAX-wrapped scipy
+# TODO: work with JAX-wrapped scipy
 from scipy.sparse import csr_matrix
 from jax.ops import index, index_update
 import jax.numpy as jnp
 import numpy as np
 from scipy.linalg import expm, sqrtm
 from numpy.linalg import matrix_power
-import scipy 
+import scipy
+
 
 def fidelity(a, b):
     """
@@ -63,6 +64,7 @@ def _fidelity_dm(a, b):
     fidel = jnp.trace(sqrtm(jnp.dot(jnp.dot(sqrtm(dm1), dm2), sqrtm(dm1)))) ** 2
     return jnp.real(fidel)
 
+
 def rot(params):
     """
     Returns a unitary matrix describing rotation around Z-Y-Z axis for a single qubit
@@ -115,7 +117,9 @@ def sigmay():
      [0.+1.j 0.+0.j]]
 
     """
-    return jnp.array([[0.0 + 0.0j, 0.0 - 1.0j], [0.0 + 1.0j, 0.0 + 0.0j]], dtype=jnp.complex64)
+    return jnp.array(
+        [[0.0 + 0.0j, 0.0 - 1.0j], [0.0 + 1.0j, 0.0 + 0.0j]], dtype=jnp.complex64
+    )
 
 
 def sigmaz():
@@ -131,7 +135,8 @@ def sigmaz():
     """
     return jnp.array([[1.0, 0.0], [0.0, -1.0]], dtype=jnp.complex64)
 
-#TODO:Remove False and return jnp matrix
+
+# TODO:Remove False and return jnp matrix
 def destroy(N):
     """Destruction (lowering or annihilation) operator.
     
@@ -147,19 +152,24 @@ def destroy(N):
         raise ValueError("Hilbert space dimension must be an integer value")
     data = jnp.sqrt(jnp.arange(1, N, dtype=jnp.float32))
     mat = np.zeros((N, N))
-    np.fill_diagonal(mat[:,1:], data) # np.full_diagonal is not implemented in jax.numpy
-    return jnp.asarray(mat, dtype=jnp.complex64) # wrap as a jax.numpy array
-#TODO: apply jax device array data type to everything all at once
-    #ind = jnp.arange(1, N, dtype=jnp.float32)
-    #ptr = jnp.arange(N + 1, dtype=jnp.float32)
-    #ptr = index_update(
-    #    ptr, index[-1], N - 1
-    #)    index_update mutates the jnp array in-place like numpy
-    #return (
-    #    csr_matrix((data, ind, ptr), shape=(N, N))
-    #    if full is True
-    #    else csr_matrix((data, ind, ptr), shape=(N, N)).toarray()
-    #)
+    np.fill_diagonal(
+        mat[:, 1:], data
+    )  # np.full_diagonal is not implemented in jax.numpy
+    return jnp.asarray(mat, dtype=jnp.complex64)  # wrap as a jax.numpy array
+
+
+# TODO: apply jax device array data type to everything all at once
+# ind = jnp.arange(1, N, dtype=jnp.float32)
+# ptr = jnp.arange(N + 1, dtype=jnp.float32)
+# ptr = index_update(
+#    ptr, index[-1], N - 1
+# )    index_update mutates the jnp array in-place like numpy
+# return (
+#    csr_matrix((data, ind, ptr), shape=(N, N))
+#    if full is True
+#    else csr_matrix((data, ind, ptr), shape=(N, N)).toarray()
+# )
+
 
 def create(N):
     """Creation (raising) operator.
@@ -176,19 +186,19 @@ def create(N):
         raise ValueError("Hilbert space dimension must be an integer value")
     data = jnp.sqrt(jnp.arange(1, N, dtype=jnp.float32))
     mat = np.zeros((N, N))
-    np.fill_diagonal(mat[1:], data) # np.full_diagonal is not implemented in jax.numpy
-    return jnp.asarray(mat, dtype=jnp.complex64) # wrap as a jax.numpy array
-    #ind = jnp.arange(0, N - 1, dtype=jnp.float32)
-    #ptr = jnp.arange(N + 1, dtype=jnp.float32)
-    #ptr = index_update(
+    np.fill_diagonal(mat[1:], data)  # np.full_diagonal is not implemented in jax.numpy
+    return jnp.asarray(mat, dtype=jnp.complex64)  # wrap as a jax.numpy array
+    # ind = jnp.arange(0, N - 1, dtype=jnp.float32)
+    # ptr = jnp.arange(N + 1, dtype=jnp.float32)
+    # ptr = index_update(
     #    ptr, index[0], 0
-    #)  # index_update mutates the jnp array in-place like numpy
-    #return (
+    # )  # index_update mutates the jnp array in-place like numpy
+    # return (
     #    csr_matrix((data, ind, ptr), shape=(N, N))
     #    if full is True
     #    else csr_matrix((data, ind, ptr), shape=(N, N)).toarray()
-    #)
-    #return data
+    # )
+    # return data
 
 
 def expect(oper, state):
@@ -229,6 +239,7 @@ def _expect_ket(oper, state):
     oper, ket = jnp.asarray(oper), jnp.asarray(state)
     return jnp.vdot(jnp.transpose(ket), jnp.dot(oper, ket))
 
+
 class Displace:
     r"""Displacement operator for optical phase space
     
@@ -238,23 +249,24 @@ class Displace:
     ----
     n (int): dimension of the displace operator
     """
-#TODO: Use jax.scipy's eigh
+    # TODO: Use jax.scipy's eigh
     def __init__(self, n):
         # The off-diagonal of the real-symmetric similar matrix T.
-        sym = (2*(np.arange(1, n)%2) - 1) * np.sqrt(np.arange(1, n))
+        sym = (2 * (np.arange(1, n) % 2) - 1) * np.sqrt(np.arange(1, n))
         # Solve the eigensystem.
         self.evals, self.evecs = scipy.linalg.eigh_tridiagonal(np.zeros(n), sym)
         self.range = np.arange(n)
-        self.t_scale = 1j**(self.range % 2)
+        self.t_scale = 1j ** (self.range % 2)
 
     def __call__(self, alpha):
         """Callable with alpha as the displacement parameter"""
         # Diagonal of the transformation matrix P, and apply to eigenvectors.
-        transform = self.t_scale * (alpha / np.abs(alpha))**-self.range
+        transform = self.t_scale * (alpha / np.abs(alpha)) ** -self.range
         evecs = transform[:, None] * self.evecs
         # Get the exponentiated diagonal.
         diag = np.exp(1j * np.abs(alpha) * self.evals)
         return np.conj(evecs) @ (diag[:, None] * evecs.T)
+
 
 def squeeze(N, z):
     """Single-mode squeezing operator
@@ -269,9 +281,14 @@ def squeeze(N, z):
         `obj:numpy.array`[complex]: Squeezing operator
     
     """
-    op = (1.0 / 2.0) * ((jnp.conj(z) * matrix_power(destroy(N), 2)) - (z * matrix_power(create(N), 2)))
+    op = (1.0 / 2.0) * (
+        (jnp.conj(z) * matrix_power(destroy(N), 2)) - (z * matrix_power(create(N), 2))
+    )
     return expm(op)
-#TODO:gradients of squeezing
+
+
+# TODO:gradients of squeezing
+
 
 def basis(N, n=0):
     """Generates the vector representation of a Fock state.
@@ -288,8 +305,8 @@ def basis(N, n=0):
     if (not isinstance(N, (int, np.integer))) or N < 0:
         raise ValueError("N must be integer N >= 0")
 
-    zeros = jnp.zeros((N, 1), dtype=jnp.complex64) #column of zeros
-    return index_update(zeros, index[n, 0], 1.)
+    zeros = jnp.zeros((N, 1), dtype=jnp.complex64)  # column of zeros
+    return index_update(zeros, index[n, 0], 1.0)
 
 
 def coherent(N, alpha):
@@ -306,9 +323,10 @@ def coherent(N, alpha):
         state (`obj:numpy.array`[complex]): Coherent state (eigenstate of the lowering operator)
 
     """
-    x = basis(N, 0) # Vacuum state
+    x = basis(N, 0)  # Vacuum state
     displace = Displace(N)
     return jnp.dot(displace(alpha), x)
+
 
 def dag(state):
     r"""Returns conjugate transpose of a given state, represented by :math:`A^{\dagger}`, where :math:`A` may 
@@ -325,6 +343,7 @@ def dag(state):
     """
     return jnp.conjugate(jnp.transpose(state))
 
+
 def isket(state):
     """Checks whether a state is a ket based on its shape
     
@@ -338,6 +357,7 @@ def isket(state):
     """
     return state.shape[1] == 1
 
+
 def isbra(state):
     """Checks whether a state is a bra based on its shape
     
@@ -350,6 +370,7 @@ def isbra(state):
         bool: `True` if state is a bra and `False` otherwise
     """
     return state.shape[0] == 1
+
 
 def to_dm(state):
     """Converts a ket or a bra into its density matrix representation using outer product :math:`|x><x|`
@@ -369,7 +390,9 @@ def to_dm(state):
         out = jnp.dot(dag(state), state)
 
     else:
-        raise TypeError("Input is neither a ket, nor a bra. First dimension of a bra should be 1. Eg: (1, 4).\
-                           Second dimension of a ket should be 1. Eg: (4, 1)")
+        raise TypeError(
+            "Input is neither a ket, nor a bra. First dimension of a bra should be 1. Eg: (1, 4).\
+                           Second dimension of a ket should be 1. Eg: (4, 1)"
+        )
 
     return out

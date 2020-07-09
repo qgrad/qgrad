@@ -1,5 +1,10 @@
 """Tests for qgrad implementation of qutip functions"""
-from numpy.testing import assert_almost_equal, assert_array_equal, assert_array_almost_equal, assert_equal
+from numpy.testing import (
+    assert_almost_equal,
+    assert_array_equal,
+    assert_array_almost_equal,
+    assert_equal,
+)
 from jax import grad
 import jax.numpy as jnp
 import pytest
@@ -26,7 +31,7 @@ from qgrad.qgrad_qutip import (
     Displace,
     sigmax,
     sigmay,
-    sigmaz
+    sigmaz,
 )
 
 
@@ -46,7 +51,7 @@ def test_fidelity():
     assert_almost_equal(fidelity(ket_plus, ket_minus), 0.0)
     assert fidelity(rand_ket(4).full(), rand_ket(4).full()) <= 1.0
     assert fidelity(rand_ket(10).full(), rand_ket(10).full()) >= 0.0
-    assert np.isclose(fidelity(ket_complx, ket_complx),  1.0)
+    assert np.isclose(fidelity(ket_complx, ket_complx), 1.0)
     assert_almost_equal(fidelity(ket_plus, ket0), 1.0 / 2.0)
     assert_almost_equal(fidelity(ket_plus, ket1), 1.0 / 2.0)
     assert_almost_equal(fidelity(ket0, ket_minus), 1.0 / 2.0)
@@ -179,9 +184,17 @@ def test_expect_sigmaxyz(op, state):
         assert expect(op, state) == -1.0
 
 
-displace = Displace(2) #Initializing displace obj for `test_expect_herm`
-@pytest.mark.parametrize("oper, state", [(rand_herm(2).full(), basis(2, 0)),
-        (displace(1.0), basis(2, 1)), (squeeze(4, 1.5), basis(2, 1))])
+displace = Displace(2)  # Initializing displace obj for `test_expect_herm`
+
+
+@pytest.mark.parametrize(
+    "oper, state",
+    [
+        (rand_herm(2).full(), basis(2, 0)),
+        (displace(1.0), basis(2, 1)),
+        (squeeze(4, 1.5), basis(2, 1)),
+    ],
+)
 def test_expect_herm(oper, state):
     """Tests that the expectation value of a hermitian operator is real and that of 
        the non-hermitian operator is complex"""
@@ -190,8 +203,13 @@ def test_expect_herm(oper, state):
     else:
         assert jnp.iscomplex(expect(oper, state)) == True
 
+
 @pytest.mark.parametrize(
-    "oper, state", [(rand_herm(5).full(), rand_ket(5).full()), (rand_dm(5).full(), rand_ket(5).full())]
+    "oper, state",
+    [
+        (rand_herm(5).full(), rand_ket(5).full()),
+        (rand_dm(5).full(), rand_ket(5).full()),
+    ],
 )
 def test_expect_dag(oper, state):
     r"""Reconciles the expectation value of a random operator with the analytic calculation
@@ -285,6 +303,7 @@ def test_to_dm():
     assert_array_equal(to_dm(dag(basis(2, 0))), dm0)
     assert_array_equal(to_dm(dag(basis(2, 1))), dm1)
 
+
 def test_squeeze():
     """Tests the squeeze operator"""
     sq = squeeze(4, 0.1 + 0.1j)
@@ -319,6 +338,7 @@ def test_squeeze():
     )
 
     assert_equal(np.allclose(sq, sqmatrix), True)
+
 
 class TestDisplace:
     """A test class for the displace operator"""
