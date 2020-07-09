@@ -166,8 +166,8 @@ def test_sigmaz():
     assert_array_equal(sigmaz(), jnp.array([[1.0, 0.0], [0.0, -1.0]]))
 
 
-@pytest.mark.paramterize("op", [sigmax(), sigmay(), sigmaz()])
-@pytest.mark.paramterize("state", [basis(2, 0), basis(2, 1)])
+@pytest.mark.parametrize("op", [sigmax(), sigmay(), sigmaz()])
+@pytest.mark.parametrize("state", [basis(2, 0), basis(2, 1)])
 def test_expect_sigmaxyz(op, state):
     """Tests the `expect` function on Pauli-X, Pauli-Y and Pauli-Z."""
     # The stacked pytest decorators check all the argument combinations like a Cartesian product
