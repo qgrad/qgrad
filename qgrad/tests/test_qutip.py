@@ -63,8 +63,8 @@ def test_fidelity_max_ket():
     for _ in range(10):
         ket1 = jnp.asarray(rand_ket(25))
         ket2 = jnp.asarray(rand_ket(25))
-        assert_almost_equal(fidelity(ket1, ket1), 1.0)
-        assert_almost_equal(fidelity(ket2, ket2), 1.0)
+        assert_almost_equal(fidelity(ket1, ket1), 1.0, decimal=6)
+        assert_almost_equal(fidelity(ket2, ket2), 1.0, decimal=6)
 
 
 def test_fidelity_bounded_mixedmixed(tol=1e-7):
