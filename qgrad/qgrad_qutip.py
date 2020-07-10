@@ -269,7 +269,7 @@ class Displace:
 
 
 def squeeze(N, z):
-    """Single-mode squeezing operator
+    """Single-mode squeezing operator.
 
     Args:
     ----
