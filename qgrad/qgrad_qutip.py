@@ -223,8 +223,8 @@ def expect(oper, state):
 
 
 def _expect_dm(oper, state):
-    """Private function to calculate the expectaion value of 
-    and operator with respect to a density matrix
+    """Private function to calculate the expectation value of 
+    an operator with respect to a density matrix
     """
     # convert to jax.numpy arrays in case user gives raw numpy
     oper, rho = jnp.asarray(oper), jnp.asarray(state)
