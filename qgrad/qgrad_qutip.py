@@ -233,8 +233,8 @@ def _expect_dm(oper, state):
 
 
 def _expect_ket(oper, state):
-    """Private function to calculate the expectaion value of 
-    and operator with respect to a ket
+    """Private function to calculate the expectation value of 
+    an operator with respect to a ket.
     """
     oper, ket = jnp.asarray(oper), jnp.asarray(state)
     return jnp.vdot(jnp.transpose(ket), jnp.dot(oper, ket))
