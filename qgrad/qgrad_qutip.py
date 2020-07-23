@@ -13,15 +13,18 @@ import scipy
 def fidelity(a, b):
     """
     Computes fidelity between two states (pure or mixed).
-    
+   
+    .. note::
+       ``a`` and ``b`` can either both be kets or both be density matrices,
+       or anyone of ``a`` or ``b``  may be a ket or a density matrix. Fidelity has
+       private functions to handle such inputs.
+
     Args:
-        a (:obj:`numpy.ndarray`): State vector (ket) or a density
-             matrix. 
-        b (:obj:`numpy.ndarray`): State vector (ket) or a density
-             matrix. 
+        a (:obj:`jnp.ndarray`): State vector (ket) or a density matrix. 
+        b (:obj:`jnp.ndarray`): State vector (ket) or a density matrix. 
         
     Returns:
-        float: fidelity between the two states
+        float: fidelity between the two input states
     """
     if isket(a) and isket(b):
         return _fidelity_ket(a, b)
@@ -38,8 +41,8 @@ def _fidelity_ket(a, b):
     Private function that computes fidelity between two kets.
     
     Args:
-        a (:obj:`numpy.ndarray`): State vector (ket)
-        b (:obj:`numpy.ndarray`): State vector (ket) 
+        a (:obj:`jnp.ndarray`): State vector (ket)
+        b (:obj:`jnp.ndarray`): State vector (ket) 
         
     Returns:
         float: fidelity between the two state vectors
@@ -53,8 +56,8 @@ def _fidelity_dm(a, b):
     Private function that computes fidelity among two mixed states.
     
     Args:
-        a (:obj:`numpy.ndarray`): density matrix (density matrix)
-        b (:obj:`numpy.ndarray`): density matrix (density matrix)
+        a (:obj:`jnp.ndarray`): density matrix (density matrix)
+        b (:obj:`jnp.ndarray`): density matrix (density matrix)
         
     Returns:
         float: fidelity between the two density matrices 
@@ -69,7 +72,7 @@ def rot(params):
     Returns a unitary matrix describing rotation around Z-Y-Z axis for a single qubit.
 
     Args:
-        params (`:obj:numpy.array`[float]): an array of three parameters defining the
+        params (`:obj:jnp.ndarray`[float]): an array of three parameters defining the
                                      rotation
 
     Returns:
@@ -204,8 +207,8 @@ def expect(oper, state):
         Input state, represented by the argumuent ``state`` can only be a density matrix or a ket.
 
     Args:
-        oper (:obj:`numpy.ndarray`): JAX numpy array representing an operator
-        state (:obj:`numpy.ndarray`): JAX numpy array representing a density matrix or a ket 
+        oper (:obj:`jnp.ndarray`): JAX numpy array representing an operator
+        state (:obj:`jnp.ndarray`): JAX numpy array representing a density matrix or a ket 
 
     Returns:
         float: Expectation value. ``real`` if the ``oper`` is Hermitian, ``complex`` otherwise 
