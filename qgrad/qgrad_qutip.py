@@ -242,7 +242,7 @@ def _expect_ket(oper, state):
 
 
 class Displace:
-    r"""Displacement operator for optical phase space
+    r"""Displacement operator for optical phase space.
     
     .. math: D(\alpha) = \exp(\alpha a^\dagger -\alpha^* a)
 
@@ -346,7 +346,7 @@ def dag(state):
 
 
 def isket(state):
-    """Checks whether a state is a ket based on its shape
+    """Checks whether a state is a ket based on its shape.
     
     Args:
     ----
@@ -360,7 +360,7 @@ def isket(state):
 
 
 def isbra(state):
-    """Checks whether a state is a bra based on its shape
+    """Checks whether a state is a bra based on its shape.
     
     Args:
     ----
@@ -374,7 +374,7 @@ def isbra(state):
 
 
 def to_dm(state):
-    """Converts a ket or a bra into its density matrix representation using outer product :math:`|x><x|`
+    """Converts a ket or a bra into its density matrix representation using outer product :math:`|x \\rangle \langle x|`.
     
     Args:
     ----
