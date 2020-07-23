@@ -21,4 +21,5 @@ JAX-compatible QuTiP functions
    qgrad_qutip.sigmax
    qgrad_qutip.sigmay
    qgrad_qutip.sigmaz
+   qgrad_qutip.squeeze
 

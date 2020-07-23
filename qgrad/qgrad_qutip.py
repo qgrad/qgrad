@@ -251,7 +251,8 @@ class Displace:
         diag = np.exp(1j * np.abs(alpha) * self.evals)
         return np.conj(evecs) @ (diag[:, None] * evecs.T)
 
-
+#TODO: Add mathematical description of squeeze in docstrings
+# TODO:gradients of squeezing
 def squeeze(N, z):
     """Single-mode squeezing operator.
 
@@ -260,7 +261,7 @@ def squeeze(N, z):
         z (float/complex): Squeezing parameter
 
     Returns:
-        :obj:`jnp.ndarray`: Squeezing operator
+        :obj:`jnp.ndarray`: JAX numpy representation of the squeezing operator
     
     """
     op = (1.0 / 2.0) * (
@@ -268,8 +269,6 @@ def squeeze(N, z):
     )
     return expm(op)
 
-
-# TODO:gradients of squeezing
 
 
 def basis(N, n=0):
@@ -347,7 +346,8 @@ def isbra(state):
 
 
 def to_dm(state):
-    r"""Converts a ket or a bra into its density matrix representation using outer product :math:`|x\rangle \langle x|`.
+    r"""Converts a ket or a bra into its density matrix representation using 
+    the outer product :math:`|x\rangle \langle x|`.
     
     Args:
     state (:obj:`jnp.ndarray`): input ket or a bra
