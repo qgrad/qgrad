@@ -243,7 +243,7 @@ class Displace:
         self.t_scale = 1j ** (self.range % 2)
 
     def __call__(self, alpha):
-        r"""Callable with alpha as the displacement parameter
+        r"""Callable with ``alpha`` as the displacement parameter
 
         Args:
             alpha (float): Displaacement parameter

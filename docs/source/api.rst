@@ -30,5 +30,6 @@ API Reference
 
 .. autosummary::
    :toctree: generated/
+   :nosignatures:
 
    qgrad_qutip.Displace
