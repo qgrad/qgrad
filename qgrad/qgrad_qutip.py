@@ -353,7 +353,7 @@ def isbra(state):
         state (:obj:`jnp.ndarray`): input state
 
     Returns:
-        bool: `True` if state is a bra and `False` otherwise
+        bool: ``True`` if state is a bra and ``False`` otherwise
     """
     return state.shape[0] == 1
 

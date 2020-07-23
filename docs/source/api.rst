@@ -15,3 +15,4 @@ JAX-compatible QuTiP functions
    qgrad_qutip.destroy
    qgrad_qutip.expect
    qgrad_qutip.fidelity
+   qgrad_qutip.isbra
