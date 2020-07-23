@@ -6,9 +6,25 @@
 Welcome to qgrad's documentation!
 =================================
 
+**qgrad**
+##########
+
+qgrad is a library that aims to make physics-based optimization tasks easier for the 
+users. qgrad reproduces essential QuTiP functions (with almost the same API) to reduce 
+the friction for existing QuTiP users to transition to a new library. While many
+quantum libraries focus on quantum circuit learning, qgrad focuses on Hamiltonian
+learning type problems. qgrad interfaces with popular machine learning library, JAX 
+to make auto-differentiation of many quantum routines possible for desired learning 
+tasks.
+
+**Disclaimer**: qgrad is currently being developed in alpha mode, which may lead to 
+changes in API. Track latest developments on `GitHub <https://github.com/qgrad/qgrad>`_
+
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+   :maxdepth: 3
+
+   install.rst
+   api.rst
 
 
 
