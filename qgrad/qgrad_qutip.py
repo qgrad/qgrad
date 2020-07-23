@@ -11,8 +11,7 @@ import scipy
 
 
 def fidelity(a, b):
-    """
-    Computes fidelity between two states (pure or mixed).
+    """Computes fidelity between two states (pure or mixed).
    
     .. note::
        ``a`` and ``b`` can either both be kets or both be density matrices,
@@ -37,8 +36,7 @@ def fidelity(a, b):
 
 
 def _fidelity_ket(a, b):
-    """
-    Private function that computes fidelity between two kets.
+    """Private function that computes fidelity between two kets.
     
     Args:
         a (:obj:`jnp.ndarray`): State vector (ket)
@@ -52,8 +50,7 @@ def _fidelity_ket(a, b):
 
 
 def _fidelity_dm(a, b):
-    """
-    Private function that computes fidelity among two mixed states.
+    """Private function that computes fidelity among two mixed states.
     
     Args:
         a (:obj:`jnp.ndarray`): density matrix (density matrix)
@@ -68,14 +65,13 @@ def _fidelity_dm(a, b):
 
 #TODO: N-dimensional unitary
 def rot(params):
-    """
-    Returns a 2x2 unitary matrix describing rotation around Z-Y-Z axis for a single qubit.
+    r"""Returns a :math:`2 \times 2` unitary matrix describing rotation around :math:`Z-Y-Z` axis for a single qubit.
 
     Args:
         params (:obj:`jnp.ndarray`): an array of three parameters of shape (3,) defining the rotation
 
     Returns:
-        :obj:`jnp.ndarray`: a 2x2 matrix defining the paramatrzed unitary
+        :obj:`jnp.ndarray`: a :math:`2 \times 2` matrix defining the paramatrzed unitary
     """
     phi, theta, omega = params
     cos = jnp.cos(theta / 2)
@@ -358,7 +354,7 @@ def isbra(state):
 
 
 def to_dm(state):
-    """Converts a ket or a bra into its density matrix representation using outer product :math:`|x\rrangle \langle x|`.
+    r"""Converts a ket or a bra into its density matrix representation using outer product :math:`|x\rangle \langle x|`.
     
     Args:
     state (:obj:`jnp.ndarray`): input ket or a bra

@@ -17,4 +17,5 @@ JAX-compatible QuTiP functions
    qgrad_qutip.fidelity
    qgrad_qutip.isbra
    qgrad_qutip.isket
-   
+   qgrad_qutip.rot
+
