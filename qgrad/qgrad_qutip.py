@@ -341,7 +341,7 @@ def isket(state):
         state (:obj:`jnp.ndarray`): input state
 
     Returns:
-        bool: `True` if state is a ket and `False` otherwise
+        bool: ``True`` if state is a ket and ``False`` otherwise
     """
     return state.shape[1] == 1
 

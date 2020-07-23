@@ -16,3 +16,5 @@ JAX-compatible QuTiP functions
    qgrad_qutip.expect
    qgrad_qutip.fidelity
    qgrad_qutip.isbra
+   qgrad_qutip.isket
+   
