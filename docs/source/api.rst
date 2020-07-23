@@ -2,8 +2,8 @@
 API Reference
 *************
 
-JAX-compatible QuTiP functions
-##############################
+JAX-compatible QuTiP **functions**
+##################################
 
 .. autosummary::
    :toctree: generated/
@@ -22,4 +22,6 @@ JAX-compatible QuTiP functions
    qgrad_qutip.sigmay
    qgrad_qutip.sigmaz
    qgrad_qutip.squeeze
+   qgrad_qutip.to_dm
+
 

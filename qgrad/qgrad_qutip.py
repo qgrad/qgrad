@@ -353,7 +353,7 @@ def to_dm(state):
     state (:obj:`jnp.ndarray`): input ket or a bra
 
     Returns:
-    dm (:obj:`jnp.ndarray`): density matrix representation of a ket or a bra
+        :obj:`jnp.ndarray`: density matrix representation of a ket or a bra
     """
     if isket(state):
         out = jnp.dot(state, dag(state))
