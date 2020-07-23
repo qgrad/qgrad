@@ -228,7 +228,7 @@ def _expect_ket(oper, state):
 class Displace:
     r"""Displacement operator for optical phase space.
     
-    .. math: D(\alpha) = \exp(\alpha a^\dagger -\alpha^* a)
+    .. math:: D(\alpha) = \exp(\alpha a^\dagger -\alpha^* a)
 
     Args:
     n (int): dimension of the displace operator
@@ -243,7 +243,16 @@ class Displace:
         self.t_scale = 1j ** (self.range % 2)
 
     def __call__(self, alpha):
-        """Callable with alpha as the displacement parameter"""
+        r"""Callable with alpha as the displacement parameter
+
+        Args:
+            alpha (float): Displaacement parameter
+
+        Returns:
+            :obj:`jnp.ndarray`: Matrix representing :math:`n-`dimensional displace operator
+            with :math:`\alpha` displacement
+        
+        """
         # Diagonal of the transformation matrix P, and apply to eigenvectors.
         transform = self.t_scale * (alpha / np.abs(alpha)) ** -self.range
         evecs = transform[:, None] * self.evecs

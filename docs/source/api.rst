@@ -2,7 +2,7 @@
 API Reference
 *************
 
-JAX-compatible QuTiP **functions**
+**Functions**
 ##################################
 
 .. autosummary::
@@ -25,3 +25,10 @@ JAX-compatible QuTiP **functions**
    qgrad_qutip.to_dm
 
 
+**Classes**
+###########
+
+.. autosummary::
+   :toctree: generated/
+
+   qgrad_qutip.Displace

@@ -2,8 +2,8 @@
 Installation
 ************
 
-Standard Package Requirements
-#############################
+**Standard Package Requirements**
+#################################
 
 qgrad depends on the following standard packages
 
