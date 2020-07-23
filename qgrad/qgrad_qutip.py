@@ -327,16 +327,14 @@ def coherent(N, alpha):
 
 
 def dag(state):
-    r"""Returns conjugate transpose of a given state, represented by :math:`A^{\dagger}`, where :math:`A` may 
-    be a density matrix representation of a state. For kets, bras are returned and vice-versa.
+    r"""Returns conjugate transpose of a given state, represented by :math:`A^{\dagger}`, where :math:`A` is
+    a quantum state represented by a ket, a bra or, more generally, a density matrix.
 
     Args:
-    ----
-        state (`obj:numpy.array`[complex]): State to perform the dagger operation on
+        state (:obj:`jnp.ndarray`): State to perform the dagger operation on
      
     Returns:
-    -------
-        state (`obj:jax.numpy.array`[complex]): Conjugate transposed numpy representation of input state
+        state (:obj:`jnp.ndarray`): Conjugate transposed jax.numpy representation of the input state
  
     """
     return jnp.conjugate(jnp.transpose(state))
