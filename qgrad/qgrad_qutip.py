@@ -177,10 +177,9 @@ def create(N):
 
     Args:
         N (int): Dimension of Hilbert space 
-        full (bool): Returns a full matrix if `True` and Compressed Sparse Matrix if `False`  
 
     Returns:
-         `obj:numpy.array`[complex]: Matrix representation for an N-dimensional creation operator
+         :obj:`jnp.ndarray`: Matrix representation for an N-dimensional creation operator
 
     """
     if not isinstance(N, (int, jnp.integer)):  # raise error if N not integer

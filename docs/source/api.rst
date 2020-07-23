@@ -10,3 +10,4 @@ JAX-compatible QuTiP functions
 
    qgrad_qutip.basis
    qgrad_qutip.coherent
+   qgrad_qutip.create
