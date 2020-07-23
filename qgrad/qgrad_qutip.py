@@ -292,17 +292,17 @@ def squeeze(N, z):
 
 
 def basis(N, n=0):
-    """Generates the vector representation of a Fock state.
+    r"""Generates the vector representation of a Fock state.
     
     Args:
-    ----
         N (int): Number of Fock states in the Hilbert space
         n (int): Number state (defaults to vacuum state, n = 0)
 
     Returns:
-    -------
-        state (`obj:numpy.array`[complex]): number state :math:`|n>`
+        :obj:`jnp.ndarray`: Number state :math:`|n\rangle`
+
     """
+
     if (not isinstance(N, (int, np.integer))) or N < 0:
         raise ValueError("N must be integer N >= 0")
 
@@ -339,7 +339,7 @@ def dag(state):
      
     Returns:
     -------
-        state (`obj:numpy.array`[complex]): Conjugate transposed numpy representation of input state
+        state (`obj:jax.numpy.array`[complex]): Conjugate transposed numpy representation of input state
  
     """
     return jnp.conjugate(jnp.transpose(state))
@@ -374,7 +374,7 @@ def isbra(state):
 
 
 def to_dm(state):
-    """Converts a ket or a bra into its density matrix representation using outer product :math:`|x \\rangle \langle x|`.
+    """Converts a ket or a bra into its density matrix representation using outer product :math:`|x\rrangle \langle x|`.
     
     Args:
     ----
