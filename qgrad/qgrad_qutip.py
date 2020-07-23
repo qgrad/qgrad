@@ -66,17 +66,16 @@ def _fidelity_dm(a, b):
     fidel = jnp.trace(sqrtm(jnp.dot(jnp.dot(sqrtm(dm1), dm2), sqrtm(dm1)))) ** 2
     return jnp.real(fidel)
 
-
+#TODO: N-dimensional unitary
 def rot(params):
     """
-    Returns a unitary matrix describing rotation around Z-Y-Z axis for a single qubit.
+    Returns a 2x2 unitary matrix describing rotation around Z-Y-Z axis for a single qubit.
 
     Args:
-        params (`:obj:jnp.ndarray`[float]): an array of three parameters defining the
-                                     rotation
+        params (:obj:`jnp.ndarray`): an array of three parameters of shape (3,) defining the rotation
 
     Returns:
-        `:obj:numpy.array`[complex]: a 2x2 matrix defining the unitary
+        :obj:`jnp.ndarray`: a 2x2 matrix defining the paramatrzed unitary
     """
     phi, theta, omega = params
     cos = jnp.cos(theta / 2)
