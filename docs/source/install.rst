@@ -36,8 +36,7 @@ installed with the following commands::
 For custom installing JAX, please visit JAX's GitHub `page <https://github.com/google/jax>`_.
 
 Although qgrad's API is intentionally made similar to that of 
-`QuTiP <https://github.com/qutip/qutip>`_, we have tried our
-best to exclude QuTiP as a dependecy in the core package. We still, however, use 
+`QuTiP <https://github.com/qutip/qutip>`_, QuTiP is not a dependency of the core package. However, qgrad still requires  
 QuTiP for testing at the moment. To install QuTiP using conda, run::
 
     conda install qutip
