@@ -195,10 +195,13 @@ def create(N):
     # )
     # return data
 
-#TODO: Accept bra for the expect operator as well
 def expect(oper, state):
     """Calculates the expectation value of an operator 
-    with respect to a pure or mixed input state.
+    with respect to an input state.
+
+    .. note::
+
+        Input state, represented by the argumuent ``state`` can only be a density matrix or a ket.
 
     Args:
         oper (:obj:`numpy.ndarray`): JAX numpy array representing an operator
