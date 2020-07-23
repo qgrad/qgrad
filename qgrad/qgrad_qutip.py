@@ -93,11 +93,8 @@ def sigmax():
 
     .. math:: \sigma_{x} = \begin{bmatrix} 0 & 1 \\ 1 & 0 \end{bmatrix}. 
     
-    Examples
-    >>> sigmax()
-    [[0. 1.]
-     [1. 0.]]
-
+    Returns:
+        :obj:`jnp.ndarray`: :math:`\sigma_{x}` operator
     """
     return jnp.array([[0.0, 1.0], [1.0, 0.0]], dtype=jnp.complex64)
 
@@ -107,10 +104,8 @@ def sigmay():
 
     .. math:: \sigma_{y} = \begin{bmatrix} 0 & -i \\ i & 0 \end{bmatrix}. 
     
-    Examples
-    >>> sigmay()
-    [[0.+0.j 0.-1.j]
-     [0.+1.j 0.+0.j]]
+    Returns:
+        :obj:`jnp.ndarray`: :math:`\sigma_{y}` operator
 
     """
     return jnp.array(
@@ -123,10 +118,8 @@ def sigmaz():
 
     .. math:: \sigma_{z} = \begin{bmatrix} 1 & 0 \\ 0 & -1 \end{bmatrix}. 
     
-    Examples
-    >>> sigmaz()
-    [[1. 0.]
-     [0. -1.]]
+    Returns:
+        :obj:`jnp.ndarray`: :math:`\sigma_{z}` operator
 
     """
     return jnp.array([[1.0, 0.0], [0.0, -1.0]], dtype=jnp.complex64)

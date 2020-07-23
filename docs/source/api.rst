@@ -18,4 +18,7 @@ JAX-compatible QuTiP functions
    qgrad_qutip.isbra
    qgrad_qutip.isket
    qgrad_qutip.rot
+   qgrad_qutip.sigmax
+   qgrad_qutip.sigmay
+   qgrad_qutip.sigmaz
 
