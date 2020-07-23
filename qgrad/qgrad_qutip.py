@@ -91,7 +91,8 @@ def rot(params):
 
 
 def sigmax():
-    r"""Returns a Pauli-X operator
+    r"""Returns a Pauli-X operator.
+
     .. math:: \sigma_{x} = \begin{bmatrix} 0 & 1 \\ 1 & 0 \end{bmatrix}. 
     
     Examples
@@ -105,7 +106,7 @@ def sigmax():
 
 
 def sigmay():
-    r"""Returns a Pauli-Y operator
+    r"""Returns a Pauli-Y operator.
 
     .. math:: \sigma_{y} = \begin{bmatrix} 0 & -i \\ i & 0 \end{bmatrix}. 
     
@@ -122,7 +123,8 @@ def sigmay():
 
 
 def sigmaz():
-    r"""Returns a Pauli-Y operator
+    r"""Returns a Pauli-Y operator.
+
     .. math:: \sigma_{z} = \begin{bmatrix} 1 & 0 \\ 0 & -1 \end{bmatrix}. 
     
     Examples
