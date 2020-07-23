@@ -2,7 +2,11 @@
 API Reference
 *************
 
+JAX-compatible QuTiP functions
+##############################
+
 .. autosummary::
    :toctree: generated/
 
-   qgrad_qutip
+   qgrad_qutip.basis
+   qgrad_qutip.coherent

@@ -315,13 +315,11 @@ def coherent(N, alpha):
     by a displacement parameter alpha.
 
     Args:
-    ----
         N (int): Dimension of Hilbert space
         alpha (float/complex): Eigenvalue of the coherent state
 
     Returns:
-    -------
-        state (`obj:numpy.array`[complex]): Coherent state (eigenstate of the lowering operator)
+        :obj:`jnp.ndarray`: Coherent state (eigenstate of the lowering operator)
 
     """
     x = basis(N, 0)  # Vacuum state
