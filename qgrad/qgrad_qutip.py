@@ -96,7 +96,6 @@ def sigmax():
     .. math:: \sigma_{x} = \begin{bmatrix} 0 & 1 \\ 1 & 0 \end{bmatrix}. 
     
     Examples
-    -------
     >>> sigmax()
     [[0. 1.]
      [1. 0.]]
@@ -111,7 +110,6 @@ def sigmay():
     .. math:: \sigma_{y} = \begin{bmatrix} 0 & -i \\ i & 0 \end{bmatrix}. 
     
     Examples
-    -------
     >>> sigmay()
     [[0.+0.j 0.-1.j]
      [0.+1.j 0.+0.j]]
@@ -128,7 +126,6 @@ def sigmaz():
     .. math:: \sigma_{z} = \begin{bmatrix} 1 & 0 \\ 0 & -1 \end{bmatrix}. 
     
     Examples
-    -------
     >>> sigmaz()
     [[1. 0.]
      [0. -1.]]
@@ -137,16 +134,14 @@ def sigmaz():
     return jnp.array([[1.0, 0.0], [0.0, -1.0]], dtype=jnp.complex64)
 
 
-# TODO:Remove False and return jnp matrix
 def destroy(N):
     """Destruction (lowering or annihilation) operator.
     
     Args:
         N (int): Dimension of Hilbert space.
-        full (bool): Returns a full matrix if `True` and Compressed Sparse Matrix if `False`  
 
     Returns:
-         `obj:numpy.array`[complex]: Matrix representation for an N-dimensional annihilation operator
+         :obj:`jnp.ndarray`: Matrix representation for an N-dimensional annihilation operator
 
     """
     if not isinstance(N, (int, jnp.integer)):  # raise error if N not integer
@@ -246,7 +241,6 @@ class Displace:
     .. math: D(\alpha) = \exp(\alpha a^\dagger -\alpha^* a)
 
     Args:
-    ----
     n (int): dimension of the displace operator
     """
     # TODO: Use jax.scipy's eigh
@@ -272,13 +266,11 @@ def squeeze(N, z):
     """Single-mode squeezing operator.
 
     Args:
-    ----
         N (int): Dimension of Hilbert space
         z (float/complex): Squeezing parameter
 
     Returns:
-    ------- 
-        `obj:numpy.array`[complex]: Squeezing operator
+        :obj:`jnp.ndarray`: Squeezing operator
     
     """
     op = (1.0 / 2.0) * (
@@ -344,11 +336,9 @@ def isket(state):
     """Checks whether a state is a ket based on its shape.
     
     Args:
-    ----
-        state (`obj:numpy.array`[complex]): input state
+        state (:obj:`jnp.ndarray`): input state
 
     Returns:
-    -------
         bool: `True` if state is a ket and `False` otherwise
     """
     return state.shape[1] == 1
@@ -358,11 +348,9 @@ def isbra(state):
     """Checks whether a state is a bra based on its shape.
     
     Args:
-    ----
-        state (`obj:numpy.array`[complex]): input state
+        state (:obj:`jnp.ndarray`): input state
 
     Returns:
-    -------
         bool: `True` if state is a bra and `False` otherwise
     """
     return state.shape[0] == 1
@@ -372,12 +360,10 @@ def to_dm(state):
     """Converts a ket or a bra into its density matrix representation using outer product :math:`|x\rrangle \langle x|`.
     
     Args:
-    ----
-    state (`obj:numpy.array`[complex]): input ket or a bra
+    state (:obj:`jnp.ndarray`): input ket or a bra
 
     Returns:
-    -------
-    dm (`obj:numpy.array`[complex]): density matrix representation of a ket or a bra
+    dm (:obj:`jnp.ndarray`): density matrix representation of a ket or a bra
     """
     if isket(state):
         out = jnp.dot(state, dag(state))
