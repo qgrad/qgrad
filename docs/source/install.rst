@@ -26,7 +26,7 @@ qgrad depends on the following standard packages
 +----------------+--------------+-----------------------------------------------------+
 
 
-In addition to the standard standard packages listed above,
+In addition to the standard packages listed above,
 `JAX <https://github.com/google/jax>`_ is needed to work with qgrad. JAX can be 
 installed with the following commands::
 
@@ -74,4 +74,3 @@ and run::
 This performs an in-place installation of the required packages and imports the cloned local version of the repository 
 to allow the users experiment on top of the default stack that comes with qgrad. If you develop an enchancement for 
 yourself, please consider opening a pull request.
-
