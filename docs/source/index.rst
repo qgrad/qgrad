@@ -13,7 +13,7 @@ qgrad is a library that aims to make physics-based optimization tasks easier for
 users. qgrad reproduces essential QuTiP functions (with almost the same API) to reduce 
 the friction for existing QuTiP users to transition to a new library. While many
 quantum libraries focus on quantum circuit learning, qgrad focuses on Hamiltonian
-learning type problems. qgrad interfaces with popular machine learning library, JAX 
+learning type problems. qgrad interfaces with the popular machine learning library, JAX, 
 to make auto-differentiation of many quantum routines possible for desired learning 
 tasks.
 
