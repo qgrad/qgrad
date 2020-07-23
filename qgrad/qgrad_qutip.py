@@ -1,7 +1,6 @@
 """
 Implementation of some common quantum mechanics functions that work with JAX
 """
-# TODO: work with JAX-wrapped scipy
 from scipy.sparse import csr_matrix
 from jax.ops import index, index_update
 import jax.numpy as jnp
