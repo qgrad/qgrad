@@ -12,3 +12,4 @@ JAX-compatible QuTiP functions
    qgrad_qutip.coherent
    qgrad_qutip.create
    qgrad_qutip.dag
+   qgrad_qutip.destroy

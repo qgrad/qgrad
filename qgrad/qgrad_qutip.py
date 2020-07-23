@@ -326,7 +326,7 @@ def dag(state):
         state (:obj:`jnp.ndarray`): State to perform the dagger operation on
      
     Returns:
-        state (:obj:`jnp.ndarray`): Conjugate transposed jax.numpy representation of the input state
+        :obj:`jnp.ndarray`: Conjugate transposed jax.numpy representation of the input state
  
     """
     return jnp.conjugate(jnp.transpose(state))
