@@ -13,3 +13,4 @@ JAX-compatible QuTiP functions
    qgrad_qutip.create
    qgrad_qutip.dag
    qgrad_qutip.destroy
+   qgrad_qutip.expect

@@ -195,27 +195,23 @@ def create(N):
     # )
     # return data
 
-
+#TODO: Accept bra for the expect operator as well
 def expect(oper, state):
     """Calculates the expectation value of an operator 
-    with respect to a given (pure or mixed) state.
+    with respect to a pure or mixed input state.
 
     Args:
-        oper (:obj:`numpy.ndarray`): Numpy array representing
-                an operator
-        state (:obj:`numpy.ndarray`): Numpy array representing 
-                a density matrix. Standard Python list can also be passed in case of a pure state (ket).
+        oper (:obj:`numpy.ndarray`): JAX numpy array representing an operator
+        state (:obj:`numpy.ndarray`): JAX numpy array representing a density matrix or a ket 
 
     Returns:
-        expt (float): Expectation value. ``real`` if the `oper` is
-                Hermitian and ``complex`` otherwise 
+        float: Expectation value. ``real`` if the ``oper`` is Hermitian, ``complex`` otherwise 
     """
     if jnp.asarray(state).shape[1] >= 2:
         return _expect_dm(oper, state)
 
     else:
         return _expect_ket(oper, state)
-
 
 def _expect_dm(oper, state):
     """Private function to calculate the expectation value of 
