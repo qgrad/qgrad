@@ -2,9 +2,36 @@
 # coding: utf-8
 
 # # Introduction
-# This tutorial reproduces [Thomas et al](https://arxiv.org/abs/2004.14256), titled **Efficient cavity control with SNAP gates**. Here the aim is to apply a seqeunce of Displace operators and SNAP gates, called blocks, $\hat{B}$ on an initial 10-dimensional vacuum state, $|0>$ with just the right parameters such that with the action of three such blocks, $\hat{B}$ we land on to the target binomial state $b_{1}$
-
-# In[1]:
+#
+# This tutorial reproduces part of [Fosel2020]_, titled 
+# **Efficient cavity control with SNAP gates**.
+# .. [Fosel2020] Fösel, Thomas, et al. 
+# "Efficient cavity control with SNAP gates." 
+# arXiv preprint arXiv:2004.14256 (2020). 
+# Link: [https://arxiv.org/abs/2004.14256](https://arxiv.org/abs/2004.14256).
+#
+# Here the aim is to apply a seqeunce of Displace operators and SNAP
+# gates, where Displace operation is given by
+#
+#\begin{equation}
+#D(\alpha) = e^{\alpha a^{\dagger} - \alpha^* \hat a}
+#\end{equation} 
+#
+# with  :math:`\alpha` being complex displacements, and 
+# and  :math:`a^{\dagger}` and :math:`\hat a` are the bosonic creation
+# and annihilation operators respectively.
+#
+# Moreover, a SNAP gate is defined as 
+#
+# called blocks, $\hat{B}$ on an initial vacuum state with
+# a Hilbert space cutoff  of 10.
+# state, $|0>$ with just the right parameters such that with the action
+# of three such blocks, $\hat{B}$ we land on to the target binomial 
+# state $b_{1}, as follows$
+#
+# \begin{equation}
+# b_{1} = \frac{\sqrt 3 |3\rangle + |9\rangle}{2}
+# \end{equation}
 
 
 from qgrad.qgrad_qutip import basis, to_dm, dag, Displace, fidelity
@@ -13,11 +40,11 @@ from jax import grad
 import matplotlib.pyplot as plt
 
 from qutip.visualization import plot_wigner, hinton
-from qutip import Qobj # imported purely for visualization purposes due to QuTiP-JAX non-compatibility
-import numpy as onp
+from qutip import Qobj # imported purely for visualization 
+import numpy as onp    # purposes due to QuTiP-JAX non-compatibility
 
 
-# In[2]:
+
 
 
 def pad_thetas(hilbert_size, thetas):
@@ -67,10 +94,11 @@ def snap(hilbert_size, thetas):
 # 
 # Here $D(\alpha)$ is the displacement operator (that comes with qgrad) with displacement $\alpha$ 
 # and $\hat S(\vec \theta)$ is the SNAP gate with parameter vector $\vec(\theta)$ of length $N$, the size of the Hilbert space.
-#          
-# 
-
-# In[3]:
+#
+# `qgrad` provides a fast implementation of the displacement operation
+# using a diagonal decomposition such that a `Displace` class 
+# initialises the operator which can then be applied for different 
+# :math:`\\alpha` repeatedly. 
 
 
 def add_blocks(initial, T, hilbert_size, params):
@@ -125,11 +153,9 @@ def cost(params, initial, target, T, hilbert_size):
 
 # # Initialize parameters
 # 
-# We start with an alomst alternating sequence of $\alpha$ and $\theta$ parameters as a gopod starting starting point, rather than random guessing. The target state is a binomial state
-# 
-# \begin{equation}
-# b_{1} = \frac{\sqrt 3 |3> + |9>}{2}
-# \end{equation}
+# We start with an alomst alternating sequence of $\alpha$ and $\theta$
+# parameters as a gopod starting starting point, rather than random 
+# guessing. 
 
 # In[5]:
 
