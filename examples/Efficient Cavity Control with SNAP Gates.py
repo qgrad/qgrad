@@ -56,7 +56,6 @@
 # in that we use a simpler cost function (without regularization)
 # and do not add blocks in a Breadth-First manner.
 
-# In[1]:
 
 
 import numpy as onp # this is ordinary numpy that we will
@@ -78,8 +77,6 @@ from qgrad.qgrad_qutip import basis, to_dm, dag, Displace, fidelity
 
 from tqdm.auto import tqdm
 
-
-# In[2]:
 
 
 def pad_thetas(hilbert_size, thetas):
@@ -147,8 +144,6 @@ def snap(hilbert_size, thetas):
 # construct also supports autodiff with JAX.
 # 
 
-# In[3]:
-
 
 def apply_blocks(alphas, thetas, initial_state):
     """Applies blocks of displace-snap-displace 
@@ -190,8 +185,6 @@ def apply_blocks(alphas, thetas, initial_state):
 # state, $|0 \rangle$ with randomly initialized parameters
 # $\alpha$ and $\vec{\theta}$
 
-# In[4]:
-
 
 def show_state(state):
     """Shows the Hinton plot and Wigner function for the state"""
@@ -223,14 +216,10 @@ show_state(evolved_state)
 # and $\theta_{opt}$ such that we land extremely close to the
 # desired binomial state $b_{1}$ as defined above.
 
-# In[5]:
-
 
 target_state = (jnp.sqrt(3) * basis(N, 3) +  basis(N, 9)) / 2.0 # target state b1 as shown above|
 show_state(target_state)
 
-
-# In[6]:
 
 
 def cost(params, initial, target):
@@ -262,8 +251,6 @@ def cost(params, initial, target):
 # using JAX's `grad`. This saves us painstakingly evaluating 
 # the derivative of the cost function analytically.
 # 
-
-# In[7]:
 
 
 alphas = jnp.array([1, 0.2, 0.1 - 1j]) # Displace parameters
@@ -297,8 +284,6 @@ for i in pbar:
     loss_val.append(1 - f)
     pbar.set_description("Fidelity {}".format(f))
 
-
-# In[8]:
 
 
 def display_evolution(parameters, num_plots = 4):
@@ -341,7 +326,6 @@ display_evolution(params_hist)
 # achieve even better learning.
 # 
 
-# In[9]:
 
 
 plt.plot(loss_val)
