@@ -359,7 +359,7 @@ def to_dm(state):
     the outer product :math:`|x\rangle \langle x|`.
     
     Args:
-    state (:obj:`jnp.ndarray`): input ket or a bra
+        state (:obj:`jnp.ndarray`): input ket or a bra
 
     Returns:
         :obj:`jnp.ndarray`: density matrix representation of a ket or a bra
@@ -377,3 +377,39 @@ def to_dm(state):
         )
 
     return out
+
+#TODO:Make `rot_n` method private?
+#TODO: Add matrix representation from eq 9 from the original paper for
+       # for instructive purposes
+def rot_n(N, idx, params):
+    r"""Returns an matrix :math:`R_{ij}` that performs
+    :math:`U(2)` transformation on two-dimensional subspace
+    of the :math:`N` dimensional Hilbert space, leaving
+    (N-2) dimensional subspace unchanged
+    
+    Ref: Jing, Li, et al. "Tunable efficient unitary neural
+    networks (eunn) and their application to rnns."
+    International Conference on Machine Learning. 2017.
+    
+    Args:
+        N (int): dimension of the rotation matrix
+        idx (tuple): indices (i, j) whose 4 permutations are used 
+                    to update the :math:`N \times N` identity to
+                    a rotation matrix
+        params(:obj:`jnp.array`): array of two rotation parameters,
+                    :math:`\theta_{ij}` and :math:`\phi_{ij}`
+
+    Returns:
+        :obj:`jnp.ndarray`: rotation matrix
+    """
+    i, j =  idx
+    theta, phi = *params
+    rotation = jnp.eye(N)
+    # updating the four entries
+    rotation = index_update(rotation, index[i, i], 
+                    jnp.exp(1j * phi) * jnp.cos(theta))
+    rotation = index_update(rotation, index[i, j],
+                    - jnp.exp(1j * phi) * jnp.sin(theta))
+    rotation = index_update(rotation, index[j, i], jnp.sin(theta))
+    rotation = index_update(rotation, index[j, j], jnp.cos(theta))
+    return rotation
