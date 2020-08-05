@@ -7,6 +7,7 @@ from numpy.testing import (
 )
 from jax import grad
 import jax.numpy as jnp
+from jax.random import uniform, PRNGKey
 import pytest
 from qutip import rand_ket, rand_dm, rand_herm
 import numpy as np
@@ -22,6 +23,7 @@ from qgrad.qgrad_qutip import (
     fidelity,
     isket,
     isbra,
+    make_unitary,
     rot,
     to_dm,
     sigmax,
@@ -373,3 +375,15 @@ class TestDisplace:
         )
 
         assert_equal(np.allclose(dp(0.25), dpmatrix), True)
+
+def test_make_unitary():
+    N = 3
+    #TODO: Do we need to change the angle ranges?
+    thetas = uniform(PRNGKey(0), ((N * (N - 1) / 2), ), 0.0, 2 * jnp.pi)
+    phis = uniform(PRNGKey(1), ((N * (N - 1) / 2), ), 0.0, 2 * jnp.pi)
+    omegas =  uniform(PRNGKey(2), (N, ), 0.0, 2 * jnp.pi)
+
+    unitary = make_unitary(N, thetas, phis, omegas)
+    assert_array_almost_equal(jnp.dot(unitary, dag(unitary)), jnp.eye(N))
+    assert_array_almost_equal(jnp.dot(dag(unitary), unitary), jnp.eye(N))
+
