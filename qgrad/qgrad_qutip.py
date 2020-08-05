@@ -422,7 +422,12 @@ def make_unitary(N, thetas, phis, omegas):
 
     Args:
         N (int): Dimension of the unitary matrix
-
+        thetas (:obj:`jnp.ndarray`): theta angles for rotations
+                of shape (`N` * (`N` - 1) / 2, )
+        phis (:obj:`jnp.ndarray`): phi angles for rotations
+                of shape (`N` * (`N` - 1) / 2, )
+        omegas (:obj:`jnp.ndarray`): omegas to paramterize the
+                exponents in the diagonal matrix
     Returns:
         :obj:`jnp.ndarray`: :math:`N \times N` parameterized 
                 unitary matrix
