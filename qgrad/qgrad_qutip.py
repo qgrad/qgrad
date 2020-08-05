@@ -378,10 +378,10 @@ def to_dm(state):
 
     return out
 
-#TODO:Make `rot_n` method private?
+#TODO:Make `make_rot` method private?
 #TODO: Add matrix representation from eq 9 from the original paper for
        # for instructive purposes
-def rot_n(N, idx, params):
+def make_rot(N, params, idx):
     r"""Returns an matrix :math:`R_{ij}` that performs
     :math:`U(2)` transformation on two-dimensional subspace
     of the :math:`N` dimensional Hilbert space, leaving
@@ -393,14 +393,15 @@ def rot_n(N, idx, params):
     
     Args:
         N (int): dimension of the rotation matrix
+        params(:obj:`jnp.ndarray`): array of rotation parameters,
+                    :math:`\theta_{ij}` and :math:`\phi_{ij}` of
+                    shape (2, )
         idx (tuple): indices (i, j) whose 4 permutations are used 
                     to update the :math:`N \times N` identity to
-                    a rotation matrix
-        params(:obj:`jnp.array`): array of two rotation parameters,
-                    :math:`\theta_{ij}` and :math:`\phi_{ij}`
+                    a rotation matrix with `params`
 
     Returns:
-        :obj:`jnp.ndarray`: rotation matrix
+        :obj:`jnp.ndarray`: :math:`N \times N` rotation matrix
     """
     i, j =  idx
     theta, phi = *params
@@ -413,3 +414,38 @@ def rot_n(N, idx, params):
     rotation = index_update(rotation, index[j, i], jnp.sin(theta))
     rotation = index_update(rotation, index[j, j], jnp.cos(theta))
     return rotation
+
+def make_unitary(N, thetas, phis, omegas):
+    r"""Returns an N-dimensional parameterized unitary 
+    matrix using rotation matrices defined in `rot_n`
+    in `qgrad`.
+
+    Args:
+        N (int): Dimension of the unitary matrix
+
+    Returns:
+        :obj:`jnp.ndarray`: :math:`N \times N` parameterized 
+                unitary matrix
+    """
+    if omegas.shape[0] != N:
+        raise ValueError("The dimension of omegas should be the same as the unitary")
+    if phis.shape[0] != thetas.shape[0]:
+        raise ValueError("Number of phi and theta rotation parameters should be the same")
+    if phis.shape[0] != (N) * (N - 1) / 2 or thetas.shape[0] != (N) * (N - 1) / 2:
+        raise ValueError("Size of each of the rotation parameters 
+                        should be N * (N - 1) / 2, where N is the size
+                        of the unitary matrix")
+    diagonal = jnp.zeros((N, N))
+    for i in range(N):
+        diagonal = index_update(diagonal, index[i,i], jnp.exp(1j * omegas[i])
+     # negative angles formatrix inversion 
+    params = [[- i, - j] for i, j in zip(thetas, phis)]
+    rotation = jnp.eye(N)
+    param_idx = 0 # keep track of parameter indices to feed rotation
+    for i in range(2, N+1):
+        for j in range(1, i):
+            rotation = jnp.dot(rotation, 
+                        make_rotation(N, params[param_idx], (i-1, j-1)))
+            # (i-1, j-1) to match numpy matrix indexing
+            param_idx += 1
+    return jnp.dot(diagonal, rotation)
