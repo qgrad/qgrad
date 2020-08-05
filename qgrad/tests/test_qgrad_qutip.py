@@ -379,9 +379,12 @@ class TestDisplace:
 def test_make_unitary():
     N = 3
     #TODO: Do we need to change the angle ranges?
-    thetas = uniform(PRNGKey(0), ((N * (N - 1) / 2), ), 0.0, 2 * jnp.pi)
-    phis = uniform(PRNGKey(1), ((N * (N - 1) / 2), ), 0.0, 2 * jnp.pi)
-    omegas =  uniform(PRNGKey(2), (N, ), 0.0, 2 * jnp.pi)
+    thetas = uniform(PRNGKey(0), ((N * (N - 1) // 2), ),
+             minval = 0.0, maxval = 2 * jnp.pi)
+    phis = uniform(PRNGKey(1), ((N * (N - 1) // 2), ),
+             minval = 0.0, maxval = 2 * jnp.pi)
+    omegas = uniform(PRNGKey(2), (N, ),
+             minval = 0.0, maxval = 2 * jnp.pi)
 
     unitary = make_unitary(N, thetas, phis, omegas)
     assert_array_almost_equal(jnp.dot(unitary, dag(unitary)), jnp.eye(N))

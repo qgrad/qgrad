@@ -404,7 +404,7 @@ def make_rot(N, params, idx):
         :obj:`jnp.ndarray`: :math:`N \times N` rotation matrix
     """
     i, j =  idx
-    theta, phi = *params
+    theta, phi = params
     rotation = jnp.eye(N)
     # updating the four entries
     rotation = index_update(rotation, index[i, i], 
@@ -437,12 +437,12 @@ def make_unitary(N, thetas, phis, omegas):
     if phis.shape[0] != thetas.shape[0]:
         raise ValueError("Number of phi and theta rotation parameters should be the same")
     if phis.shape[0] != (N) * (N - 1) / 2 or thetas.shape[0] != (N) * (N - 1) / 2:
-        raise ValueError("Size of each of the rotation parameters 
-                        should be N * (N - 1) / 2, where N is the size
-                        of the unitary matrix")
+        raise ValueError("""Size of each of the rotation parameters \
+                        should be N * (N - 1) / 2, where N is the size \
+                        of the unitary matrix""")
     diagonal = jnp.zeros((N, N))
     for i in range(N):
-        diagonal = index_update(diagonal, index[i,i], jnp.exp(1j * omegas[i])
+        diagonal = index_update(diagonal, index[i,i], jnp.exp(1j * omegas[i]))
      # negative angles formatrix inversion 
     params = [[- i, - j] for i, j in zip(thetas, phis)]
     rotation = jnp.eye(N)
@@ -450,7 +450,7 @@ def make_unitary(N, thetas, phis, omegas):
     for i in range(2, N+1):
         for j in range(1, i):
             rotation = jnp.dot(rotation, 
-                        make_rotation(N, params[param_idx], (i-1, j-1)))
+                        make_rot(N, params[param_idx], (i-1, j-1)))
             # (i-1, j-1) to match numpy matrix indexing
             param_idx += 1
     return jnp.dot(diagonal, rotation)
