@@ -396,7 +396,7 @@ def make_rot(N, params, idx):
         params(:obj:`jnp.ndarray`): array of rotation parameters,
                     :math:`\theta_{ij}` and :math:`\phi_{ij}` of
                     shape (2, )
-        idx (tuple): indices (i, j) whose 4 permutations are used 
+        idx (tuple): (i, j) where i > j, and whose 4 permutations are 
                     to update the :math:`N \times N` identity to
                     a rotation matrix with `params`
 

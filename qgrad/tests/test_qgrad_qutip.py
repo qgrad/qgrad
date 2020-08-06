@@ -402,7 +402,7 @@ def test_make_rot(N, params, idx):
 
 def generate_params(N, key=PRNGKey(0)):
     """Generator for generating parameterizing angles in `make_unitary`"""
-    for _ in range(5):
+    for _ in range(3):
         key, subkey = split(key)
         thetas = uniform(subkey, ((N * (N - 1) // 2), ),
              minval = 0.0, maxval = 2 * jnp.pi) 
