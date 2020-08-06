@@ -405,7 +405,7 @@ def make_rot(N, params, idx):
     """
     i, j =  idx
     theta, phi = params
-    rotation = jnp.eye(N)
+    rotation = jnp.eye(N, dtype=jnp.complex64)
     # updating the four entries
     rotation = index_update(rotation, index[i, i], 
                     jnp.exp(1j * phi) * jnp.cos(theta))
@@ -413,6 +413,7 @@ def make_rot(N, params, idx):
                     - jnp.exp(1j * phi) * jnp.sin(theta))
     rotation = index_update(rotation, index[j, i], jnp.sin(theta))
     rotation = index_update(rotation, index[j, j], jnp.cos(theta))
+    print(rotation)
     return rotation
 
 def make_unitary(N, thetas, phis, omegas):

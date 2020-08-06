@@ -23,6 +23,7 @@ from qgrad.qgrad_qutip import (
     fidelity,
     isket,
     isbra,
+    make_rot,
     make_unitary,
     rot,
     to_dm,
@@ -375,6 +376,11 @@ class TestDisplace:
         )
 
         assert_equal(np.allclose(dp(0.25), dpmatrix), True)
+
+def test_make_rot():
+    N = 20 
+    rotation = make_rot(N, jnp.array([0.3 * jnp.pi, 3 * jnp.pi/ 5]), (15, 12))
+    assert_array_almost_equal(jnp.dot(dag(rotation), rotation), jnp.eye(N))
 
 def test_make_unitary():
     N = 3
