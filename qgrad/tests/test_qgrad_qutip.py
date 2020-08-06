@@ -7,7 +7,7 @@ from numpy.testing import (
 )
 from jax import grad
 import jax.numpy as jnp
-from jax.random import uniform, PRNGKey
+from jax.random import PRNGKey, split, uniform 
 import pytest
 from qutip import rand_ket, rand_dm, rand_herm
 import numpy as np
@@ -396,9 +396,30 @@ class TestDisplace:
 )
 def test_make_rot(N, params, idx):
     rotation = make_rot(N, params, idx)
+    assert_array_almost_equal(jnp.dot(rotation, dag(rotation)), jnp.eye(N))
     assert_array_almost_equal(jnp.dot(dag(rotation), rotation), jnp.eye(N))
 
+def generate_params(N, key=PRNGKey(0)):
+    """Generator for unitary parameters"""
+    for _ in range(10):
+        key, subkey = split(key)
+        thetas = uniform(subkey, ((N * (N - 1) // 2), ),
+             minval = 0.0, maxval = 2 * jnp.pi) 
+        phis = uniform(subkey, ((N * (N - 1) // 2), ),
+             minval = 0.0, maxval = 2 * jnp.pi) 
+        omegas = uniform(subkey, (N, ),
+             minval = 0.0, maxval = 2 * jnp.pi) 
+        yield thetas, phis, omegas
+
+#@pytest.mark.parameterize(
+
+#    "N, thetas, phis, omegas",
+#    [
+#        
+#    ]
+#)
 def test_make_unitary():
+    '''
     N = 3
     #TODO: Do we need to change the angle ranges?
     thetas = uniform(PRNGKey(0), ((N * (N - 1) // 2), ),
@@ -407,8 +428,11 @@ def test_make_unitary():
              minval = 0.0, maxval = 2 * jnp.pi)
     omegas = uniform(PRNGKey(2), (N, ),
              minval = 0.0, maxval = 2 * jnp.pi)
-
-    unitary = make_unitary(N, thetas, phis, omegas)
-    assert_array_almost_equal(jnp.dot(unitary, dag(unitary)), jnp.eye(N))
-    assert_array_almost_equal(jnp.dot(dag(unitary), unitary), jnp.eye(N))
+    '''
+    for N in range(2, 34, 2):    
+        for thetas, phis, omegas in generate_params(N):
+            unitary = make_unitary(N, thetas, phis, omegas)
+            print('here')
+            assert_array_almost_equal(jnp.dot(unitary, dag(unitary)), jnp.eye(N))
+            assert_array_almost_equal(jnp.dot(dag(unitary), unitary), jnp.eye(N))
 
