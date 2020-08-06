@@ -378,9 +378,6 @@ def to_dm(state):
 
     return out
 
-#TODO:Make `make_rot` method private?
-#TODO: Add matrix representation from eq 9 from the original paper for
-       # for instructive purposes
 def make_rot(N, params, idx):
     r"""Returns an :math:`N \times N` rotation matrix :math:`R_{ij}`,
     where :math:`R_{ij}` is an :math:`N-`dimensional identity matrix
@@ -425,10 +422,23 @@ def make_rot(N, params, idx):
     return rotation
 
 def make_unitary(N, thetas, phis, omegas):
-    r"""Returns an N-dimensional parameterized unitary 
-    matrix using rotation matrices defined in `rot_n`
-    in `qgrad`.
-
+    r"""Returns an :math:`N \times N` parameterized unitary 
+    matrix :math:`U(N)` using the following scheme
+        
+    .. math::
+        U(N) = D\prod_{i=2}^{N}\prod_{j=1}^{i-1}R^{'}_{ij}
+    
+    where :math:`D` is a diagonal matrix, whose elements are 
+    :math:`e^{i\omega{j}}` and :math:`R^{`}_{ij}` are rotation 
+    matrices (available via `make_rot`) where
+    :math:`R^{`}_{ij} = R(-\theta_{ij}, \phi_{ij})`
+        
+    .. note::
+        There are a total of :math:`\frac{N}(N-1)}{2}` 
+        :math:`\theta_{ij}` parameters :math:`\frac{N}(N-1)}{2}` 
+        :math:`\phi{ij}` parameters, and :math:`N omega_{ij}`
+        parameters 
+        
     Args:
         N (int): Dimension of the unitary matrix
         thetas (:obj:`jnp.ndarray`): theta angles for rotations
