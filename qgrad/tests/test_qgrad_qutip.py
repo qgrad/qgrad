@@ -395,13 +395,14 @@ class TestDisplace:
     ],
 )
 def test_make_rot(N, params, idx):
+    """Tests the `make_rot` method"""
     rotation = make_rot(N, params, idx)
     assert_array_almost_equal(jnp.dot(rotation, dag(rotation)), jnp.eye(N))
     assert_array_almost_equal(jnp.dot(dag(rotation), rotation), jnp.eye(N))
 
 def generate_params(N, key=PRNGKey(0)):
-    """Generator for unitary parameters"""
-    for _ in range(10):
+    """Generator for generating parameterizing angles in `make_unitary`"""
+    for _ in range(5):
         key, subkey = split(key)
         thetas = uniform(subkey, ((N * (N - 1) // 2), ),
              minval = 0.0, maxval = 2 * jnp.pi) 
@@ -411,28 +412,11 @@ def generate_params(N, key=PRNGKey(0)):
              minval = 0.0, maxval = 2 * jnp.pi) 
         yield thetas, phis, omegas
 
-#@pytest.mark.parameterize(
-
-#    "N, thetas, phis, omegas",
-#    [
-#        
-#    ]
-#)
 def test_make_unitary():
-    '''
-    N = 3
-    #TODO: Do we need to change the angle ranges?
-    thetas = uniform(PRNGKey(0), ((N * (N - 1) // 2), ),
-             minval = 0.0, maxval = 2 * jnp.pi)
-    phis = uniform(PRNGKey(1), ((N * (N - 1) // 2), ),
-             minval = 0.0, maxval = 2 * jnp.pi)
-    omegas = uniform(PRNGKey(2), (N, ),
-             minval = 0.0, maxval = 2 * jnp.pi)
-    '''
-    for N in range(2, 34, 2):    
+    """Tests the `make_unitary` method"""
+    for N in range(2, 30, 6):    
         for thetas, phis, omegas in generate_params(N):
             unitary = make_unitary(N, thetas, phis, omegas)
-            print('here')
             assert_array_almost_equal(jnp.dot(unitary, dag(unitary)), jnp.eye(N))
             assert_array_almost_equal(jnp.dot(dag(unitary), unitary), jnp.eye(N))
 
