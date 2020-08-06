@@ -413,7 +413,6 @@ def make_rot(N, params, idx):
                     - jnp.exp(1j * phi) * jnp.sin(theta))
     rotation = index_update(rotation, index[j, i], jnp.sin(theta))
     rotation = index_update(rotation, index[j, j], jnp.cos(theta))
-    print(rotation)
     return rotation
 
 def make_unitary(N, thetas, phis, omegas):

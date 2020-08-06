@@ -377,9 +377,25 @@ class TestDisplace:
 
         assert_equal(np.allclose(dp(0.25), dpmatrix), True)
 
-def test_make_rot():
-    N = 20 
-    rotation = make_rot(N, jnp.array([0.3 * jnp.pi, 3 * jnp.pi/ 5]), (15, 12))
+@pytest.mark.parametrize(
+    "N, params, idx", 
+    [
+        (2, [jnp.pi / 5.0, jnp.pi / 5.0], (1, 0)), # non-zero initiliazation on low dim
+        (3, [0.0, 0.0], (2, 0)), # zero initializatoin on low dim
+        (30, [0.0, 0.0], (1, 0)), # zero initialization on high dim
+        (40, [jnp.pi / 8.0, jnp.pi / 7.0], (20, 15)), # non-zero initialization on high dim
+        (10, [0.0, 2.0 * jnp.pi], (9, 8)), # sin is zero; cos isn't
+        (5, [jnp.pi / 3.0, jnp.pi / 3.0], (3, 2)), # both sin and cos don't vanish
+        (23, [jnp.pi / 2.0, jnp.pi / 2.0], (20, 0)), # cos vanishes; sin doesn't
+        (50, [3.0 * jnp.pi, 5 * jnp.pi], (30, 20)), # angles > 2pi
+        (64, [0.0, 0.0], (63, 62)), # checking corner indices on high dim
+        (75, [2.0 * jnp.pi, 2.0 * jnp.pi], (63, 62)),
+        (84, [jnp.pi, jnp.pi], (2, 0)),
+        (95, [jnp.pi / 4.0, jnp.pi / 4.0], (1, 0)),
+    ],
+)
+def test_make_rot(N, params, idx):
+    rotation = make_rot(N, params, idx)
     assert_array_almost_equal(jnp.dot(dag(rotation), rotation), jnp.eye(N))
 
 def test_make_unitary():
