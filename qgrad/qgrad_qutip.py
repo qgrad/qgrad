@@ -441,12 +441,12 @@ def make_unitary(N, thetas, phis, omegas):
         raise ValueError("""Size of each of the rotation parameters \
                         should be N * (N - 1) / 2, where N is the size \
                         of the unitary matrix""")
-    diagonal = jnp.zeros((N, N))
+    diagonal = jnp.zeros((N, N), dtype = jnp.complex64)
     for i in range(N):
         diagonal = index_update(diagonal, index[i,i], jnp.exp(1j * omegas[i]))
      # negative angles formatrix inversion 
     params = [[- i, - j] for i, j in zip(thetas, phis)]
-    rotation = jnp.eye(N)
+    rotation = jnp.eye(N, dtype = jnp.complex64)
     param_idx = 0 # keep track of parameter indices to feed rotation
     for i in range(2, N+1):
         for j in range(1, i):
