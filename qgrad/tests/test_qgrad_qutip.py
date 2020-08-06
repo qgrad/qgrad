@@ -7,7 +7,7 @@ from numpy.testing import (
 )
 from jax import grad
 import jax.numpy as jnp
-from jax.random import PRNGKey, split, uniform 
+from jax.random import PRNGKey, split, uniform
 import pytest
 from qutip import rand_ket, rand_dm, rand_herm
 import numpy as np
@@ -377,18 +377,23 @@ class TestDisplace:
 
         assert_equal(np.allclose(dp(0.25), dpmatrix), True)
 
+
 @pytest.mark.parametrize(
-    "N, params, idx", 
+    "N, params, idx",
     [
-        (2, [jnp.pi / 5.0, jnp.pi / 5.0], (1, 0)), # non-zero initiliazation on low dim
-        (3, [0.0, 0.0], (2, 0)), # zero initializatoin on low dim
-        (30, [0.0, 0.0], (1, 0)), # zero initialization on high dim
-        (40, [jnp.pi / 8.0, jnp.pi / 7.0], (20, 15)), # non-zero initialization on high dim
-        (10, [0.0, 2.0 * jnp.pi], (9, 8)), # sin is zero; cos isn't
-        (5, [jnp.pi / 3.0, jnp.pi / 3.0], (3, 2)), # both sin and cos don't vanish
-        (23, [jnp.pi / 2.0, jnp.pi / 2.0], (20, 0)), # cos vanishes; sin doesn't
-        (50, [3.0 * jnp.pi, 5 * jnp.pi], (30, 20)), # angles > 2pi
-        (64, [0.0, 0.0], (63, 62)), # checking corner indices on high dim
+        (2, [jnp.pi / 5.0, jnp.pi / 5.0], (1, 0)),  # non-zero initiliazation on low dim
+        (3, [0.0, 0.0], (2, 0)),  # zero initializatoin on low dim
+        (30, [0.0, 0.0], (1, 0)),  # zero initialization on high dim
+        (
+            40,
+            [jnp.pi / 8.0, jnp.pi / 7.0],
+            (20, 15),
+        ),  # non-zero initialization on high dim
+        (10, [0.0, 2.0 * jnp.pi], (9, 8)),  # sin is zero; cos isn't
+        (5, [jnp.pi / 3.0, jnp.pi / 3.0], (3, 2)),  # both sin and cos don't vanish
+        (23, [jnp.pi / 2.0, jnp.pi / 2.0], (20, 0)),  # cos vanishes; sin doesn't
+        (50, [3.0 * jnp.pi, 5 * jnp.pi], (30, 20)),  # angles > 2pi
+        (64, [0.0, 0.0], (63, 62)),  # checking corner indices on high dim
         (75, [2.0 * jnp.pi, 2.0 * jnp.pi], (63, 62)),
         (84, [jnp.pi, jnp.pi], (2, 0)),
         (95, [jnp.pi / 4.0, jnp.pi / 4.0], (1, 0)),
@@ -400,23 +405,21 @@ def test_make_rot(N, params, idx):
     assert_array_almost_equal(jnp.dot(rotation, dag(rotation)), jnp.eye(N))
     assert_array_almost_equal(jnp.dot(dag(rotation), rotation), jnp.eye(N))
 
+
 def generate_params(N, key=PRNGKey(0)):
     """Generator for generating parameterizing angles in `make_unitary`"""
     for _ in range(3):
         key, subkey = split(key)
-        thetas = uniform(subkey, ((N * (N - 1) // 2), ),
-             minval = 0.0, maxval = 2 * jnp.pi) 
-        phis = uniform(subkey, ((N * (N - 1) // 2), ),
-             minval = 0.0, maxval = 2 * jnp.pi) 
-        omegas = uniform(subkey, (N, ),
-             minval = 0.0, maxval = 2 * jnp.pi) 
+        thetas = uniform(subkey, ((N * (N - 1) // 2),), minval=0.0, maxval=2 * jnp.pi)
+        phis = uniform(subkey, ((N * (N - 1) // 2),), minval=0.0, maxval=2 * jnp.pi)
+        omegas = uniform(subkey, (N,), minval=0.0, maxval=2 * jnp.pi)
         yield thetas, phis, omegas
+
 
 def test_make_unitary():
     """Tests the `make_unitary` method"""
-    for N in range(2, 30, 6):    
+    for N in range(2, 30, 6):
         for thetas, phis, omegas in generate_params(N):
             unitary = make_unitary(N, thetas, phis, omegas)
             assert_array_almost_equal(jnp.dot(unitary, dag(unitary)), jnp.eye(N))
             assert_array_almost_equal(jnp.dot(dag(unitary), unitary), jnp.eye(N))
-
