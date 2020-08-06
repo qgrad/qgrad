@@ -382,11 +382,20 @@ def to_dm(state):
 #TODO: Add matrix representation from eq 9 from the original paper for
        # for instructive purposes
 def make_rot(N, params, idx):
-    r"""Returns an matrix :math:`R_{ij}` that performs
-    :math:`U(2)` transformation on two-dimensional subspace
-    of the :math:`N` dimensional Hilbert space, leaving
-    (N-2) dimensional subspace unchanged
-    
+    r"""Returns an :math:`N \times N` rotation matrix :math:`R_{ij}`,
+    where :math:`R_{ij}` is an :math:`N-`dimensional identity matrix
+    with the elements :math:`R_{ii}, R_{ij}, R_{ji}` and :math:`R_{jj}`
+    replaced as follows:
+
+    .. math::
+
+        \begin{pmatrix} R_{ii} & R{ij} \\ R_{ji} & R_{jj} 
+        \end{pmatrix} = \begin{pmatrix}
+            e^{i\phi_{ij}}cos(\theta_{ij}) & 
+            -e^{i\phi_{ij}sin(\theta_{ij})} \\
+            sin(\theta_{ij}) & cos(\theta_{ij})
+        \end{pmatrix}
+
     Ref: Jing, Li, et al. "Tunable efficient unitary neural
     networks (eunn) and their application to rnns."
     International Conference on Machine Learning. 2017.
@@ -396,9 +405,9 @@ def make_rot(N, params, idx):
         params(:obj:`jnp.ndarray`): array of rotation parameters,
                     :math:`\theta_{ij}` and :math:`\phi_{ij}` of
                     shape (2, )
-        idx (tuple): (i, j) where i > j, and whose 4 permutations are 
-                    to update the :math:`N \times N` identity to
-                    a rotation matrix with `params`
+        idx (tuple): indices (i, j) whose 4 permutations (as shown in
+                    the equation above) are to update the :math:`N \times N`
+                    identity to a rotation matrix by substituting `params`
 
     Returns:
         :obj:`jnp.ndarray`: :math:`N \times N` rotation matrix
