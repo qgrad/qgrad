@@ -63,7 +63,8 @@ def _fidelity_dm(a, b):
     fidel = jnp.trace(sqrtm(jnp.dot(jnp.dot(sqrtm(dm1), dm2), sqrtm(dm1)))) ** 2
     return jnp.real(fidel)
 
-#TODO: N-dimensional unitary
+
+# TODO: N-dimensional unitary
 def rot(params):
     r"""Returns a :math:`2 \times 2` unitary matrix describing rotation around :math:`Z-Y-Z` axis for a single qubit.
 
@@ -186,6 +187,7 @@ def create(N):
     # )
     # return data
 
+
 def expect(oper, state):
     """Calculates the expectation value of an operator 
     with respect to an input state.
@@ -206,6 +208,7 @@ def expect(oper, state):
 
     else:
         return _expect_ket(oper, state)
+
 
 def _expect_dm(oper, state):
     """Private function to calculate the expectation value of 
@@ -248,7 +251,7 @@ class Displace:
         r"""Callable with ``alpha`` as the displacement parameter
 
         Args:
-            alpha (float): Displaacement parameter
+            alpha (float): Displacement parameter
 
         Returns:
             :obj:`jnp.ndarray`: Matrix representing :math:`n-`dimensional displace operator
@@ -262,7 +265,8 @@ class Displace:
         diag = jnp.exp(1j * jnp.abs(alpha) * self.evals)
         return jnp.conj(evecs) @ (diag[:, None] * evecs.T)
 
-#TODO: Add mathematical description of squeeze in docstrings
+
+# TODO: Add mathematical description of squeeze in docstrings
 # TODO:gradients of squeezing
 def squeeze(N, z):
     """Single-mode squeezing operator.
@@ -279,7 +283,6 @@ def squeeze(N, z):
         (jnp.conj(z) * matrix_power(destroy(N), 2)) - (z * matrix_power(create(N), 2))
     )
     return expm(op)
-
 
 
 def basis(N, n=0):
@@ -361,7 +364,7 @@ def to_dm(state):
     the outer product :math:`|x\rangle \langle x|`.
     
     Args:
-    state (:obj:`jnp.ndarray`): input ket or a bra
+        state (:obj:`jnp.ndarray`): input ket or a bra
 
     Returns:
         :obj:`jnp.ndarray`: density matrix representation of a ket or a bra
@@ -379,3 +382,115 @@ def to_dm(state):
         )
 
     return out
+
+
+def _make_rot(N, params, idx):
+    r"""Returns an :math:`N \times N` rotation matrix :math:`R_{ij}`,
+    where :math:`R_{ij}` is an :math:`N-`dimensional identity matrix
+    with the elements :math:`R_{ii}, R_{ij}, R_{ji}` and :math:`R_{jj}`
+    replaced as follows:
+
+    .. math::
+
+        \begin{pmatrix} R_{ii} & R{ij} \\ R_{ji} & R_{jj} 
+        \end{pmatrix} = \begin{pmatrix}
+            e^{i\phi_{ij}}cos(\theta_{ij}) & 
+            -e^{i\phi_{ij}sin(\theta_{ij})} \\
+            sin(\theta_{ij}) & cos(\theta_{ij})
+        \end{pmatrix}
+
+    Ref: Jing, Li, et al. "Tunable efficient unitary neural
+    networks (eunn) and their application to rnns."
+    International Conference on Machine Learning. 2017.
+    
+    Args:
+        N (int): dimension of the rotation matrix
+        params(:obj:`jnp.ndarray`): array of rotation parameters,
+                    :math:`\theta_{ij}` and :math:`\phi_{ij}` of
+                    shape (2, )
+        idx (tuple): indices (i, j) whose 4 permutations (as shown in
+                    the equation above) are to update the :math:`N \times N`
+                    identity to a rotation matrix by substituting `params`
+
+    Returns:
+        :obj:`jnp.ndarray`: :math:`N \times N` rotation matrix
+    """
+    i, j = idx
+    theta, phi = params
+    rotation = jnp.eye(N, dtype=jnp.complex64)
+    # updating the four entries
+    rotation = index_update(rotation, index[i, i], jnp.exp(1j * phi) * jnp.cos(theta))
+    rotation = index_update(rotation, index[i, j], -jnp.exp(1j * phi) * jnp.sin(theta))
+    rotation = index_update(rotation, index[j, i], jnp.sin(theta))
+    rotation = index_update(rotation, index[j, j], jnp.cos(theta))
+    return rotation
+
+
+def make_unitary(N, thetas, phis, omegas):
+    r"""Returns an :math:`N \times N` parameterized unitary 
+    matrix :math:`U(N)` using the following scheme
+        
+    .. math::
+        U(N) = D\prod_{i=2}^{N}\prod_{j=1}^{i-1}R^{'}_{ij}
+    
+    where :math:`D` is a diagonal matrix, whose elements are 
+    :math:`e^{i\omega{j}}` and :math:`R^{`}_{ij}` are rotation 
+    matrices (available via `_make_rot`) where
+    :math:`R_{ij}` is an :math:`N-`dimensional identity matrix
+    with the elements :math:`R_{ii}, R_{ij}, R_{ji}` and :math:`R_{jj}`
+    replaced as follows:
+
+    .. math::
+
+        \begin{pmatrix} R_{ii} & R{ij} \\ R_{ji} & R_{jj} 
+        \end{pmatrix} = \begin{pmatrix}
+            e^{i\phi_{ij}}cos(\theta_{ij}) & 
+            -e^{i\phi_{ij}sin(\theta_{ij})} \\
+            sin(\theta_{ij}) & cos(\theta_{ij})
+        \end{pmatrix}
+
+    and :math:`R^{`}_{ij} = R(-\theta_{ij}, -\phi_{ij})`
+        
+    .. note::
+        There are a total of :math:`\frac{N}(N-1)}{2}` 
+        :math:`\theta_{ij}` parameters :math:`\frac{N}(N-1)}{2}` 
+        :math:`\phi{ij}` parameters, and :math:`N omega_{ij}`
+        parameters. 
+        
+    Args:
+        N (int): Dimension of the unitary matrix
+        thetas (:obj:`jnp.ndarray`): theta angles for rotations
+                of shape (`N` * (`N` - 1) / 2, )
+        phis (:obj:`jnp.ndarray`): phi angles for rotations
+                of shape (`N` * (`N` - 1) / 2, )
+        omegas (:obj:`jnp.ndarray`): omegas to paramterize the
+                exponents in the diagonal matrix
+    Returns:
+        :obj:`jnp.ndarray`: :math:`N \times N` parameterized 
+                unitary matrix
+    """
+    if omegas.shape[0] != N:
+        raise ValueError("The dimension of omegas should be the same as the unitary")
+    if phis.shape[0] != thetas.shape[0]:
+        raise ValueError(
+            "Number of phi and theta rotation parameters should be the same"
+        )
+    if phis.shape[0] != (N) * (N - 1) / 2 or thetas.shape[0] != (N) * (N - 1) / 2:
+        raise ValueError(
+            """Size of each of the rotation parameters \
+                        should be N * (N - 1) / 2, where N is the size \
+                        of the unitary matrix"""
+        )
+    diagonal = jnp.zeros((N, N), dtype=jnp.complex64)
+    for i in range(N):
+        diagonal = index_update(diagonal, index[i, i], jnp.exp(1j * omegas[i]))
+    # negative angles for matrix inversion
+    params = [[-i, -j] for i, j in zip(thetas, phis)]
+    rotation = jnp.eye(N, dtype=jnp.complex64)
+    param_idx = 0  # keep track of parameter indices to feed rotation
+    for i in range(2, N + 1):
+        for j in range(1, i):
+            rotation = jnp.dot(rotation, _make_rot(N, params[param_idx], (i - 1, j - 1)))
+            # (i-1, j-1) to match numpy matrix indexing
+            param_idx += 1
+    return jnp.dot(diagonal, rotation)
