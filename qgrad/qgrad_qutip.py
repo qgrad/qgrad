@@ -249,7 +249,7 @@ class Displace:
         r"""Callable with ``alpha`` as the displacement parameter
 
         Args:
-            alpha (float): Displaacement parameter
+            alpha (float): Displacement parameter
 
         Returns:
             :obj:`jnp.ndarray`: Matrix representing :math:`n-`dimensional displace operator
@@ -382,7 +382,7 @@ def to_dm(state):
     return out
 
 
-def make_rot(N, params, idx):
+def _make_rot(N, params, idx):
     r"""Returns an :math:`N \times N` rotation matrix :math:`R_{ij}`,
     where :math:`R_{ij}` is an :math:`N-`dimensional identity matrix
     with the elements :math:`R_{ii}, R_{ij}, R_{ji}` and :math:`R_{jj}`
@@ -433,14 +433,27 @@ def make_unitary(N, thetas, phis, omegas):
     
     where :math:`D` is a diagonal matrix, whose elements are 
     :math:`e^{i\omega{j}}` and :math:`R^{`}_{ij}` are rotation 
-    matrices (available via `make_rot`) where
-    :math:`R^{`}_{ij} = R(-\theta_{ij}, \phi_{ij})`
+    matrices (available via `_make_rot`) where
+    :math:`R_{ij}` is an :math:`N-`dimensional identity matrix
+    with the elements :math:`R_{ii}, R_{ij}, R_{ji}` and :math:`R_{jj}`
+    replaced as follows:
+
+    .. math::
+
+        \begin{pmatrix} R_{ii} & R{ij} \\ R_{ji} & R_{jj} 
+        \end{pmatrix} = \begin{pmatrix}
+            e^{i\phi_{ij}}cos(\theta_{ij}) & 
+            -e^{i\phi_{ij}sin(\theta_{ij})} \\
+            sin(\theta_{ij}) & cos(\theta_{ij})
+        \end{pmatrix}
+
+    and :math:`R^{`}_{ij} = R(-\theta_{ij}, -\phi_{ij})`
         
     .. note::
         There are a total of :math:`\frac{N}(N-1)}{2}` 
         :math:`\theta_{ij}` parameters :math:`\frac{N}(N-1)}{2}` 
         :math:`\phi{ij}` parameters, and :math:`N omega_{ij}`
-        parameters 
+        parameters. 
         
     Args:
         N (int): Dimension of the unitary matrix
@@ -469,13 +482,13 @@ def make_unitary(N, thetas, phis, omegas):
     diagonal = jnp.zeros((N, N), dtype=jnp.complex64)
     for i in range(N):
         diagonal = index_update(diagonal, index[i, i], jnp.exp(1j * omegas[i]))
-    # negative angles formatrix inversion
+    # negative angles for matrix inversion
     params = [[-i, -j] for i, j in zip(thetas, phis)]
     rotation = jnp.eye(N, dtype=jnp.complex64)
     param_idx = 0  # keep track of parameter indices to feed rotation
     for i in range(2, N + 1):
         for j in range(1, i):
-            rotation = jnp.dot(rotation, make_rot(N, params[param_idx], (i - 1, j - 1)))
+            rotation = jnp.dot(rotation, _make_rot(N, params[param_idx], (i - 1, j - 1)))
             # (i-1, j-1) to match numpy matrix indexing
             param_idx += 1
     return jnp.dot(diagonal, rotation)
