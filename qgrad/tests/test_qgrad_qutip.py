@@ -23,7 +23,7 @@ from qgrad.qgrad_qutip import (
     fidelity,
     isket,
     isbra,
-    make_rot,
+    _make_rot,
     make_unitary,
     rot,
     to_dm,
@@ -400,8 +400,8 @@ class TestDisplace:
     ],
 )
 def test_make_rot(N, params, idx):
-    """Tests the `make_rot` method"""
-    rotation = make_rot(N, params, idx)
+    """Tests the `_make_rot` method"""
+    rotation = _make_rot(N, params, idx)
     assert_array_almost_equal(jnp.dot(rotation, dag(rotation)), jnp.eye(N))
     assert_array_almost_equal(jnp.dot(dag(rotation), rotation), jnp.eye(N))
 
