@@ -399,10 +399,6 @@ def _make_rot(N, params, idx):
             sin(\theta_{ij}) & cos(\theta_{ij})
         \end{pmatrix}
 
-    Ref: Jing, Li, et al. "Tunable efficient unitary neural
-    networks (eunn) and their application to rnns."
-    International Conference on Machine Learning. 2017.
-    
     Args:
         N (int): dimension of the rotation matrix
         params(:obj:`jnp.ndarray`): array of rotation parameters,
@@ -426,9 +422,9 @@ def _make_rot(N, params, idx):
     return rotation
 
 
-def make_unitary(N, thetas, phis, omegas):
-    r"""Returns an :math:`N \times N` parameterized unitary 
-    matrix :math:`U(N)` using the following scheme
+class Unitary:
+    r"""Class for an :math:`N \times N` parameterized unitary 
+    matrix :math:`U(N)` constructed using the following scheme
         
     .. math::
         U(N) = D\prod_{i=2}^{N}\prod_{j=1}^{i-1}R^{'}_{ij}
@@ -450,47 +446,63 @@ def make_unitary(N, thetas, phis, omegas):
         \end{pmatrix}
 
     and :math:`R^{`}_{ij} = R(-\theta_{ij}, -\phi_{ij})`
-        
-    .. note::
-        There are a total of :math:`\frac{N}(N-1)}{2}` 
-        :math:`\theta_{ij}` parameters :math:`\frac{N}(N-1)}{2}` 
-        :math:`\phi{ij}` parameters, and :math:`N omega_{ij}`
-        parameters. 
-        
+            
+    Ref: Jing, Li, et al. "Tunable efficient unitary neural
+    networks (eunn) and their application to rnns."
+    International Conference on Machine Learning. 2017.
+
     Args:
         N (int): Dimension of the unitary matrix
-        thetas (:obj:`jnp.ndarray`): theta angles for rotations
-                of shape (`N` * (`N` - 1) / 2, )
-        phis (:obj:`jnp.ndarray`): phi angles for rotations
-                of shape (`N` * (`N` - 1) / 2, )
-        omegas (:obj:`jnp.ndarray`): omegas to paramterize the
-                exponents in the diagonal matrix
-    Returns:
-        :obj:`jnp.ndarray`: :math:`N \times N` parameterized 
-                unitary matrix
     """
-    if omegas.shape[0] != N:
-        raise ValueError("The dimension of omegas should be the same as the unitary")
-    if phis.shape[0] != thetas.shape[0]:
-        raise ValueError(
-            "Number of phi and theta rotation parameters should be the same"
-        )
-    if phis.shape[0] != (N) * (N - 1) / 2 or thetas.shape[0] != (N) * (N - 1) / 2:
-        raise ValueError(
-            """Size of each of the rotation parameters \
-                        should be N * (N - 1) / 2, where N is the size \
-                        of the unitary matrix"""
-        )
-    diagonal = jnp.zeros((N, N), dtype=jnp.complex64)
-    for i in range(N):
-        diagonal = index_update(diagonal, index[i, i], jnp.exp(1j * omegas[i]))
-    # negative angles for matrix inversion
-    params = [[-i, -j] for i, j in zip(thetas, phis)]
-    rotation = jnp.eye(N, dtype=jnp.complex64)
-    param_idx = 0  # keep track of parameter indices to feed rotation
-    for i in range(2, N + 1):
-        for j in range(1, i):
-            rotation = jnp.dot(rotation, _make_rot(N, params[param_idx], (i - 1, j - 1)))
-            # (i-1, j-1) to match numpy matrix indexing
-            param_idx += 1
-    return jnp.dot(diagonal, rotation)
+    def __init__(self, N):
+        self.N = N
+
+    def __call__(self, thetas, phis, omegas):
+        r"""Returns a parameterized unitary matrix parameerized
+        by the given angles `thetas`, `phis`, and `omegas`.
+        
+        Args:   
+            thetas (:obj:`jnp.ndarray`): theta angles for rotations
+                    of shape (`N` * (`N` - 1) / 2, )
+            phis (:obj:`jnp.ndarray`): phi angles for rotations
+                    of shape (`N` * (`N` - 1) / 2, )
+            omegas (:obj:`jnp.ndarray`): omegas to paramterize the
+                    exponents in the diagonal matrix
+        
+        Returns:
+            :obj:`jnp.ndarray`: :math:`N \times N` parameterized 
+                    unitary matrix
+
+        .. note::
+            There are a total of :math:`\frac{N}(N-1)}{2}` 
+            :math:`\theta_{ij}` parameters :math:`\frac{N}(N-1)}{2}` 
+            :math:`\phi{ij}` parameters, and :math:`N omega_{ij}`
+            parameters. 
+        """    
+
+        if omegas.shape[0] != self.N:
+            raise ValueError("The dimension of omegas should be the same as the unitary")
+        if phis.shape[0] != thetas.shape[0]:
+            raise ValueError(
+                "Number of phi and theta rotation parameters should be the same"
+            )
+        if (phis.shape[0] != (self.N) * (self.N - 1) / 2 or
+             thetas.shape[0] != (self.N) * (self.N - 1) / 2):
+            raise ValueError(
+                """Size of each of the rotation parameters \
+                    should be N * (N - 1) / 2, where N is the size \
+                    of the unitary matrix"""
+            )
+        diagonal = jnp.zeros((self.N, self.N), dtype=jnp.complex64)
+        for i in range(self.N):
+            diagonal = index_update(diagonal, index[i, i], jnp.exp(1j * omegas[i]))
+        # negative angles for matrix inversion
+        params = [[-i, -j] for i, j in zip(thetas, phis)]
+        rotation = jnp.eye(self.N, dtype=jnp.complex64)
+        param_idx = 0  # keep track of parameter indices to feed rotation
+        for i in range(2, self.N + 1):
+            for j in range(1, i):
+                rotation = jnp.dot(rotation, _make_rot(self.N, params[param_idx], (i - 1, j - 1)))
+                # (i-1, j-1) to match numpy matrix indexing
+                param_idx += 1
+        return jnp.dot(diagonal, rotation)
