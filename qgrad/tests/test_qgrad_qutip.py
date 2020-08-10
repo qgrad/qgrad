@@ -16,25 +16,25 @@ import scipy
 from qgrad.qgrad_qutip import (
     basis,
     coherent,
-    dag,
     create,
+    dag,
+    Displace,
     destroy,
     expect,
     fidelity,
     isket,
     isbra,
     _make_rot,
-    make_unitary,
     rot,
     to_dm,
     sigmax,
     sigmay,
     sigmaz,
     squeeze,
-    Displace,
     sigmax,
     sigmay,
     sigmaz,
+    Unitary,
 )
 
 
@@ -185,9 +185,6 @@ def test_expect_sigmaxyz(op, state):
         assert expect(op, state) == 1.0
     else:
         assert expect(op, state) == -1.0
-
-
-displace = Displace(2)  # Initializing displace obj for `test_expect_herm`
 
 
 @pytest.mark.parametrize(
@@ -406,20 +403,24 @@ def test_make_rot(N, params, idx):
     assert_array_almost_equal(jnp.dot(dag(rotation), rotation), jnp.eye(N))
 
 
-def generate_params(N, key=PRNGKey(0)):
-    """Generator for generating parameterizing angles in `make_unitary`"""
-    for _ in range(3):
-        key, subkey = split(key)
-        thetas = uniform(subkey, ((N * (N - 1) // 2),), minval=0.0, maxval=2 * jnp.pi)
-        phis = uniform(subkey, ((N * (N - 1) // 2),), minval=0.0, maxval=2 * jnp.pi)
-        omegas = uniform(subkey, (N,), minval=0.0, maxval=2 * jnp.pi)
-        yield thetas, phis, omegas
 
+class TestUnitary:
+    """A test class for Unitary operators"""
 
-def test_make_unitary():
-    """Tests the `make_unitary` method"""
-    for N in range(2, 30, 6):
-        for thetas, phis, omegas in generate_params(N):
-            unitary = make_unitary(N, thetas, phis, omegas)
-            assert_array_almost_equal(jnp.dot(unitary, dag(unitary)), jnp.eye(N))
-            assert_array_almost_equal(jnp.dot(dag(unitary), unitary), jnp.eye(N))
+    @staticmethod
+    def generate_params(N, key=PRNGKey(0)):
+        """Generator for generating parameterizing angles in `make_unitary`"""
+        for _ in range(3):
+            key, subkey = split(key)
+            thetas = uniform(subkey, ((N * (N - 1) // 2),), minval=0.0, maxval=2 * jnp.pi)
+            phis = uniform(subkey, ((N * (N - 1) // 2),), minval=0.0, maxval=2 * jnp.pi)
+            omegas = uniform(subkey, (N,), minval=0.0, maxval=2 * jnp.pi)
+            yield thetas, phis, omegas
+
+    def test_unitary(self):
+        for N in range(2, 30, 6):
+            for thetas, phis, omegas in TestUnitary.generate_params(N):
+                unitary = Unitary(N)(thetas, phis, omegas)
+                assert_array_almost_equal(jnp.dot(unitary, dag(unitary)), jnp.eye(N))
+                assert_array_almost_equal(jnp.dot(dag(unitary), unitary), jnp.eye(N))
+

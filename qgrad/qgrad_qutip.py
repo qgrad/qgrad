@@ -422,7 +422,7 @@ def _make_rot(N, params, idx):
     return rotation
 
 
-class Unitary(N):
+class Unitary:
     r"""Class for an :math:`N \times N` parameterized unitary 
     matrix :math:`U(N)` constructed using the following scheme
         
