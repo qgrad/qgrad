@@ -4,6 +4,7 @@ Implementation of some common quantum mechanics functions that work with JAX
 from scipy.sparse import csr_matrix
 from jax.ops import index, index_update
 import jax.numpy as jnp
+from jax.random import PRNGKey, uniform
 import numpy as np
 from scipy.linalg import expm, sqrtm
 from numpy.linalg import matrix_power
@@ -509,11 +510,11 @@ class Unitary:
 
 def rand_unitary(N):
     r"""Returns an :math:`N \times N` randomly parameterized unitary"""
-    rand_thetas = uniform(onp.random.randint(1000), ((N * (N - 1) // 2),), 
+    rand_thetas = uniform(PRNGKey(np.random.randint(1000)), ((N * (N - 1) // 2),), 
         minval=0.0, maxval=2 * jnp.pi)
-    rand_phis = uniform(onp.random.randint(1000), ((N * (N - 1) // 2),), 
+    rand_phis = uniform(PRNGKey(np.random.randint(1000)), ((N * (N - 1) // 2),), 
         minval=0.0, maxval=2 * jnp.pi)
-    rand_omegas = uniform(onp.random.randint(1000),, (N,), minval=0.0, 
+    rand_omegas = uniform(PRNGKey(np.random.randint(1000)), (N,), minval=0.0, 
         maxval=2 * jnp.pi)
     
     return Unitary(N)(rand_thetas, rand_phis, rand_omegas)

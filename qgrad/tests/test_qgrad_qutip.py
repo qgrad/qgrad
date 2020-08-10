@@ -25,8 +25,8 @@ from qgrad.qgrad_qutip import (
     isket,
     isbra,
     _make_rot,
+    rand_unitary,
     rot,
-    to_dm,
     sigmax,
     sigmay,
     sigmaz,
@@ -34,6 +34,7 @@ from qgrad.qgrad_qutip import (
     sigmax,
     sigmay,
     sigmaz,
+    to_dm,
     Unitary,
 )
 
@@ -402,8 +403,6 @@ def test_make_rot(N, params, idx):
     assert_array_almost_equal(jnp.dot(rotation, dag(rotation)), jnp.eye(N))
     assert_array_almost_equal(jnp.dot(dag(rotation), rotation), jnp.eye(N))
 
-
-
 class TestUnitary:
     """A test class for Unitary operators"""
 
@@ -424,3 +423,10 @@ class TestUnitary:
                 assert_array_almost_equal(jnp.dot(unitary, dag(unitary)), jnp.eye(N))
                 assert_array_almost_equal(jnp.dot(dag(unitary), unitary), jnp.eye(N))
 
+def test_rand_unitary():
+    for N in range(2, 43, 10):
+        unitary = rand_unitary(N)
+        assert_array_almost_equal(jnp.dot(unitary, dag(unitary)), jnp.eye(N))
+        assert_array_almost_equal(jnp.dot(dag(unitary), unitary), jnp.eye(N))
+        
+        
