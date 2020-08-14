@@ -508,13 +508,31 @@ class Unitary:
                 param_idx += 1
         return jnp.dot(diagonal, rotation)
 
-def rand_unitary(N):
-    r"""Returns an :math:`N \times N` randomly parameterized unitary"""
-    rand_thetas = uniform(PRNGKey(np.random.randint(1000)), ((N * (N - 1) // 2),), 
-        minval=0.0, maxval=2 * jnp.pi)
-    rand_phis = uniform(PRNGKey(np.random.randint(1000)), ((N * (N - 1) // 2),), 
-        minval=0.0, maxval=2 * jnp.pi)
-    rand_omegas = uniform(PRNGKey(np.random.randint(1000)), (N,), minval=0.0, 
-        maxval=2 * jnp.pi)
+def rand_unitary(N, seed=None):
+    r"""Returns an :math:`N \times N` randomly parametrized unitary
+    
+    Args:
+        N (int): Size of the Hilbert space
+   
+    Returns:
+        :obj:`jnp.ndarray`: :math:`N \times N` parameterized random 
+                    unitary matrix
+
+    .. note::
+        JAX provides Psuedo-Random Number Generator Keys (PRNG Keys) that 
+        aim to ensure reproducibility. `seed` integer here is fed as 
+        input to a PRNGKey that returns of array of shape (2,)
+        for every different input integer seed. PRNGKey for the same input 
+        integer shall sample the same values from any distribution.
+        
+    """
+    if seed == None:
+        seed = np.random.randint(1000)
+    params = uniform(PRNGKey(seed), (N ** 2,),
+                minval=0.0, maxval=2 * jnp.pi)
+
+    rand_thetas = params[:N*(N-1)//2]
+    rand_phis = params[N*(N-1)//2:N*(N-1)]
+    rand_omegas = params[N*(N-1):]         
     
     return Unitary(N)(rand_thetas, rand_phis, rand_omegas)
