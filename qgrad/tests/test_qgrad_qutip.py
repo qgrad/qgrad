@@ -24,6 +24,7 @@ from qgrad.qgrad_qutip import (
     expect,
     fidelity,
     isbra,
+    isdm,
     isket,
     isherm,
     _make_rot,
@@ -446,5 +447,33 @@ def test_rand_ket_seed():
                         qgrad_rand_ket(N, seed1), qgrad_rand_ket(N, seed2))
 
 def test_rand_dm():
+    return  
 
+@pytest.mark.parametrize(
+    "oper, herm",
+    [
+        # check standard Hermitian matrices
+        (sigmax(), True)
+        (sigmay(), True)
+        (sigmaz(), True)
+        # check random hermitian matrices
+        (rand_herm(2).full(), True),
+        (rand_herm(4).full(), True),
+        (rand_herm(20).full(), True),
+        # check non-Hermitian matrices
+        (jnp.arange(9).reshape(3, 3), False),
+        (jnp.arange(16).reshape(4, 4), False),
+    ],
+)
 def test_isherm():
+    assert isherm(oper) == herm
+         
+
+def assert_density(oper, density):
+    assert isdm(oper) == density
+    
+def test_isdm():
+    ket = basis(2, 0)
+    jnp.array([[1, 1], [-1, 1]])
+       
+
