@@ -23,11 +23,13 @@ from qgrad.qgrad_qutip import (
     destroy,
     expect,
     fidelity,
-    isket,
     isbra,
+    isket,
+    isherm,
     _make_rot,
     rot,
     rand_ket as qgrad_rand_ket,
+    rand_dm as qgrad_rand_dm,
     to_dm,
     sigmax,
     sigmay,
@@ -442,3 +444,7 @@ def test_rand_ket_seed():
                 range(1000, 2000, 100)):
             assert_raises(AssertionError, assert_array_equal, 
                         qgrad_rand_ket(N, seed1), qgrad_rand_ket(N, seed2))
+
+def test_rand_dm():
+
+def test_isherm():

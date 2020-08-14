@@ -359,6 +359,43 @@ def isbra(state):
     """
     return state.shape[0] == 1
 
+def isherm(oper):
+    """Checks whether a given operator is Hermitian.
+
+    Args:
+        oper (:obj:`jnp.ndarray`): input observable
+    
+    Returns:
+        bool: ``True`` if the operator is Hermitian and 
+            ``False`` otherwise
+    """
+    return jnp.all(oper == dag(oper))    
+
+def isdm(mat):
+    """Checks whether a given matrix is a valid density matrix.
+
+    Args:
+        mat (:obj:`jnp.ndarray`): Input matrix
+    
+    Returns:
+        bool: ``True`` if input matrix is a valid density matrix; 
+            ``False`` otherwise
+    """
+    isdensity = True
+
+    if (isket(mat) == True or isbra(mat) == True or 
+            isherm(mat) == False or 
+            jnp.allclose(jnp.trace(mat), 1, atol=1e-09) is False):
+        isdensity = False
+    
+    else:
+        evals, _ = jnp.linalg.eig(mat)
+        for eig in evals:
+            if eig < 0 and np.allclose(eig, 0, atol=1e-09) is False:
+                isdensity = False
+                break
+    
+    return isdensity
 
 def to_dm(state):
     r"""Converts a ket or a bra into its density matrix representation using 
@@ -511,8 +548,7 @@ class Unitary:
 def rand_ket(N, seed=None):
     if seed == None:
         seed = np.random.randint(1000)
-    key = PRNGKey(seed)
-    ket = uniform(key, (N, 1)) + 1j * uniform(key, (N, 1))
+    ket = uniform(PRNGKey(seed), (N, 1)) + 1j * uniform(key, (N, 1))
     return ket / jnp.linalg.norm(ket) 
 
 def rand_dm(N, seed=None):
