@@ -1,14 +1,12 @@
 """
 Implementation of some common quantum mechanics functions that work with JAX
 """
-from scipy.sparse import csr_matrix
 from jax.ops import index, index_update
 import jax.numpy as jnp
 from jax.random import PRNGKey, uniform
 import numpy as np
 from scipy.linalg import expm, sqrtm
 from numpy.linalg import matrix_power
-import scipy
 
 
 def fidelity(a, b):
