@@ -548,11 +548,12 @@ class Unitary:
 def rand_ket(N, seed=None):
     if seed == None:
         seed = np.random.randint(1000)
-    ket = uniform(PRNGKey(seed), (N, 1)) + 1j * uniform(key, (N, 1))
+    ket = uniform(PRNGKey(seed), (N, 1)) + \
+             1j * uniform(PRNGKey(seed), (N, 1))
     return ket / jnp.linalg.norm(ket) 
 
 def rand_dm(N, seed=None):
-    if seed = None:
+    if seed == None:
         seed = np.random.randint(1000)
     key = PRNGKey(seed)
     return to_dm(rand_ket(N, seed))

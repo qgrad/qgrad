@@ -453,9 +453,9 @@ def test_rand_dm():
     "oper, herm",
     [
         # check standard Hermitian matrices
-        (sigmax(), True)
-        (sigmay(), True)
-        (sigmaz(), True)
+        (sigmax(), True),
+        (sigmay(), True),
+        (sigmaz(), True),
         # check random hermitian matrices
         (rand_herm(2).full(), True),
         (rand_herm(4).full(), True),
@@ -465,7 +465,7 @@ def test_rand_dm():
         (jnp.arange(16).reshape(4, 4), False),
     ],
 )
-def test_isherm():
+def test_isherm(oper, herm):
     assert isherm(oper) == herm
          
 
