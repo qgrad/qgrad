@@ -4,6 +4,7 @@ from numpy.testing import (
     assert_array_equal,
     assert_array_almost_equal,
     assert_equal,
+    assert_raises,
 )
 from jax import grad
 import jax.numpy as jnp
@@ -26,6 +27,7 @@ from qgrad.qgrad_qutip import (
     isbra,
     _make_rot,
     rot,
+    rand_ket as qgrad_rand_ket,
     to_dm,
     sigmax,
     sigmay,
@@ -424,3 +426,19 @@ class TestUnitary:
                 assert_array_almost_equal(jnp.dot(unitary, dag(unitary)), jnp.eye(N))
                 assert_array_almost_equal(jnp.dot(dag(unitary), unitary), jnp.eye(N))
 
+def test_rand_ket_norm():
+    for N in range(2, 40, 6):
+        assert_almost_equal(jnp.linalg.norm(qgrad_rand_ket(N)), 1.0)
+
+def test_rand_ket_seed(): 
+    for N in range(2, 30, 6):
+        # test same kets for the same seed
+        for seed in range(1000, 100):
+            assert_array_equal(qgrad_rand_ket(N, seed), 
+            qgrad_rand_ket(N, seed))
+
+        # test different kets for different user-provided seeds
+        for (seed1, seed2) in zip(range(0, 1000, 100), 
+                range(1000, 2000, 100)):
+            assert_raises(AssertionError, assert_array_equal, 
+                        qgrad_rand_ket(N, seed1), qgrad_rand_ket(N, seed2))

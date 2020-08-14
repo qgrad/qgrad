@@ -4,6 +4,7 @@ Implementation of some common quantum mechanics functions that work with JAX
 from scipy.sparse import csr_matrix
 from jax.ops import index, index_update
 import jax.numpy as jnp
+from jax.random import PRNGKey, uniform
 import numpy as np
 from scipy.linalg import expm, sqrtm
 from numpy.linalg import matrix_power
@@ -506,3 +507,10 @@ class Unitary:
                 # (i-1, j-1) to match numpy matrix indexing
                 param_idx += 1
         return jnp.dot(diagonal, rotation)
+
+def rand_ket(N, seed=None):
+    if seed == None:
+        seed = np.random.randint(1000)
+    key = PRNGKey(seed)
+    ket = uniform(key, (N, 1)) + 1j * uniform(key, (N, 1))
+    return ket / jnp.linalg.norm(ket) 
