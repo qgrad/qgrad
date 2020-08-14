@@ -514,3 +514,9 @@ def rand_ket(N, seed=None):
     key = PRNGKey(seed)
     ket = uniform(key, (N, 1)) + 1j * uniform(key, (N, 1))
     return ket / jnp.linalg.norm(ket) 
+
+def rand_dm(N, seed=None):
+    if seed = None:
+        seed = np.random.randint(1000)
+    key = PRNGKey(seed)
+    return to_dm(rand_ket(N, seed))
