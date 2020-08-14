@@ -390,7 +390,7 @@ def isdm(mat):
     else:
         evals, _ = jnp.linalg.eig(mat)
         for eig in evals:
-            if eig < 0 and np.allclose(eig, 0, atol=1e-09) is False:
+            if eig < 0 and jnp.allclose(eig, 0, atol=1e-06) == False:
                 isdensity = False
                 break
     

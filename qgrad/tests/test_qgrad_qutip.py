@@ -447,8 +447,19 @@ def test_rand_ket_seed():
                         qgrad_rand_ket(N, seed1), qgrad_rand_ket(N, seed2))
 
 def test_rand_dm():
-    return  
+    for N in range(2, 30, 6):
+        assert isdm(qgrad_rand_dm(N)) == True
+        # test same density matrices for the same seed
+        for seed in range(1000, 100):
+            assert_array_equal(qgrad_rand_dm(N, seed), 
+            qgrad_rand_dm(N, seed))
 
+        # test different density matrices for different user-given seeds
+        for (seed1, seed2) in zip(range(0, 1000, 100), 
+                range(1000, 2000, 100)):
+            assert_raises(AssertionError, assert_array_equal, 
+                    qgrad_rand_dm(N, seed1), qgrad_rand_dm(N, seed2))
+        
 @pytest.mark.parametrize(
     "oper, herm",
     [
@@ -470,12 +481,11 @@ def test_isherm(oper, herm):
          
 
 def test_isdm():
-    ket = basis(2, 0)
     # Check when matrix is non-semi-positive-definite
     non_spd = jnp.array([[1, 1], [-1, 1]])
     assert isdm(non_spd) == False
     # Check standard density matrices
-    assert isdm(to_dm(ket)) == True
+    assert isdm(to_dm(basis(2, 0))) == True
     # Check when matrix is non-hermitian
     assert isdm(sigmax()*sigmay()) == False
     # Check when trace is non-unity
