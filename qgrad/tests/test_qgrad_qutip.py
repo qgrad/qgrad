@@ -469,11 +469,15 @@ def test_isherm(oper, herm):
     assert isherm(oper) == herm
          
 
-def assert_density(oper, density):
-    assert isdm(oper) == density
-    
 def test_isdm():
     ket = basis(2, 0)
-    jnp.array([[1, 1], [-1, 1]])
-       
+    # Check when matrix is non-semi-positive-definite
+    non_spd = jnp.array([[1, 1], [-1, 1]])
+    assert isdm(non_spd) == False
+    # Check standard density matrices
+    assert isdm(to_dm(ket)) == True
+    # Check when matrix is non-hermitian
+    assert isdm(sigmax()*sigmay()) == False
+    # Check when trace is non-unity
+    assert isdm(jnp.eye(2) * 2) == False
 

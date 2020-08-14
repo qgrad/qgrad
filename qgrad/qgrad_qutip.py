@@ -384,10 +384,9 @@ def isdm(mat):
     isdensity = True
 
     if (isket(mat) == True or isbra(mat) == True or 
-            isherm(mat) == False or 
-            jnp.allclose(jnp.trace(mat), 1, atol=1e-09) is False):
+        isherm(mat) == False or 
+        jnp.allclose(jnp.real(jnp.trace(mat)), 1, atol=1e-09) == False):
         isdensity = False
-    
     else:
         evals, _ = jnp.linalg.eig(mat)
         for eig in evals:
