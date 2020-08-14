@@ -448,6 +448,7 @@ def test_rand_ket_seed():
 
 def test_rand_dm():
     for N in range(2, 30, 6):
+        # check for a valid density matrix
         assert isdm(qgrad_rand_dm(N)) == True
         # test same density matrices for the same seed
         for seed in range(1000, 100):
