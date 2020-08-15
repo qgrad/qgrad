@@ -408,7 +408,6 @@ def test_make_rot(N, params, idx):
     assert_array_almost_equal(jnp.dot(dag(rotation), rotation), jnp.eye(N))
 
 
-
 class TestUnitary:
     """A test class for Unitary operators"""
 
@@ -417,7 +416,9 @@ class TestUnitary:
         """Generator for generating parameterizing angles in `make_unitary`"""
         for _ in range(3):
             key, subkey = split(key)
-            thetas = uniform(subkey, ((N * (N - 1) // 2),), minval=0.0, maxval=2 * jnp.pi)
+            thetas = uniform(
+                subkey, ((N * (N - 1) // 2),), minval=0.0, maxval=2 * jnp.pi
+            )
             phis = uniform(subkey, ((N * (N - 1) // 2),), minval=0.0, maxval=2 * jnp.pi)
             omegas = uniform(subkey, (N,), minval=0.0, maxval=2 * jnp.pi)
             yield thetas, phis, omegas
@@ -429,22 +430,27 @@ class TestUnitary:
                 assert_array_almost_equal(jnp.dot(unitary, dag(unitary)), jnp.eye(N))
                 assert_array_almost_equal(jnp.dot(dag(unitary), unitary), jnp.eye(N))
 
+
 def test_rand_ket_norm():
     for N in range(2, 40, 6):
         assert_almost_equal(jnp.linalg.norm(qgrad_rand_ket(N)), 1.0)
 
-def test_rand_ket_seed(): 
+
+def test_rand_ket_seed():
     for N in range(2, 30, 6):
         # test same kets for the same seed
         for seed in range(1000, 100):
-            assert_array_equal(qgrad_rand_ket(N, seed), 
-            qgrad_rand_ket(N, seed))
+            assert_array_equal(qgrad_rand_ket(N, seed), qgrad_rand_ket(N, seed))
 
         # test different kets for different user-provided seeds
-        for (seed1, seed2) in zip(range(0, 1000, 100), 
-                range(1000, 2000, 100)):
-            assert_raises(AssertionError, assert_array_equal, 
-                        qgrad_rand_ket(N, seed1), qgrad_rand_ket(N, seed2))
+        for (seed1, seed2) in zip(range(0, 1000, 100), range(1000, 2000, 100)):
+            assert_raises(
+                AssertionError,
+                assert_array_equal,
+                qgrad_rand_ket(N, seed1),
+                qgrad_rand_ket(N, seed2),
+            )
+
 
 def test_rand_dm():
     for N in range(2, 30, 6):
@@ -452,15 +458,18 @@ def test_rand_dm():
         assert isdm(qgrad_rand_dm(N)) == True
         # test same density matrices for the same seed
         for seed in range(1000, 100):
-            assert_array_equal(qgrad_rand_dm(N, seed), 
-            qgrad_rand_dm(N, seed))
+            assert_array_equal(qgrad_rand_dm(N, seed), qgrad_rand_dm(N, seed))
 
         # test different density matrices for different user-given seeds
-        for (seed1, seed2) in zip(range(0, 1000, 100), 
-                range(1000, 2000, 100)):
-            assert_raises(AssertionError, assert_array_equal, 
-                    qgrad_rand_dm(N, seed1), qgrad_rand_dm(N, seed2))
-        
+        for (seed1, seed2) in zip(range(0, 1000, 100), range(1000, 2000, 100)):
+            assert_raises(
+                AssertionError,
+                assert_array_equal,
+                qgrad_rand_dm(N, seed1),
+                qgrad_rand_dm(N, seed2),
+            )
+
+
 @pytest.mark.parametrize(
     "oper, herm",
     [
@@ -479,7 +488,7 @@ def test_rand_dm():
 )
 def test_isherm(oper, herm):
     assert isherm(oper) == herm
-         
+
 
 def test_isdm():
     # Check when matrix is non-semi-positive-definite
@@ -488,7 +497,6 @@ def test_isdm():
     # Check standard density matrices
     assert isdm(to_dm(basis(2, 0))) == True
     # Check when matrix is non-hermitian
-    assert isdm(sigmax()*sigmay()) == False
+    assert isdm(sigmax() * sigmay()) == False
     # Check when trace is non-unity
     assert isdm(jnp.eye(2) * 2) == False
-
