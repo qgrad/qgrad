@@ -16,7 +16,7 @@ def fidelity(a, b):
     .. note::
        ``a`` and ``b`` can either both be kets or both be density matrices,
        or anyone of ``a`` or ``b``  may be a ket or a density matrix. Fidelity has
-       private functions to handle such inputs.
+       private functions to recognize kets and density matrices.
 
     Args:
         a (:obj:`jnp.ndarray`): State vector (ket) or a density matrix. 
@@ -60,8 +60,10 @@ def _fidelity_dm(a, b):
         float: fidelity between the two density matrices 
     """
     dm1, dm2 = jnp.asarray(a), jnp.asarray(b)
-    fidel = jnp.trace(sqrtm(jnp.dot(jnp.dot(sqrtm(dm1), dm2), sqrtm(dm1)))) ** 2
-    return jnp.real(fidel)
+    # Trace distace fidelity
+    tr_dist = 0.5 * jnp.abs(jnp.trace(dm1 - dm2))
+    # D^2 = 1 - F^2
+    return jnp.sqrt(1 - tr_dist ** 2)
 
 
 # TODO: N-dimensional unitary
