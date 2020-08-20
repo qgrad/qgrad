@@ -61,7 +61,7 @@ def _fidelity_dm(a, b):
     """
     dm1, dm2 = jnp.asarray(a), jnp.asarray(b)
     # Trace distace fidelity
-    tr_dist = 0.5 * jnp.abs(jnp.trace(dm1 - dm2))
+    tr_dist = 0.5 * jnp.trace(jnp.abs(dm1 - dm2))
     # D^2 = 1 - F^2
     return jnp.sqrt(1 - tr_dist ** 2)
 
