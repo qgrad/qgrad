@@ -64,31 +64,6 @@ def _fidelity_dm(a, b):
     return jnp.real(fidel)
 
 
-# TODO: N-dimensional unitary
-def rot(params):
-    r"""Returns a :math:`2 \times 2` unitary matrix describing rotation around :math:`Z-Y-Z` axis for a single qubit.
-
-    Args:
-        params (:obj:`jnp.ndarray`): an array of three parameters of shape (3,) defining the rotation
-
-    Returns:
-        :obj:`jnp.ndarray`: a :math:`2 \times 2` matrix defining the paramatrzed unitary
-    """
-    phi, theta, omega = params
-    cos = jnp.cos(theta / 2)
-    sin = jnp.sin(theta / 2)
-
-    return jnp.array(
-        [
-            [
-                jnp.exp(-0.5j * (phi + omega)) * cos,
-                -(jnp.exp(0.5j * (phi - omega))) * sin,
-            ],
-            [jnp.exp(-0.5j * (phi - omega)) * sin, jnp.exp(0.5j * (phi + omega)) * cos],
-        ]
-    )
-
-
 def sigmax():
     r"""Returns a Pauli-X operator.
 
