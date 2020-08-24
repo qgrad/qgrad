@@ -22,7 +22,7 @@ qgrad\_qutip
       fidelity
       isbra
       isket
-      rot
+      rand_unitary
       sigmax
       sigmay
       sigmaz

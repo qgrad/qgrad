@@ -17,7 +17,7 @@ API Reference
    qgrad_qutip.fidelity
    qgrad_qutip.isbra
    qgrad_qutip.isket
-   qgrad_qutip.rot
+   qgrad_qutip.rand_unitary
    qgrad_qutip.sigmax
    qgrad_qutip.sigmay
    qgrad_qutip.sigmaz
@@ -33,3 +33,4 @@ API Reference
    :nosignatures:
 
    qgrad_qutip.Displace
+   qgrad_qutip.Unitary

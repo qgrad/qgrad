@@ -398,8 +398,10 @@ def _make_rot(N, params, idx):
 
 
 class Unitary:
-    r"""Class for an :math:`N \times N` parameterized unitary 
-    matrix :math:`U(N)` constructed using the following scheme
+    r"""Class for an :math:`N \times N` parametrized unitary 
+    matrix :math:`U(N)`
+    
+    Unitary :math:`U(N)` is constructed using the following scheme
         
     .. math::
         U(N) = D\prod_{i=2}^{N}\prod_{j=1}^{i-1}R^{'}_{ij}

@@ -18,14 +18,26 @@ to make auto-differentiation of many quantum routines possible for desired learn
 tasks.
 
 **Disclaimer**: qgrad is currently being developed in alpha mode, which may lead to 
-changes in API. Track latest developments on `GitHub <https://github.com/qgrad/qgrad>`_
+changes in API. Track the latest developments on `GitHub <https://github.com/qgrad/qgrad>`_
 
 .. toctree::
    :maxdepth: 3
+   :caption: Installation
 
    install.rst
+
+.. toctree::
+   :maxdepth: 3
+   :caption: API Reference
+
    api.rst
 
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Tutorials
+
+   
 
 
 Indices and tables
