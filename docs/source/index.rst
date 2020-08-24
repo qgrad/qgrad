@@ -37,7 +37,7 @@ changes in API. Track the latest developments on `GitHub <https://github.com/qgr
    :maxdepth: 1
    :caption: Tutorials
 
-   Efficient Cavity Control with SNAP Gates
+   SNAP_gates
   
 
 Indices and tables
