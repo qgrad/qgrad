@@ -405,22 +405,22 @@ class Unitary:
         U(N) = D\prod_{i=2}^{N}\prod_{j=1}^{i-1}R^{'}_{ij}
     
     where :math:`D` is a diagonal matrix, whose elements are 
-    :math:`e^{i\omega{j}}` and :math:`R^{`}_{ij}` are rotation 
+    :math:`e^{i\omega{j}}` and :math:`R_{ij}^{'}` are rotation 
     matrices (available via `_make_rot`) where
-    :math:`R_{ij}` is an :math:`N-`dimensional identity matrix
+    :math:`R_{ij}` is an :math:`N`-dimensional identity matrix
     with the elements :math:`R_{ii}, R_{ij}, R_{ji}` and :math:`R_{jj}`
     replaced as follows:
 
     .. math::
 
-        \begin{pmatrix} R_{ii} & R{ij} \\ R_{ji} & R_{jj} 
+        \begin{pmatrix} R_{ii} & R_{ij} \\ R_{ji} & R_{jj} 
         \end{pmatrix} = \begin{pmatrix}
             e^{i\phi_{ij}}cos(\theta_{ij}) & 
-            -e^{i\phi_{ij}sin(\theta_{ij})} \\
+            -e^{i\phi_{ij}}sin(\theta_{ij}) \\
             sin(\theta_{ij}) & cos(\theta_{ij})
         \end{pmatrix}
 
-    and :math:`R^{`}_{ij} = R(-\theta_{ij}, -\phi_{ij})`
+    and :math:`R_{ij}^{'} = R(-\theta_{ij}, -\phi_{ij})`
             
     Ref: Jing, Li, et al. "Tunable efficient unitary neural
     networks (eunn) and their application to rnns."
