@@ -1,13 +1,12 @@
 """
 Implementation of some common quantum mechanics functions that work with JAX
 """
-from scipy.sparse import csr_matrix
 from jax.ops import index, index_update
 import jax.numpy as jnp
+from jax.random import PRNGKey, uniform
 import numpy as np
 from scipy.linalg import expm, sqrtm
 from numpy.linalg import matrix_power
-import scipy
 
 
 def fidelity(a, b):
@@ -16,7 +15,7 @@ def fidelity(a, b):
     .. note::
        ``a`` and ``b`` can either both be kets or both be density matrices,
        or anyone of ``a`` or ``b``  may be a ket or a density matrix. Fidelity has
-       private functions to handle such inputs.
+       private functions to recognize kets and density matrices.
 
     Args:
         a (:obj:`jnp.ndarray`): State vector (ket) or a density matrix. 
@@ -60,8 +59,10 @@ def _fidelity_dm(a, b):
         float: fidelity between the two density matrices 
     """
     dm1, dm2 = jnp.asarray(a), jnp.asarray(b)
-    fidel = jnp.trace(sqrtm(jnp.dot(jnp.dot(sqrtm(dm1), dm2), sqrtm(dm1)))) ** 2
-    return jnp.real(fidel)
+    # Trace distace fidelity
+    tr_dist = 0.5 * jnp.trace(jnp.abs(dm1 - dm2))
+    # D^2 = 1 - F^2
+    return jnp.sqrt(1 - tr_dist ** 2)
 
 
 # TODO: N-dimensional unitary
@@ -236,13 +237,14 @@ class Displace:
     Args:
     n (int): dimension of the displace operator
     """
+
     def __init__(self, n):
         # The off-diagonal of the real-symmetric similar matrix T.
         sym = (2 * (jnp.arange(1, n) % 2) - 1) * jnp.sqrt(jnp.arange(1, n))
         # Solve the eigensystem.
         mat = np.zeros((n, n))
-        np.fill_diagonal(mat[1:], sym) # fills sub-diagonal
-        np.fill_diagonal(mat[:, 1:], sym)# fills super-diagonal
+        np.fill_diagonal(mat[1:], sym)  # fills sub-diagonal
+        np.fill_diagonal(mat[:, 1:], sym)  # fills super-diagonal
         self.evals, self.evecs = jnp.linalg.eigh(mat)
         self.range = jnp.arange(n)
         self.t_scale = 1j ** (self.range % 2)
@@ -455,6 +457,7 @@ class Unitary:
     Args:
         N (int): Dimension of the unitary matrix
     """
+
     def __init__(self, N):
         self.N = N
 
@@ -479,16 +482,20 @@ class Unitary:
             :math:`\theta_{ij}` parameters :math:`\frac{N}(N-1)}{2}` 
             :math:`\phi{ij}` parameters, and :math:`N omega_{ij}`
             parameters. 
-        """    
+        """
 
         if omegas.shape[0] != self.N:
-            raise ValueError("The dimension of omegas should be the same as the unitary")
+            raise ValueError(
+                "The dimension of omegas should be the same as the unitary"
+            )
         if phis.shape[0] != thetas.shape[0]:
             raise ValueError(
                 "Number of phi and theta rotation parameters should be the same"
             )
-        if (phis.shape[0] != (self.N) * (self.N - 1) / 2 or
-             thetas.shape[0] != (self.N) * (self.N - 1) / 2):
+        if (
+            phis.shape[0] != (self.N) * (self.N - 1) / 2
+            or thetas.shape[0] != (self.N) * (self.N - 1) / 2
+        ):
             raise ValueError(
                 """Size of each of the rotation parameters \
                     should be N * (N - 1) / 2, where N is the size \
@@ -503,7 +510,38 @@ class Unitary:
         param_idx = 0  # keep track of parameter indices to feed rotation
         for i in range(2, self.N + 1):
             for j in range(1, i):
-                rotation = jnp.dot(rotation, _make_rot(self.N, params[param_idx], (i - 1, j - 1)))
+                rotation = jnp.dot(
+                    rotation, _make_rot(self.N, params[param_idx], (i - 1, j - 1))
+                )
                 # (i-1, j-1) to match numpy matrix indexing
                 param_idx += 1
         return jnp.dot(diagonal, rotation)
+
+
+def rand_unitary(N, seed=None):
+    r"""Returns an :math:`N \times N` randomly parametrized unitary
+    
+    Args:
+        N (int): Size of the Hilbert space
+   
+    Returns:
+        :obj:`jnp.ndarray`: :math:`N \times N` parameterized random 
+                    unitary matrix
+
+    .. note::
+        JAX provides Psuedo-Random Number Generator Keys (PRNG Keys) that 
+        aim to ensure reproducibility. `seed` integer here is fed as 
+        input to a PRNGKey that returns of array of shape (2,)
+        for every different input integer seed. PRNGKey for the same input 
+        integer shall sample the same values from any distribution.
+        
+    """
+    if seed == None:
+        seed = np.random.randint(1000)
+    params = uniform(PRNGKey(seed), (N ** 2,), minval=0.0, maxval=2 * jnp.pi)
+
+    rand_thetas = params[: N * (N - 1) // 2]
+    rand_phis = params[N * (N - 1) // 2 : N * (N - 1)]
+    rand_omegas = params[N * (N - 1) :]
+
+    return Unitary(N)(rand_thetas, rand_phis, rand_omegas)
