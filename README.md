@@ -31,7 +31,6 @@ python setup.py develop
 ``qgrad`` is a library that implements Hamiltonian learning in the context of quantum physics-based optimization tasks.
  ``qgrad`` reproduces essential [QuTiP](http://qutip.org/) functions to reduce the friction for existing QuTiP users.
 
-While many quantum libraries focus on quantum circuit learning, ``qgrad`` focuses on Hamiltonian learning.
 
 ``qgrad`` leverages the powerful Python scientific stack and interfaces with the popular machine learning library JAX, to make auto-differentiation of many quantum routines possible for the desired learning tasks.
 
