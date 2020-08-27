@@ -15,7 +15,7 @@ def fidelity(a, b):
     .. note::
        ``a`` and ``b`` can either both be kets or both be density matrices,
        or anyone of ``a`` or ``b``  may be a ket or a density matrix. Fidelity has
-       private functions to handle such inputs.
+       private functions to recognize kets and density matrices.
 
     Args:
         a (:obj:`jnp.ndarray`): State vector (ket) or a density matrix. 
@@ -59,8 +59,10 @@ def _fidelity_dm(a, b):
         float: fidelity between the two density matrices 
     """
     dm1, dm2 = jnp.asarray(a), jnp.asarray(b)
-    fidel = jnp.trace(sqrtm(jnp.dot(jnp.dot(sqrtm(dm1), dm2), sqrtm(dm1)))) ** 2
-    return jnp.real(fidel)
+    # Trace distace fidelity
+    tr_dist = 0.5 * jnp.trace(jnp.abs(dm1 - dm2))
+    # D^2 = 1 - F^2
+    return jnp.sqrt(1 - tr_dist ** 2)
 
 
 def sigmax():
@@ -234,7 +236,8 @@ class Displace:
         
         """
         # Diagonal of the transformation matrix P, and apply to eigenvectors.
-        transform = self.t_scale * (alpha / jnp.abs(alpha)) ** -self.range
+        transform = (self.t_scale * (alpha / jnp.abs(alpha)) ** - self.range if
+        alpha !=0 else self.t_scale)
         evecs = transform[:, None] * self.evecs
         # Get the exponentiated diagonal.
         diag = jnp.exp(1j * jnp.abs(alpha) * self.evals)
@@ -332,6 +335,48 @@ def isbra(state):
         bool: ``True`` if state is a bra and ``False`` otherwise
     """
     return state.shape[0] == 1
+
+
+def isherm(oper):
+    """Checks whether a given operator is Hermitian.
+
+    Args:
+        oper (:obj:`jnp.ndarray`): input observable
+    
+    Returns:
+        bool: ``True`` if the operator is Hermitian and 
+            ``False`` otherwise
+    """
+    return jnp.all(oper == dag(oper))
+
+
+def isdm(mat):
+    """Checks whether a given matrix is a valid density matrix.
+
+    Args:
+        mat (:obj:`jnp.ndarray`): Input matrix
+    
+    Returns:
+        bool: ``True`` if input matrix is a valid density matrix; 
+            ``False`` otherwise
+    """
+    isdensity = True
+
+    if (
+        isket(mat) == True
+        or isbra(mat) == True
+        or isherm(mat) == False
+        or jnp.allclose(jnp.real(jnp.trace(mat)), 1, atol=1e-09) == False
+    ):
+        isdensity = False
+    else:
+        evals, _ = jnp.linalg.eig(mat)
+        for eig in evals:
+            if eig < 0 and jnp.allclose(eig, 0, atol=1e-06) == False:
+                isdensity = False
+                break
+
+    return isdensity
 
 
 def to_dm(state):
@@ -491,6 +536,19 @@ class Unitary:
                 param_idx += 1
         return jnp.dot(diagonal, rotation)
 
+
+def rand_ket(N, seed=None):
+    if seed == None:
+        seed = np.random.randint(1000)
+    ket = uniform(PRNGKey(seed), (N, 1)) + 1j * uniform(PRNGKey(seed), (N, 1))
+    return ket / jnp.linalg.norm(ket)
+
+
+def rand_dm(N, seed=None):
+    if seed == None:
+        seed = np.random.randint(1000)
+    key = PRNGKey(seed)
+    return to_dm(rand_ket(N, seed))
 
 def rand_unitary(N, seed=None):
     r"""Returns an :math:`N \times N` randomly parametrized unitary

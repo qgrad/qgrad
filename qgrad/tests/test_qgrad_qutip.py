@@ -4,6 +4,7 @@ from numpy.testing import (
     assert_array_equal,
     assert_array_almost_equal,
     assert_equal,
+    assert_raises,
 )
 from jax import grad
 import jax.numpy as jnp
@@ -22,10 +23,16 @@ from qgrad.qgrad_qutip import (
     destroy,
     expect,
     fidelity,
-    isket,
     isbra,
+    isdm,
+    isket,
+    isherm,
     _make_rot,
     rand_unitary,
+    rot,
+    rand_ket as qgrad_rand_ket,
+    rand_dm as qgrad_rand_dm,
+    to_dm,
     sigmax,
     sigmay,
     sigmaz,
@@ -210,7 +217,9 @@ def test_expect_dag(oper, state):
 def test_coherent():
     """Tests the coherent state method"""
     assert abs(expect(destroy(10), coherent(10, 0.5)) - 0.5) < 1e-4
-
+    # Tests the border case with alpha = 0
+    for N in range(2, 30, 5):
+        assert_array_almost_equal(coherent(N, 0), basis(N, 0))
 
 def test_dag_ket():
     r"""Tests the dagger operation :math:`A^{\dagger}` on operator :math:`A`"""
@@ -363,7 +372,9 @@ class TestDisplace:
         )
 
         assert_equal(np.allclose(dp(0.25), dpmatrix), True)
-
+        # Tests border case with 0
+        for N in range(2, 50, 5):
+            assert_array_almost_equal(Displace(N)(0), jnp.eye(N))
 
 @pytest.mark.parametrize(
     "N, params, idx",
@@ -415,6 +426,76 @@ class TestUnitary:
                 assert_array_almost_equal(jnp.dot(unitary, dag(unitary)), jnp.eye(N))
                 assert_array_almost_equal(jnp.dot(dag(unitary), unitary), jnp.eye(N))
 
+
+def test_rand_ket_norm():
+    for N in range(2, 40, 6):
+        assert_almost_equal(jnp.linalg.norm(qgrad_rand_ket(N)), 1.0, decimal=5)
+
+
+def test_rand_ket_seed():
+    for N in range(2, 30, 6):
+        # test same kets for the same seed
+        for seed in range(1000, 100):
+            assert_array_equal(qgrad_rand_ket(N, seed), qgrad_rand_ket(N, seed))
+
+        # test different kets for different user-provided seeds
+        for (seed1, seed2) in zip(range(0, 1000, 100), range(1000, 2000, 100)):
+            assert_raises(
+                AssertionError,
+                assert_array_equal,
+                qgrad_rand_ket(N, seed1),
+                qgrad_rand_ket(N, seed2),
+            )
+
+'''
+def test_rand_dm():
+    for N in range(2, 30, 6):
+        # check for a valid density matrix
+        assert isdm(qgrad_rand_dm(N)) == True
+        # test same density matrices for the same seed
+        for seed in range(1000, 100):
+            assert_array_equal(qgrad_rand_dm(N, seed), qgrad_rand_dm(N, seed))
+
+        # test different density matrices for different user-given seeds
+        for (seed1, seed2) in zip(range(0, 1000, 100), range(1000, 2000, 100)):
+            assert_raises(
+                AssertionError,
+                assert_array_equal,
+                qgrad_rand_dm(N, seed1),
+                qgrad_rand_dm(N, seed2),
+            )
+'''
+
+@pytest.mark.parametrize(
+    "oper, herm",
+    [
+        # check standard Hermitian matrices
+        (sigmax(), True),
+        (sigmay(), True),
+        (sigmaz(), True),
+        # check random hermitian matrices
+        (rand_herm(2).full(), True),
+        (rand_herm(4).full(), True),
+        (rand_herm(20).full(), True),
+        # check non-Hermitian matrices
+        (jnp.arange(9).reshape(3, 3), False),
+        (jnp.arange(16).reshape(4, 4), False),
+    ],
+)
+def test_isherm(oper, herm):
+    assert isherm(oper) == herm
+
+
+def test_isdm():
+    # Check when matrix is non-semi-positive-definite
+    non_spd = jnp.array([[1, 1], [-1, 1]])
+    assert isdm(non_spd) == False
+    # Check standard density matrices
+    assert isdm(to_dm(basis(2, 0))) == True
+    # Check when matrix is non-hermitian
+    assert isdm(sigmax() * sigmay()) == False
+    # Check when trace is non-unity
+    assert isdm(jnp.eye(2) * 2) == False
 
 def test_rand_unitary():
     for N in range(2, 43, 10):
