@@ -25,8 +25,8 @@ from qgrad.qgrad_qutip import (
     isket,
     isbra,
     _make_rot,
+    rand_unitary,
     rot,
-    to_dm,
     sigmax,
     sigmay,
     sigmaz,
@@ -34,6 +34,7 @@ from qgrad.qgrad_qutip import (
     sigmax,
     sigmay,
     sigmaz,
+    to_dm,
     Unitary,
 )
 
@@ -220,7 +221,9 @@ def test_expect_dag(oper, state):
 def test_coherent():
     """Tests the coherent state method"""
     assert abs(expect(destroy(10), coherent(10, 0.5)) - 0.5) < 1e-4
-
+    # Tests the border case with alpha = 0
+    for N in range(2, 30, 5):
+        assert_array_almost_equal(coherent(N, 0), basis(N, 0))
 
 def test_dag_ket():
     r"""Tests the dagger operation :math:`A^{\dagger}` on operator :math:`A`"""
@@ -373,7 +376,9 @@ class TestDisplace:
         )
 
         assert_equal(np.allclose(dp(0.25), dpmatrix), True)
-
+        # Tests border case with 0
+        for N in range(2, 50, 5):
+            assert_array_almost_equal(Displace(N)(0), jnp.eye(N))
 
 @pytest.mark.parametrize(
     "N, params, idx",
@@ -403,7 +408,6 @@ def test_make_rot(N, params, idx):
     assert_array_almost_equal(jnp.dot(dag(rotation), rotation), jnp.eye(N))
 
 
-
 class TestUnitary:
     """A test class for Unitary operators"""
 
@@ -412,7 +416,9 @@ class TestUnitary:
         """Generator for generating parameterizing angles in `make_unitary`"""
         for _ in range(3):
             key, subkey = split(key)
-            thetas = uniform(subkey, ((N * (N - 1) // 2),), minval=0.0, maxval=2 * jnp.pi)
+            thetas = uniform(
+                subkey, ((N * (N - 1) // 2),), minval=0.0, maxval=2 * jnp.pi
+            )
             phis = uniform(subkey, ((N * (N - 1) // 2),), minval=0.0, maxval=2 * jnp.pi)
             omegas = uniform(subkey, (N,), minval=0.0, maxval=2 * jnp.pi)
             yield thetas, phis, omegas
@@ -424,3 +430,9 @@ class TestUnitary:
                 assert_array_almost_equal(jnp.dot(unitary, dag(unitary)), jnp.eye(N))
                 assert_array_almost_equal(jnp.dot(dag(unitary), unitary), jnp.eye(N))
 
+
+def test_rand_unitary():
+    for N in range(2, 43, 10):
+        unitary = rand_unitary(N)
+        assert_array_almost_equal(jnp.dot(unitary, dag(unitary)), jnp.eye(N))
+        assert_array_almost_equal(jnp.dot(dag(unitary), unitary), jnp.eye(N))
