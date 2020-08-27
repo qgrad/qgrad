@@ -27,17 +27,21 @@ changes in API. Track the latest developments on `GitHub <https://github.com/qgr
    install.rst
 
 .. toctree::
+   :maxdepth: 1
+   :caption: Tutorials
+
+   Qubit_Rotation
+   SNAP_gates
+   Unitary-Learning-no-qgrad
+   Unitary-Learning-qgrad
+   Circuit-Learning
+
+
+.. toctree::
    :maxdepth: 3
    :caption: API Reference
 
    api.rst
-
-
-.. toctree::
-   :maxdepth: 1
-   :caption: Tutorials
-
-   SNAP_gates
   
 
 Indices and tables
