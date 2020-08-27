@@ -29,7 +29,6 @@ from qgrad.qgrad_qutip import (
     isherm,
     _make_rot,
     rand_unitary,
-    rot,
     rand_ket as qgrad_rand_ket,
     rand_dm as qgrad_rand_dm,
     to_dm,
@@ -37,9 +36,6 @@ from qgrad.qgrad_qutip import (
     sigmay,
     sigmaz,
     squeeze,
-    sigmax,
-    sigmay,
-    sigmaz,
     to_dm,
     Unitary,
 )
