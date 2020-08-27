@@ -439,7 +439,7 @@ class TestUnitary:
 
 def test_rand_ket_norm():
     for N in range(2, 40, 6):
-        assert_almost_equal(jnp.linalg.norm(qgrad_rand_ket(N)), 1.0)
+        assert_almost_equal(jnp.linalg.norm(qgrad_rand_ket(N)), 1.0, decimal=5)
 
 
 def test_rand_ket_seed():
