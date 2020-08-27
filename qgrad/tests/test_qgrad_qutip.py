@@ -28,6 +28,7 @@ from qgrad.qgrad_qutip import (
     isket,
     isherm,
     _make_rot,
+    rand_unitary,
     rot,
     rand_ket as qgrad_rand_ket,
     rand_dm as qgrad_rand_dm,
@@ -39,6 +40,7 @@ from qgrad.qgrad_qutip import (
     sigmax,
     sigmay,
     sigmaz,
+    to_dm,
     Unitary,
 )
 
@@ -225,7 +227,9 @@ def test_expect_dag(oper, state):
 def test_coherent():
     """Tests the coherent state method"""
     assert abs(expect(destroy(10), coherent(10, 0.5)) - 0.5) < 1e-4
-
+    # Tests the border case with alpha = 0
+    for N in range(2, 30, 5):
+        assert_array_almost_equal(coherent(N, 0), basis(N, 0))
 
 def test_dag_ket():
     r"""Tests the dagger operation :math:`A^{\dagger}` on operator :math:`A`"""
@@ -378,7 +382,9 @@ class TestDisplace:
         )
 
         assert_equal(np.allclose(dp(0.25), dpmatrix), True)
-
+        # Tests border case with 0
+        for N in range(2, 50, 5):
+            assert_array_almost_equal(Displace(N)(0), jnp.eye(N))
 
 @pytest.mark.parametrize(
     "N, params, idx",
@@ -431,6 +437,7 @@ class TestUnitary:
                 assert_array_almost_equal(jnp.dot(dag(unitary), unitary), jnp.eye(N))
 
 
+<<<<<<< HEAD
 def test_rand_ket_norm():
     for N in range(2, 40, 6):
         assert_almost_equal(jnp.linalg.norm(qgrad_rand_ket(N)), 1.0)
@@ -500,3 +507,10 @@ def test_isdm():
     assert isdm(sigmax() * sigmay()) == False
     # Check when trace is non-unity
     assert isdm(jnp.eye(2) * 2) == False
+=======
+def test_rand_unitary():
+    for N in range(2, 43, 10):
+        unitary = rand_unitary(N)
+        assert_array_almost_equal(jnp.dot(unitary, dag(unitary)), jnp.eye(N))
+        assert_array_almost_equal(jnp.dot(dag(unitary), unitary), jnp.eye(N))
+>>>>>>> afe00f0a5f4af7e0e74f9b1ab5f709526768d35b
