@@ -560,7 +560,6 @@ class Unitary:
         return jnp.dot(diagonal, rotation)
 
 
-<<<<<<< HEAD
 def rand_ket(N, seed=None):
     if seed == None:
         seed = np.random.randint(1000)
@@ -573,7 +572,7 @@ def rand_dm(N, seed=None):
         seed = np.random.randint(1000)
     key = PRNGKey(seed)
     return to_dm(rand_ket(N, seed))
-=======
+
 def rand_unitary(N, seed=None):
     r"""Returns an :math:`N \times N` randomly parametrized unitary
     
@@ -601,4 +600,3 @@ def rand_unitary(N, seed=None):
     rand_omegas = params[N * (N - 1) :]
 
     return Unitary(N)(rand_thetas, rand_phis, rand_omegas)
->>>>>>> afe00f0a5f4af7e0e74f9b1ab5f709526768d35b
