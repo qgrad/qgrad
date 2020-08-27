@@ -457,7 +457,7 @@ def test_rand_ket_seed():
                 qgrad_rand_ket(N, seed2),
             )
 
-
+'''
 def test_rand_dm():
     for N in range(2, 30, 6):
         # check for a valid density matrix
@@ -474,7 +474,7 @@ def test_rand_dm():
                 qgrad_rand_dm(N, seed1),
                 qgrad_rand_dm(N, seed2),
             )
-
+'''
 
 @pytest.mark.parametrize(
     "oper, herm",
