@@ -538,6 +538,17 @@ class Unitary:
 
 
 def rand_ket(N, seed=None):
+    r"""Returns a random :math:`N`-dimensional
+    ket.
+
+    Args:
+        N (int): Dimension of random ket
+    
+    Reurns:
+        :obj:`jnp.ndarray`: random 
+            :math:`N \timesn 1` dimensional 
+            vector (ket)
+    """
     if seed == None:
         seed = np.random.randint(1000)
     ket = uniform(PRNGKey(seed), (N, 1)) + 1j * uniform(PRNGKey(seed), (N, 1))
