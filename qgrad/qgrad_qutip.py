@@ -546,7 +546,7 @@ def rand_ket(N, seed=None):
     
     Reurns:
         :obj:`jnp.ndarray`: random 
-            :math:`N \timesn 1` dimensional 
+            :math:`N \times 1` dimensional 
             vector (ket)
     """
     if seed == None:
@@ -564,7 +564,7 @@ def rand_dm(N, seed=None):
     
     Reurns:
         :obj:`jnp.ndarray`: random 
-            :math:`N \timesn N` dimensional 
+            :math:`N \times N` dimensional 
             matrix (density matrix).
     """
     if seed == None:
