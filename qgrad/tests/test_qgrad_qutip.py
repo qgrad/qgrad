@@ -29,7 +29,6 @@ from qgrad.qgrad_qutip import (
     isherm,
     _make_rot,
     rand_unitary,
-    rot,
     rand_ket as qgrad_rand_ket,
     rand_dm as qgrad_rand_dm,
     to_dm,
@@ -37,9 +36,6 @@ from qgrad.qgrad_qutip import (
     sigmay,
     sigmaz,
     squeeze,
-    sigmax,
-    sigmay,
-    sigmaz,
     to_dm,
     Unitary,
 )
@@ -110,16 +106,6 @@ def test_fidelity_bounded_purepure(tol=1e-7):
         ket2 = jnp.asarray(rand_ket(25))
         F = fidelity(ket1, ket2)
         assert -tol <= F <= 1 + tol
-
-
-def test_rot():
-    """Tests the rot function and computation of its gradient"""
-    ket0 = jnp.array([1, 0], dtype=jnp.complex64)
-    evo = jnp.dot(rot([0.5, 0.7, 0.8]), ket0)
-    back_evo = jnp.dot(rot([0.5, 0.7, 0.8]), evo)
-
-    assert jnp.all(rot([0, 0, 0]) == jnp.identity(2, dtype="complex64"))
-    assert not jnp.all(jnp.equal(evo, back_evo))
 
 
 def test_basis():

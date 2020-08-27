@@ -65,31 +65,6 @@ def _fidelity_dm(a, b):
     return jnp.sqrt(1 - tr_dist ** 2)
 
 
-# TODO: N-dimensional unitary
-def rot(params):
-    r"""Returns a :math:`2 \times 2` unitary matrix describing rotation around :math:`Z-Y-Z` axis for a single qubit.
-
-    Args:
-        params (:obj:`jnp.ndarray`): an array of three parameters of shape (3,) defining the rotation
-
-    Returns:
-        :obj:`jnp.ndarray`: a :math:`2 \times 2` matrix defining the paramatrzed unitary
-    """
-    phi, theta, omega = params
-    cos = jnp.cos(theta / 2)
-    sin = jnp.sin(theta / 2)
-
-    return jnp.array(
-        [
-            [
-                jnp.exp(-0.5j * (phi + omega)) * cos,
-                -(jnp.exp(0.5j * (phi - omega))) * sin,
-            ],
-            [jnp.exp(-0.5j * (phi - omega)) * sin, jnp.exp(0.5j * (phi + omega)) * cos],
-        ]
-    )
-
-
 def sigmax():
     r"""Returns a Pauli-X operator.
 
@@ -468,29 +443,31 @@ def _make_rot(N, params, idx):
 
 
 class Unitary:
-    r"""Class for an :math:`N \times N` parameterized unitary 
-    matrix :math:`U(N)` constructed using the following scheme
+    r"""Class for an :math:`N \times N` parametrized unitary 
+    matrix :math:`U(N)`
+    
+    Unitary :math:`U(N)` is constructed using the following scheme
         
     .. math::
         U(N) = D\prod_{i=2}^{N}\prod_{j=1}^{i-1}R^{'}_{ij}
     
     where :math:`D` is a diagonal matrix, whose elements are 
-    :math:`e^{i\omega{j}}` and :math:`R^{`}_{ij}` are rotation 
+    :math:`e^{i\omega{j}}` and :math:`R_{ij}^{'}` are rotation 
     matrices (available via `_make_rot`) where
-    :math:`R_{ij}` is an :math:`N-`dimensional identity matrix
+    :math:`R_{ij}` is an :math:`N`-dimensional identity matrix
     with the elements :math:`R_{ii}, R_{ij}, R_{ji}` and :math:`R_{jj}`
     replaced as follows:
 
     .. math::
 
-        \begin{pmatrix} R_{ii} & R{ij} \\ R_{ji} & R_{jj} 
+        \begin{pmatrix} R_{ii} & R_{ij} \\ R_{ji} & R_{jj} 
         \end{pmatrix} = \begin{pmatrix}
             e^{i\phi_{ij}}cos(\theta_{ij}) & 
-            -e^{i\phi_{ij}sin(\theta_{ij})} \\
+            -e^{i\phi_{ij}}sin(\theta_{ij}) \\
             sin(\theta_{ij}) & cos(\theta_{ij})
         \end{pmatrix}
 
-    and :math:`R^{`}_{ij} = R(-\theta_{ij}, -\phi_{ij})`
+    and :math:`R_{ij}^{'} = R(-\theta_{ij}, -\phi_{ij})`
             
     Ref: Jing, Li, et al. "Tunable efficient unitary neural
     networks (eunn) and their application to rnns."
@@ -561,6 +538,17 @@ class Unitary:
 
 
 def rand_ket(N, seed=None):
+    r"""Returns a random :math:`N`-dimensional
+    ket.
+
+    Args:
+        N (int): Dimension of random ket
+    
+    Reurns:
+        :obj:`jnp.ndarray`: random 
+            :math:`N \times 1` dimensional 
+            vector (ket)
+    """
     if seed == None:
         seed = np.random.randint(1000)
     ket = uniform(PRNGKey(seed), (N, 1)) + 1j * uniform(PRNGKey(seed), (N, 1))
@@ -568,6 +556,17 @@ def rand_ket(N, seed=None):
 
 
 def rand_dm(N, seed=None):
+    r"""Returns a random :math:`N \times N`-dimensional
+    density matrix.
+
+    Args:
+        N (int): Dimension of random density matrix
+    
+    Reurns:
+        :obj:`jnp.ndarray`: random 
+            :math:`N \times N` dimensional 
+            matrix (density matrix).
+    """
     if seed == None:
         seed = np.random.randint(1000)
     key = PRNGKey(seed)

@@ -39,7 +39,7 @@ Although qgrad's API is intentionally made similar to that of
 `QuTiP <https://github.com/qutip/qutip>`_, QuTiP is not a dependency of the core package. However, qgrad still requires  
 QuTiP for testing at the moment. To install QuTiP using conda, run::
 
-    conda install qutip
+    conda install -c conda forge qutip
 
 To install using pip, run::
 
