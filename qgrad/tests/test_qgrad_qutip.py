@@ -437,7 +437,6 @@ class TestUnitary:
                 assert_array_almost_equal(jnp.dot(dag(unitary), unitary), jnp.eye(N))
 
 
-<<<<<<< HEAD
 def test_rand_ket_norm():
     for N in range(2, 40, 6):
         assert_almost_equal(jnp.linalg.norm(qgrad_rand_ket(N)), 1.0)
@@ -507,10 +506,9 @@ def test_isdm():
     assert isdm(sigmax() * sigmay()) == False
     # Check when trace is non-unity
     assert isdm(jnp.eye(2) * 2) == False
-=======
+
 def test_rand_unitary():
     for N in range(2, 43, 10):
         unitary = rand_unitary(N)
         assert_array_almost_equal(jnp.dot(unitary, dag(unitary)), jnp.eye(N))
         assert_array_almost_equal(jnp.dot(dag(unitary), unitary), jnp.eye(N))
->>>>>>> afe00f0a5f4af7e0e74f9b1ab5f709526768d35b
