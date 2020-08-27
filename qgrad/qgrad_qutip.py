@@ -261,7 +261,8 @@ class Displace:
         
         """
         # Diagonal of the transformation matrix P, and apply to eigenvectors.
-        transform = self.t_scale * (alpha / jnp.abs(alpha)) ** -self.range
+        transform = (self.t_scale * (alpha / jnp.abs(alpha)) ** - self.range if
+        alpha !=0 else self.t_scale)
         evecs = transform[:, None] * self.evecs
         # Get the exponentiated diagonal.
         diag = jnp.exp(1j * jnp.abs(alpha) * self.evals)
