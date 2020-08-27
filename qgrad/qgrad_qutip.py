@@ -556,6 +556,17 @@ def rand_ket(N, seed=None):
 
 
 def rand_dm(N, seed=None):
+    r"""Returns a random :math:`N \times N`-dimensional
+    density matrix.
+
+    Args:
+        N (int): Dimension of random density matrix
+    
+    Reurns:
+        :obj:`jnp.ndarray`: random 
+            :math:`N \timesn N` dimensional 
+            matrix (density matrix).
+    """
     if seed == None:
         seed = np.random.randint(1000)
     key = PRNGKey(seed)
