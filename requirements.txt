@@ -8,3 +8,4 @@ jax
 jaxlib
 sphinx==3.1.2
 nbsphinx
+nbsphinx_link
