@@ -63,7 +63,9 @@ version of the package.
 
 As part of GSoC, Asad has written
 several insructive blogs about the workings of the library, which 
-can be found `here <https://araza6.github.io/posts/>`_.
+can be found `here <https://araza6.github.io/posts/>`_. The package 
+is still under development. Future roadmap of the package can be 
+found in this `wiki <https://github.com/qgrad/qgrad/wiki/Going-forward:-post-GSoC-for-qgrad>`_
 
 Indices and tables
 ==================
