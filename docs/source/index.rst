@@ -43,7 +43,29 @@ changes in API. Track the latest developments on `GitHub <https://github.com/qgr
    :caption: API Reference
 
    api.rst
+
   
+
+Acknowledgements
+#################
+
+qgrad was developed as part of Google Summer of Code (GSoC) 2020
+project with NUMFOCUS and QuTiP. `Asad Raza <https://araza6.github.io/>`_, the GSoC student 
+from the City University of Hong Kong,
+was mentored by `Shahnawaz Ahmed <http://sahmed.in/>`_ 
+from Chalmers University of Technology
+and `Nathan Shammah <https://nathanshammah.com/>`_ from 
+the Unitary Fund to 
+develop the library. We thank the organizations:
+GSoC, NUMFOCUS and QuTiP for funding the
+project and the developers for rolling out the first
+version of the package.
+
+As part of GSoC, Asad has written
+several insructive blogs about the workings of the library, which 
+can be found `here <https://araza6.github.io/posts/>`_. The package 
+is still under development. Future roadmap of the package can be 
+found in this `wiki <https://github.com/qgrad/qgrad/wiki/Going-forward:-post-GSoC-for-qgrad>`_
 
 Indices and tables
 ==================

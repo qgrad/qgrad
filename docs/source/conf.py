@@ -62,3 +62,17 @@ html_static_path = ['_static']
 # -- Extension configuration -------------------------------------------------
 # Auto-generate subpages for docs
 autosummary_generate = True
+
+# This is processed by Jinja2 and inserted before each notebook
+nbsphinx_prolog = r"""
+{% set docname = env.doc2path(env.docname, base=False) %}
+
+.. only:: html
+
+    .. role:: raw-html(raw)
+        :format: html
+
+    .. nbinfo::
+
+        Jupyter notebook implementations can be found `here <https://github.com/qgrad/qgrad/tree/master/examples/notebooks>`_
+"""
