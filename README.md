@@ -1,19 +1,11 @@
 # qgrad
 
-A Python library to integrate automatic differentiation tools such as Jax with QuTiP and related quantum software packages.
+A Python library to integrate automatic differentiation tools such as JAX with QuTiP and related quantum software packages.
 
 This package is a work in progress. Feel free to take part in the discussions by opening new issues.
 
 ## Installation
 
-### PyPI version
-To install ``qgrad``
-
-```
-pip install qgrad
-```
-
-### From source
 To install ``qgrad`` development version, clone this repository and from the terminal type
 
 ```
@@ -40,3 +32,9 @@ The latest documentation can be found [here](https://qgrad.readthedocs.io/en/lat
 
 ## Contributing
 We are in the early stages of designing the tool and welcome any discussion in the form of [Issues](https://github.com/qgrad/qgrad/issues/new) or Pull Requests.
+
+## Acknowledgements
+This package started as part of @araza6's GSoC 2020 project. 
+All the work relevant to GSoC 2020 is compiled in
+this release: https://github.com/qgrad/qgrad/releases/tag/0.0.dev2
+
