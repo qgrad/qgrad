@@ -47,7 +47,6 @@ To install using pip, run::
 
 For custom installation, see QuTiP `docs <http://qutip.org/docs/4.1/installation.html>`_.
 
-
 **Building from source**
 ########################
 
