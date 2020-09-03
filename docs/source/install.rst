@@ -47,13 +47,6 @@ To install using pip, run::
 
 For custom installation, see QuTiP `docs <http://qutip.org/docs/4.1/installation.html>`_.
 
-**Installing via pip**
-######################
-
-With the above packages installed, qgrad can now installed via 
-`pip <https://pip.pypa.io/en/stable/>`_::
-
-    pip install qgrad
 
 **Building from source**
 ########################
