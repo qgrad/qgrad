@@ -13,8 +13,6 @@ This package is a work in progress. Feel free to take part in the discussions by
 - [Documentation](#documentation)
 - [Contributing](#contributing)
 - [Acknowledgements](#acknowledgements)
-- [And a table of contents](#and-a-table-of-contents)
-- [On the right](#on-the-right)
 
 
 ## Installation
