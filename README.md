@@ -1,8 +1,18 @@
 # qgrad
 
+[![Documentation Status](https://readthedocs.org/projects/qgrad/badge/?version=latest)](https://qgrad.readthedocs.io/en/latest/?badge=latest)
+[![CI Actions Status](https://github.com/qgrad/qgrad/workflows/CI/badge.svg)](https://github.com/qgrad/qgrad/actions)
+
 A Python library to integrate automatic differentiation tools such as JAX with QuTiP and related quantum software packages.
 
 This package is a work in progress. Feel free to take part in the discussions by opening new issues.
+
+- [Installation](#installation)
+- [About](#about)
+- [Documentation](#documentation)
+- [Contributing](#contributing)
+- [Acknowledgements](#acknowledgements)
+
 
 ## Installation
 
