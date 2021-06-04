@@ -204,6 +204,16 @@ def _expect_ket(oper, state):
     return jnp.vdot(jnp.transpose(ket), jnp.dot(oper, ket))
 
 
+def _kth_diag_indices(a, k):
+    rows, cols = jnp.diag_indices_from(a)
+    if k < 0:
+        return rows[-k:], cols[:k]
+    elif k > 0:
+        return rows[:-k], cols[k:]
+    else:
+        return rows, cols
+
+
 class Displace:
     r"""Displacement operator for optical phase space.
     
@@ -215,11 +225,16 @@ class Displace:
 
     def __init__(self, n):
         # The off-diagonal of the real-symmetric similar matrix T.
-        sym = (2 * (jnp.arange(1, n) % 2) - 1) * jnp.sqrt(jnp.arange(1, n))
+        sym = (2.0 * (jnp.arange(1, n) % 2) - 1) * jnp.sqrt(jnp.arange(1, n))
         # Solve the eigensystem.
-        mat = np.zeros((n, n))
-        np.fill_diagonal(mat[1:], sym)  # fills sub-diagonal
-        np.fill_diagonal(mat[:, 1:], sym)  # fills super-diagonal
+        mat = jnp.zeros((n, n), dtype=jnp.complex64)
+
+        i, j = _kth_diag_indices(mat, -1)
+        mat = index_update(mat, index[i, j], sym)
+
+        i, j = _kth_diag_indices(mat, 1)
+        mat = index_update(mat, index[i, j], sym)
+
         self.evals, self.evecs = jnp.linalg.eigh(mat)
         self.range = jnp.arange(n)
         self.t_scale = 1j ** (self.range % 2)
@@ -236,8 +251,11 @@ class Displace:
         
         """
         # Diagonal of the transformation matrix P, and apply to eigenvectors.
-        transform = (self.t_scale * (alpha / jnp.abs(alpha)) ** - self.range if
-        alpha !=0 else self.t_scale)
+        transform = (
+            self.t_scale * (alpha / jnp.abs(alpha)) ** -self.range
+            if alpha != 0
+            else self.t_scale
+        )
         evecs = transform[:, None] * self.evecs
         # Get the exponentiated diagonal.
         diag = jnp.exp(1j * jnp.abs(alpha) * self.evals)
@@ -571,6 +589,7 @@ def rand_dm(N, seed=None):
         seed = np.random.randint(1000)
     key = PRNGKey(seed)
     return to_dm(rand_ket(N, seed))
+
 
 def rand_unitary(N, seed=None):
     r"""Returns an :math:`N \times N` randomly parametrized unitary
