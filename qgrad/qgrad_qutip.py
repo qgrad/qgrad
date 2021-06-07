@@ -227,7 +227,7 @@ class Displace:
         # The off-diagonal of the real-symmetric similar matrix T.
         sym = (2.0 * (jnp.arange(1, n) % 2) - 1) * jnp.sqrt(jnp.arange(1, n))
         # Solve the eigensystem.
-        mat = jnp.zeros((n, n), dtype=jnp.complex64)
+        mat = jnp.zeros((n, n), dtype=jnp.complex128)
 
         i, j = _kth_diag_indices(mat, -1)
         mat = index_update(mat, index[i, j], sym)
@@ -251,10 +251,10 @@ class Displace:
         
         """
         # Diagonal of the transformation matrix P, and apply to eigenvectors.
-        transform = (
-            self.t_scale * (alpha / jnp.abs(alpha)) ** -self.range
-            if alpha != 0
-            else self.t_scale
+        transform = jnp.where(
+            alpha == 0,
+            self.t_scale,
+            self.t_scale * (alpha / jnp.abs(alpha)) ** -self.range,
         )
         evecs = transform[:, None] * self.evecs
         # Get the exponentiated diagonal.
