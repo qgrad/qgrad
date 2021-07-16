@@ -11,23 +11,25 @@ $$
 H(\gamma, \beta) = H_0 + H_1
 $$
 """
-
-import jax.numpy as jnp
-import jax
-from jax import grad, value_and_grad
-from jax.experimental import optimizers
-from jax.scipy.linalg import expm
-
-from qutip import basis
 from qutip.operators import sigmax, qeye
 from qutip.tensor import tensor
 
+import jax.numpy as jnp
+from jax import value_and_grad
+from jax.experimental import optimizers
+from jax.scipy.linalg import expm
 
-cost = jnp.array([-0, -3, -2, -3, -3, -4, -3, -2, -2, -3, -4, -3, -3, -2, -3, -0]).reshape(-1, 1)
+import numpy as np
+
+from tqdm.auto import tqdm
+
+
+num_qubits = 4
+cost = np.random.randint(-16, 0, size=num_qubits**2).reshape(-1, 1)
 p = 1
-num_qubits = int(np.log2(cost.shape[0]))
 params = jnp.array(np.random.rand(2*p))
 
+print(num_qubits)
 
 def plus_state(q: int):
     """Generates the plus state
@@ -82,18 +84,20 @@ def variational_state(cost, s, gamma_list, beta_list):
 def cost_func(params, cost, s):
     gamma_list, beta_list = jnp.split(params, 2)
     s = variational_state(cost, s, gamma_list, beta_list)
-    return jnp.real(jnp.vdot(jnp.transpose(s), jnp.multiply(cost, s)))
+    cost_val = jnp.real(jnp.vdot(jnp.transpose(s), jnp.multiply(cost, s)))
+    return cost_val, s
 
 
 def loss_fn(params, cost, s):
-    f = cost_func(params, cost, s)
+    f, s = cost_func(params, cost, s)
     return ((-4) - f)**2
 
 
-def step(step, opt_state):
-  value, grads = jax.value_and_grad(loss_fn)(get_params(opt_state), cost, s)
-  opt_state = opt_update(step, grads, opt_state)
-  return value, opt_state
+def step(step, opt_state, s):
+    params = get_params(opt_state)
+    value, grads = value_and_grad(loss_fn)(params, cost, s)
+    opt_state = opt_update(step, grads, opt_state)
+    return value, opt_state
 
 
 learning_rate = 1e-1
@@ -101,13 +105,17 @@ params = jnp.array(np.random.rand(2*p))
 num_steps = 100
 epochs = 1
 
+s = plus_state(num_qubits)
+
 opt_init, opt_update, get_params = optimizers.adam(learning_rate)
 opt_state = opt_init(params)
 
-for epoch in range(epochs):
-    for i in range(num_steps):
-        value, opt_state = step(i, opt_state)
+
+for i in tqdm(range(num_steps)):
+    value, opt_state = step(i, opt_state, s)
+    _, s = cost_func(params, cost, s)
 
 
-f = cost_func(jnp.array(opt_state.packed_state[0][0]), cost, s)
-print(f)
+f, s = cost_func(jnp.array(opt_state.packed_state[0][0]), cost, s)
+print("Final state", s)
+print("Cost value", f)
