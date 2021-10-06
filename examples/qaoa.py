@@ -70,6 +70,8 @@ a gradient-based optimzation of the parameters and implement QAOA.
 [2] Willsch, M., Willsch, D., Jin, F. et al. Benchmarking the quantum approximate optimization algorithm. Quantum Inf Process 19, 197 (2020). https://doi.org/10.1007/s11128-020-02692-8
 [3] Vikstål et al., 2020. 
 """
+import numpy as np
+
 
 from qutip.operators import sigmax, qeye
 from qutip.tensor import tensor
@@ -79,10 +81,11 @@ from jax import value_and_grad
 from jax.experimental import optimizers
 from jax.scipy.linalg import expm
 
-import numpy as np
 
 from tqdm.auto import tqdm
 
+
+import matplotlib.pyplot as plt
 
 """
 Define a random cost function and initial parameters for QAOA.
@@ -205,14 +208,19 @@ s = plus_state(num_qubits)
 
 opt_init, opt_update, get_params = optimizers.adam(learning_rate)
 opt_state = opt_init(params)
-
+loss_history = [] # to keep track of the loss
 
 for i in tqdm(range(num_steps)):
     value, opt_state = step(i, opt_state, s)
-    _, s = cost_func(params, cost, s)
+    l, s = cost_func(params, cost, s)
+    loss_history.append(l)
 
 
 f, s = cost_func(jnp.array(opt_state.packed_state[0][0]), cost, s)
 print("Final state", s)
 print("Cost value", f)
 
+plt.plot(loss_history)
+plt.xlabel("Iterations")
+plt.ylabel("Loss")
+plt.show()
