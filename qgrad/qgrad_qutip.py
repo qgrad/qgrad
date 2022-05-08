@@ -1,7 +1,6 @@
 """
 Implementation of some common quantum mechanics functions that work with JAX
 """
-from jax.ops import index, index_update
 import jax.numpy as jnp
 from jax.random import PRNGKey, uniform
 import numpy as np
@@ -230,10 +229,10 @@ class Displace:
         mat = jnp.zeros((n, n), dtype=jnp.complex128)
 
         i, j = _kth_diag_indices(mat, -1)
-        mat = index_update(mat, index[i, j], sym)
+        mat = mat.at[i, j].set(sym)
 
         i, j = _kth_diag_indices(mat, 1)
-        mat = index_update(mat, index[i, j], sym)
+        mat = mat.at[i, j].set(sym)
 
         self.evals, self.evecs = jnp.linalg.eigh(mat)
         self.range = jnp.arange(n)
@@ -297,7 +296,7 @@ def basis(N, n=0):
         raise ValueError("N must be integer N >= 0")
 
     zeros = jnp.zeros((N, 1), dtype=jnp.complex64)  # column of zeros
-    return index_update(zeros, index[n, 0], 1.0)
+    return zeros.at[n, 0].set(1.0)
 
 
 def coherent(N, alpha):
@@ -453,10 +452,10 @@ def _make_rot(N, params, idx):
     theta, phi = params
     rotation = jnp.eye(N, dtype=jnp.complex64)
     # updating the four entries
-    rotation = index_update(rotation, index[i, i], jnp.exp(1j * phi) * jnp.cos(theta))
-    rotation = index_update(rotation, index[i, j], -jnp.exp(1j * phi) * jnp.sin(theta))
-    rotation = index_update(rotation, index[j, i], jnp.sin(theta))
-    rotation = index_update(rotation, index[j, j], jnp.cos(theta))
+    rotation = rotation.at[i, i].set(jnp.exp(1j * phi) * jnp.cos(theta))
+    rotation = rotation.at[i, j].set(-jnp.exp(1j * phi) * jnp.sin(theta))
+    rotation = rotation.at[j, i].set(jnp.sin(theta))
+    rotation = rotation.at[j, j].set(jnp.cos(theta))
     return rotation
 
 
@@ -540,7 +539,8 @@ class Unitary:
             )
         diagonal = jnp.zeros((self.N, self.N), dtype=jnp.complex64)
         for i in range(self.N):
-            diagonal = index_update(diagonal, index[i, i], jnp.exp(1j * omegas[i]))
+            diagonal = diagonal.at[i, i].set(jnp.exp(1j * omegas[i]))
+
         # negative angles for matrix inversion
         params = [[-i, -j] for i, j in zip(thetas, phis)]
         rotation = jnp.eye(self.N, dtype=jnp.complex64)
